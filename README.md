@@ -6,4 +6,4 @@ We have made use of https://github.com/OTRF/Blacksmith and https://github.com/OT
 
 InfoSec Innovations does not bear responsibility for the consequences of using this repository, the files have mostly been made public for our own convenience, but you are free to use them at your own risk.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/ISI-Default-Sentinel.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2FISI-Default-Sentinel.json)
