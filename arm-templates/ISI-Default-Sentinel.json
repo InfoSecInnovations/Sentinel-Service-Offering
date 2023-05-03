@@ -4,7 +4,7 @@
     "parameters": {
         "workspaceName": {
             "type": "string",
-            "defaultValue": "AzSentinel",
+            "defaultValue": "LAW-ISI-Default",
             "metadata": {
                 "description": "Name for the Log Analytics workspace used to aggregate data"
             }
