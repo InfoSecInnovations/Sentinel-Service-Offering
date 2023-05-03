@@ -69,7 +69,6 @@
         }
     },
     "variables": {
-        "artifactsBlacksmith": "https://raw.githubusercontent.com/OTRF/Blacksmith/master/",
         "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/",
         "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/"
     },
@@ -81,7 +80,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsBlacksmith'),'templates/azure/Log-Analytics-Workspace-Sentinel/azuredeploy.json')]",
+                    "uri": "[uri(variables('isiSentinel'),'arm-templates/Sentinel-Deploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
