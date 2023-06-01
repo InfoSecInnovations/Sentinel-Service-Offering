@@ -1,7 +1,7 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+      "parameters": {
         "workspaceName": {
             "type": "string",
             "defaultValue": "LAW-ISI-Default",
@@ -80,7 +80,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('isiSentinel'),'arm-templates/Sentinel-Deploy.json')]",
+                    "uri": "[uri(variables('isiSentinel'),'arm-templates/deploy-sentinel.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -101,88 +101,6 @@
                     }
                 }
             }
-        },
-        {
-            "name": "enableSecurityEventDataConnector",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "dependsOn": [
-                "deployAzureSentinel"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/securityEvents.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[reference('deployAzureSentinel').outputs.workspaceName_output.value]"
-                    },
-                    "securityCollectionTier": {
-                        "value": "[parameters('setSecurityCollectionTier')]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    }
-                }
-            }
-        },
-        {
-            "name": "enableWindowsFirewallDataConnector",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "dependsOn": [
-                "deployAzureSentinel"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/windowsFirewall.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[reference('deployAzureSentinel').outputs.workspaceName_output.value]"
-                    },
-                    "workspaceId": {
-                        "value": "[resourceId('Microsoft.OperationalInsights/workspaces/', reference('deployAzureSentinel').outputs.workspaceName_output.value)]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    }
-                }
-            }
-        },
-        {
-            "name": "enableWindowsFirewallWorkbook",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2022-09-01",
-            "dependsOn": [
-                "deployAzureSentinel"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/Workbook-Windows-Firewall.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[reference('deployAzureSentinel').outputs.workspaceName_output.value]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    },
-                    "workbookId": {
-                        "value": "[guid(parameters('guidSeed'), 'firewall workbook')]"
-                    },
-                    "displayName": {
-                        "value": "Windows Firewall"
-                    }
-                }
-            }
         }
-    ],
-    "outputs": {}
+    ]
 }
