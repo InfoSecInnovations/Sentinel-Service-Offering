@@ -94,7 +94,7 @@
     }
   ],
   "outputs": {
-    "workspaceName_output": {
+    "workspaceNameOutput": {
       "type": "string",
       "value": "[variables('uniqueWorkspace')]"
     },

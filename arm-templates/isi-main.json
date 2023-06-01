@@ -40,7 +40,7 @@
                 "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
             }
         },
-        "setSecurityCollectionTier": {
+        "securityCollectionTier": {
             "type": "string",
             "metadata": {
                 "description": "Tier for gathering Windows Security Events."
@@ -69,14 +69,14 @@
         }
     },
     "variables": {
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/OTRF/Azure-Sentinel2Go/master/",
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
         "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/"
     },
     "resources": [
         {
             "name": "deployAzureSentinel",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
+            "apiVersion": "2022-09-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -96,8 +96,37 @@
                     "immediatePurgeDataOn30Days": {
                         "value": "[parameters('immediatePurgeDataOn30Days')]"
                     },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
                     "seed": {
                         "value": "[parameters('guidSeed')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "enableSecurityEventDataConnector",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2022-09-01",
+            "dependsOn": [
+                "deployAzureSentinel"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/securityEvents.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[reference('deployAzureSentinel').outputs.workspaceNameOutput.value]"
+                    },
+                    "securityCollectionTier": {
+                        "value": "[parameters('securityCollectionTier')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
                     }
                 }
             }
