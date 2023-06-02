@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "templateSpecsName": {
+            "type": "String",
+            "defaultValue": "ISI Default Instance"
+        }
+    },
+    "variables": {
+        "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/templateSpecs",
+            "apiVersion": "2022-02-01",
+            "name": "[parameters('templateSpecsName')]",
+            "location": "westeurope",
+            "tags": {},
+            "properties": {
+            }
+        },
+        {
+            "type": "Microsoft.Resources/templateSpecs/versions",
+            "apiVersion": "2022-02-01",
+            "name": "[concat(parameters('templateSpecsName'), '/1.0.0.0')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/templateSpecs', parameters('templateSpecsName'))]"
+            ],
+            "properties": {
+                "mainTemplate": {
+                    "uri": "[uri(variables('isiSentinel'),'arm-templates/deploy-sentinel.json')]",
+                    "contentVersion": "1.0.0.0"
+                }
+            }
+        }
+    ]
+}

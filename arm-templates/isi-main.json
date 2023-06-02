@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-      "parameters": {
+    "parameters": {
         "workspaceName": {
             "type": "string",
             "defaultValue": "LAW-ISI-Default",
@@ -40,6 +40,25 @@
                 "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
             }
         },
+        "enableOffice365": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "You should enable this if you use Office 365 to get the appropriate logs and workspaces."
+            }
+        },
+        "exchangeState": {
+            "type": "string",
+            "defaultValue": "test"
+        },
+        "sharepointState": {
+            "type": "string",
+            "defaultValue": "test"
+        },
+        "teamsState": {
+            "type": "string",
+            "defaultValue": "test"
+        },
         "securityCollectionTier": {
             "type": "string",
             "metadata": {
@@ -70,7 +89,8 @@
     },
     "variables": {
         "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
-        "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/"
+        "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+        "tenantId": "[subscription().tenantId]"
     },
     "resources": [
         {
@@ -106,6 +126,39 @@
             }
         },
         {
+            "condition": "[parameters('enableOffice365')]",
+            "name": "enableOffice365",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2022-09-01",
+            "dependsOn": [
+                "deployAzureSentinel"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/office365.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[reference('deployAzureSentinel', '2021-06-01').outputs.workspaceNameOutput.value]"
+                    },
+                    "exchangeState": {
+                        "value": "[parameters('exchangeState')]"
+                    },
+                    "sharePointState": {
+                        "value": "[parameters('sharePointState')]"
+                    },
+                    "teamsState": {
+                        "value": "[parameters('teamsState')]"
+                    },
+                    "tenantId": {
+                        "value": "[variables('tenantID')]"
+                    }
+                }
+            }
+        },
+        {
             "name": "enableSecurityEventDataConnector",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
@@ -120,7 +173,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzureSentinel').outputs.workspaceNameOutput.value]"
+                        "value": "[reference('deployAzureSentinel', '2021-06-01').outputs.workspaceNameOutput.value]"
                     },
                     "securityCollectionTier": {
                         "value": "[parameters('securityCollectionTier')]"

@@ -61,7 +61,7 @@
   "resources": [
     {
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2020-08-01",
+      "apiVersion": "2021-06-01",
       "name": "[variables('uniqueWorkspace')]",
       "location": "[parameters('location')]",
       "properties": {
