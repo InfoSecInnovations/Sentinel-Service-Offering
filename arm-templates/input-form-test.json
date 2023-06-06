@@ -242,22 +242,6 @@
                           },
                           "infoMessages": [],
                           "visible": true
-                      },
-                      {
-                          "name": "guidSeed",
-                          "type": "Microsoft.Common.TextBox",
-                          "label": "Guid Seed",
-                          "subLabel": "",
-                          "defaultValue": "[[newGuid()]",
-                          "toolTip": "This value is used to generate unique identifiers for the resources that need them, don't modify this!",
-                          "constraints": {
-                              "required": false,
-                              "regex": "",
-                              "validationMessage": "",
-                              "validations": []
-                          },
-                          "infoMessages": [],
-                          "visible": true
                       }
                   ]
               }
@@ -274,8 +258,7 @@
               "sharepointState": "[steps('basics').sharepointState]",
               "teamsState": "[steps('basics').teamsState]",
               "securityCollectionTier": "[steps('basics').securityCollectionTier]",
-              "location": "[steps('basics').location]",
-              "guidSeed": "[steps('basics').guidSeed]"
+              "location": "[steps('basics').location]"
           },
           "kind": "ResourceGroup",
           "location": "[steps('basics').resourceScope.location.name]",

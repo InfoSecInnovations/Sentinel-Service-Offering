@@ -141,7 +141,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzureSentinel', '2021-06-01').outputs.workspaceNameOutput.value]"
+                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
                     "exchangeState": {
                         "value": "[parameters('exchangeState')]"
@@ -173,7 +173,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzureSentinel', '2021-06-01').outputs.workspaceNameOutput.value]"
+                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
                     "securityCollectionTier": {
                         "value": "[parameters('securityCollectionTier')]"
