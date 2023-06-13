@@ -82,7 +82,7 @@
         },
         "parameters": {
           "workspaceName": {
-            "value": "[reference('deployAzureSentinel').outputs.workspaceName_output.value]"
+            "value": "[parameters('workspaceName')]"
           },
           "location": {
             "value": "[parameters('location')]"
