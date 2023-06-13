@@ -136,7 +136,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/office365.json')]",
+                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
