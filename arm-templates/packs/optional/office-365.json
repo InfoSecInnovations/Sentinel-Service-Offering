@@ -77,7 +77,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'workbooks/optional/office-365.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/workbooks/optional/office-365.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
