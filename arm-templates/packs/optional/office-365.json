@@ -42,7 +42,7 @@
   },
   "resources": [
     {
-      "name": "enableOffice365",
+      "name": "office365DataConnector",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {

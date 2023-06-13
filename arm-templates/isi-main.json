@@ -72,13 +72,6 @@
             ],
             "defaultValue": "Minimal"
         },
-        "location": {
-            "type": "string",
-            "defaultValue": "[resourceGroup().location]",
-            "metadata": {
-                "description": "Location for all resources."
-            }
-        },
         "guidSeed": {
             "type": "string",
             "defaultValue": "[newGuid()]",
@@ -90,7 +83,8 @@
     "variables": {
         "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
         "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
-        "tenantId": "[subscription().tenantId]"
+        "tenantId": "[subscription().tenantId]",
+        "location": "[resourceGroup().location]"
     },
     "resources": [
         {
@@ -117,7 +111,7 @@
                         "value": "[parameters('immediatePurgeDataOn30Days')]"
                     },
                     "location": {
-                        "value": "[parameters('location')]"
+                        "value": "[variables('location')]"
                     },
                     "seed": {
                         "value": "[parameters('guidSeed')]"
@@ -154,6 +148,12 @@
                     },
                     "tenantId": {
                         "value": "[variables('tenantID')]"
+                    },
+                    "location": {
+                        "value": "[variables('location')]"
+                    },
+                    "guidSeed": {
+                        "value": "[parameters('guidSeed')]"
                     }
                 }
             }
