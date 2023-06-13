@@ -121,7 +121,7 @@
         },
         {
             "condition": "[parameters('enableOffice365')]",
-            "name": "enableOffice365",
+            "name": "enableOffice365Pack",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
