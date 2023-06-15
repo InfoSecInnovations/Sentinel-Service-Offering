@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      "workspaceName": {
+          "type": "string",
+          "metadata": {
+              "description": "the Log Analytics Workspace to send the logs to."
+          }
+      }
+  },
+  "variables": {
+      "workbookSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]",
+      "apiVersions": {
+          "diagnosticSettings": "2017-05-01-preview"
+      }
+  },
+  "resources": [
+      {
+          "name": "subscriptionLogsToLogAnalytics",
+          "type": "Microsoft.Insights/diagnosticSettings",
+          "apiVersion": "[variables('apiVersions').diagnosticSettings]",
+          "location": "Global",
+          "properties": {
+              "workspaceId": "[variables('workbookSourceId')]",
+              "logs": [
+                  {
+                      "category": "Administrative",
+                      "enabled": true
+                  },
+                  {
+                      "category": "Security",
+                      "enabled": true
+                  },
+                  {
+                      "category": "ServiceHealth",
+                      "enabled": true
+                  },
+                  {
+                      "category": "Alert",
+                      "enabled": true
+                  },
+                  {
+                      "category": "Recommendation",
+                      "enabled": true
+                  },
+                  {
+                      "category": "Policy",
+                      "enabled": true
+                  },
+                  {
+                      "category": "Autoscale",
+                      "enabled": true
+                  },
+                  {
+                      "category": "ResourceHealth",
+                      "enabled": true
+                  }
+              ]
+          }
+      }
+  ]
+}

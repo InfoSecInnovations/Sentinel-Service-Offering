@@ -21,7 +21,6 @@
     }
   },
   "variables": {
-    "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/"
   },
   "resources": [
@@ -32,18 +31,12 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/azureActivityLog.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/data-connectors/recommended/enable-azure-activity-logs.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
           "workspaceName": {
             "value": "[parameters('workspaceName')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "subscriptionId": {
-            "value": "[subscription().subscriptionId]"
           }
         }
       }
