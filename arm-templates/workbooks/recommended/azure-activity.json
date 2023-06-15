@@ -24,6 +24,10 @@
       "metadata": {
         "description": "The unique guid for this workbook instance"
       }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
     }
   },
   "variables": {
@@ -34,7 +38,7 @@
     {
       "name": "[parameters('workbookId')]",
       "type": "microsoft.insights/workbooks",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "apiVersion": "2022-04-01",
       "dependsOn": [],
       "kind": "shared",
