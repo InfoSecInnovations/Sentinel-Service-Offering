@@ -2,6 +2,12 @@
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+      "resourceGroupName": {
+          "type": "string",
+          "metadata": {
+              "description": "the Resource Group containing the Log Analytics Workspace."
+          }
+      },
       "workspaceName": {
           "type": "string",
           "metadata": {
@@ -10,7 +16,7 @@
       }
   },
   "variables": {
-      "workbookSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]",
+      "workbookSourceId": "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]",
       "apiVersions": {
           "diagnosticSettings": "2017-05-01-preview"
       }
