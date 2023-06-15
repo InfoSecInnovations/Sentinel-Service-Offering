@@ -2,18 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "exchangeState": {
-      "type": "string",
-      "defaultValue": "test"
-    },
-    "sharepointState": {
-      "type": "string",
-      "defaultValue": "test"
-    },
-    "teamsState": {
-      "type": "string",
-      "defaultValue": "test"
-    },
     "workspaceName": {
       "type": "string"
     },
@@ -30,10 +18,6 @@
       "metadata": {
         "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
       }
-    },
-    "tenantId": {
-      "type": "string",
-      "defaultValue": "[subscription().tenantId]"
     }
   },
   "variables": {
@@ -42,45 +26,36 @@
   },
   "resources": [
     {
-      "name": "office365DataConnector",
+      "name": "azureActivityDataConnector",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/office365.json')]",
+          "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/azureActivityLog.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
           "workspaceName": {
             "value": "[parameters('workspaceName')]"
           },
-          "exchangeState": {
-            "value": "[parameters('exchangeState')]"
-          },
-          "sharePointState": {
-            "value": "[parameters('sharePointState')]"
-          },
-          "teamsState": {
-            "value": "[parameters('teamsState')]"
-          },
-          "tenantId": {
-            "value": "[parameters('tenantID')]"
-          },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "subscriptionId": {
+            "value": "[subscription().subscriptionId]"
           }
         }
       }
     },
     {
-      "name": "office365Workbook",
+      "name": "azureActivityWorkbook",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/workbooks/optional/office-365.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/workbooks/recommended/azure-activity.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -91,10 +66,10 @@
             "value": "[parameters('location')]"
           },
           "workbookId": {
-            "value": "[guid(parameters('guidSeed'), 'office 365 workbook')]"
+            "value": "[guid(parameters('guidSeed'), 'azure activity workbook')]"
           },
           "displayName": {
-            "value": "Office 365"
+            "value": "Azure Activity"
           }
         }
       }

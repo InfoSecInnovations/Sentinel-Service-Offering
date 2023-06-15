@@ -49,15 +49,27 @@
         },
         "exchangeState": {
             "type": "string",
-            "defaultValue": "test"
+            "defaultValue": "disabled",
+            "allowedValues": [
+                "disabled",
+                "enabled"
+            ]
         },
         "sharepointState": {
             "type": "string",
-            "defaultValue": "test"
+            "defaultValue": "disabled",
+            "allowedValues": [
+                "disabled",
+                "enabled"
+            ]
         },
         "teamsState": {
             "type": "string",
-            "defaultValue": "test"
+            "defaultValue": "disabled",
+            "allowedValues": [
+                "disabled",
+                "enabled"
+            ]
         },
         "securityCollectionTier": {
             "type": "string",
@@ -179,7 +191,33 @@
                         "value": "[parameters('securityCollectionTier')]"
                     },
                     "location": {
-                        "value": "[parameters('location')]"
+                        "value": "[variables('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "enableAzureActivityPack",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2022-09-01",
+            "dependsOn": [
+                "deployAzureSentinel"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/azure-activity.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
+                    },
+                    "location": {
+                        "value": "[variables('location')]"
+                    },
+                    "guidSeed": {
+                        "value": "[parameters('guidSeed')]"
                     }
                 }
             }
