@@ -28,7 +28,7 @@
       "name": "azureActivityDataConnector",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "scope": "[subscription().id]",
+      "scope": "[concat('/subscriptions/', subscription().subscriptionId)]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
