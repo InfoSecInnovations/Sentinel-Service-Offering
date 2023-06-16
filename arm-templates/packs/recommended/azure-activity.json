@@ -30,6 +30,7 @@
     {
       "name": "azureActivityDataConnector",
       "type": "Microsoft.Resources/deployments",
+      "location": "[parameters('location')]",
       "apiVersion": "2022-09-01",
       "properties": {
         "mode": "Incremental",
