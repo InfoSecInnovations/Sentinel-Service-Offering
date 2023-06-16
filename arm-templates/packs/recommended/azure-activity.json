@@ -42,7 +42,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "resourceGroupName": {
-            "value": "[resourceGroup().name]"
+            "value": "[parameters('resourceGroupName')]"
           }
         }
       }
