@@ -4,12 +4,10 @@
     "parameters": {
         "resourceGroupName": {
           "type": "string",
+          "defaultValue": "RG-ISI-Default",
           "metadata": {
               "description": "the Resource Group containing the Log Analytics Workspace."
           }
-        },
-        "location": {
-            "type": "string"
         },
         "workspaceName": {
             "type": "string",
@@ -104,14 +102,15 @@
     "variables": {
         "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
         "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
-        "tenantId": "[subscription().tenantId]"
+        "tenantId": "[subscription().tenantId]",
+        "location": "[deployment().location]"
     },
     "resources": [
         {
             "name": "[parameters('resourceGroupName')]",
             "type": "Microsoft.Resources/resourceGroups",
             "apiVersion": "2019-05-01",
-            "location": "[parameters('location')]"
+            "location": "[variables('location')]"
         },
         {
             "name": "deployAzureSentinel",
@@ -141,7 +140,7 @@
                         "value": "[parameters('immediatePurgeDataOn30Days')]"
                     },
                     "location": {
-                        "value": "[parameters('location')]"
+                        "value": "[variables('location')]"
                     },
                     "seed": {
                         "value": "[parameters('guidSeed')]"
@@ -181,7 +180,7 @@
                         "value": "[variables('tenantID')]"
                     },
                     "location": {
-                        "value": "[parameters('location')]"
+                        "value": "[variables('location')]"
                     },
                     "guidSeed": {
                         "value": "[parameters('guidSeed')]"
@@ -211,7 +210,7 @@
                         "value": "[parameters('securityCollectionTier')]"
                     },
                     "location": {
-                        "value": "[parameters('location')]"
+                        "value": "[variables('location')]"
                     }
                 }
             }
@@ -223,6 +222,7 @@
             "dependsOn": [
                 "deployAzureSentinel"
             ],
+            "location": "[variables('location')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -237,7 +237,7 @@
                         "value": "[parameters('resourceGroupName')]"
                     },
                     "location": {
-                        "value": "[parameters('location')]"
+                        "value": "[variables('location')]"
                     },
                     "guidSeed": {
                         "value": "[parameters('guidSeed')]"
