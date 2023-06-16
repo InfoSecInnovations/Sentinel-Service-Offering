@@ -27,6 +27,7 @@
           "type": "Microsoft.Insights/diagnosticSettings",
           "apiVersion": "[variables('apiVersions').diagnosticSettings]",
           "location": "Global",
+          "scope": "[concat('Microsoft.Resources/resourceGroups', '/', parameters('resourceGroupName'))]",
           "properties": {
               "workspaceId": "[variables('workbookSourceId')]",
               "logs": [
