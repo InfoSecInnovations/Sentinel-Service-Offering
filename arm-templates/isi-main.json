@@ -1,7 +1,16 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
     "parameters": {
+        "resourceGroupName": {
+          "type": "string",
+          "metadata": {
+              "description": "the Resource Group containing the Log Analytics Workspace."
+          }
+        },
+        "location": {
+            "type": "string"
+        },
         "workspaceName": {
             "type": "string",
             "defaultValue": "LAW-ISI-Default",
@@ -95,14 +104,23 @@
     "variables": {
         "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
         "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
-        "tenantId": "[subscription().tenantId]",
-        "location": "[resourceGroup().location]"
+        "tenantId": "[subscription().tenantId]"
     },
     "resources": [
         {
+            "name": "[parameters('resourceGroupName')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2019-05-01",
+            "location": "[parameters('location')]"
+        },
+        {
             "name": "deployAzureSentinel",
+            "resourceGroup": "[parameters('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -123,7 +141,7 @@
                         "value": "[parameters('immediatePurgeDataOn30Days')]"
                     },
                     "location": {
-                        "value": "[variables('location')]"
+                        "value": "[parameters('location')]"
                     },
                     "seed": {
                         "value": "[parameters('guidSeed')]"
@@ -134,6 +152,7 @@
         {
             "condition": "[parameters('enableOffice365')]",
             "name": "enableOffice365Pack",
+            "resourceGroup": "[parameters('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
@@ -162,7 +181,7 @@
                         "value": "[variables('tenantID')]"
                     },
                     "location": {
-                        "value": "[variables('location')]"
+                        "value": "[parameters('location')]"
                     },
                     "guidSeed": {
                         "value": "[parameters('guidSeed')]"
@@ -172,6 +191,7 @@
         },
         {
             "name": "enableSecurityEventDataConnector",
+            "resourceGroup": "[parameters('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
@@ -191,7 +211,7 @@
                         "value": "[parameters('securityCollectionTier')]"
                     },
                     "location": {
-                        "value": "[variables('location')]"
+                        "value": "[parameters('location')]"
                     }
                 }
             }
@@ -213,8 +233,11 @@
                     "workspaceName": {
                         "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
+                    "resourceGroupName": {
+                        "value": "[parameters('resourceGroupName')]"
+                    },
                     "location": {
-                        "value": "[variables('location')]"
+                        "value": "[parameters('location')]"
                     },
                     "guidSeed": {
                         "value": "[parameters('guidSeed')]"

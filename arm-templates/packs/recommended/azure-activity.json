@@ -1,8 +1,11 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "workspaceName": {
+      "type": "string"
+    },
+    "resourceGroupName": {
       "type": "string"
     },
     "location": {
@@ -47,6 +50,7 @@
     {
       "name": "azureActivityWorkbook",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters('resourceGroupName')]",
       "apiVersion": "2022-09-01",
       "properties": {
         "mode": "Incremental",
