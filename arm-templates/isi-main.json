@@ -92,13 +92,16 @@
             "defaultValue": "Minimal"
         },
         "securityLogsEnableCritical": {
-            "type": "bool"
+            "type": "bool",
+            "defaultValue": true
         },
         "securityLogsEnableWarning": {
-            "type": "bool"
+            "type": "bool",
+            "defaultValue": false
         },
         "securityLogsEnableVerbose": {
-            "type": "bool"
+            "type": "bool",
+            "defaultValue": false
         },
         "guidSeed": {
             "type": "string",
