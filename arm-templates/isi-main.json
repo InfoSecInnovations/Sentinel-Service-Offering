@@ -91,6 +91,15 @@
             ],
             "defaultValue": "Minimal"
         },
+        "securityLogsEnableCritical": {
+            "type": "bool"
+        },
+        "securityLogsEnableWarning": {
+            "type": "bool"
+        },
+        "securityLogsEnableVerbose": {
+            "type": "bool"
+        },
         "guidSeed": {
             "type": "string",
             "defaultValue": "[newGuid()]",
@@ -199,18 +208,27 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/securityEvents.json')]",
+                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/data-connectors/recommended/enable-ama-logs.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
                     "workspaceName": {
                         "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
-                    "securityCollectionTier": {
-                        "value": "[parameters('securityCollectionTier')]"
+                    "workspaceId": {
+                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceIdOutput.value]"
                     },
                     "location": {
                         "value": "[variables('location')]"
+                    },
+                    "enableCritical": {
+                        "value": "securityLogsEnableCritical"
+                    },
+                    "enableWarning": {
+                        "value": "securityLogsEnableWarning"
+                    },
+                    "enableVerbose": {
+                        "value": "securityLogsEnableVerbose"
                     }
                 }
             }
