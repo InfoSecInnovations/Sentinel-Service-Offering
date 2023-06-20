@@ -26,7 +26,7 @@
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "emptyArray": [],
     "enabledLevels": "[concat(if(parameters('enableCritical'), createArray(1), variables('emptyArray')), if(parameters('enableWarning'), createArray(2), variables('emptyArray')), if(parameters('enableVerbose'), createArray(3), variables('emptyArray')))]",
-    "xPath": "[format('System!*[System[({0})]]', join(map(variables('enabledLevels'), lambda('level', format('Level=${0}', lambdaVariables('level')))), ' or '))]",
+    "xPath": "[format('System!*[System[({0})]]', join(map(variables('enabledLevels'), lambda('level', format('Level={0}', lambdaVariables('level')))), ' or '))]",
     "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
   },
   "resources": [

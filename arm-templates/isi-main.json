@@ -222,13 +222,13 @@
                         "value": "[variables('location')]"
                     },
                     "enableCritical": {
-                        "value": "securityLogsEnableCritical"
+                        "value": "[parameters('securityLogsEnableCritical')]"
                     },
                     "enableWarning": {
-                        "value": "securityLogsEnableWarning"
+                        "value": "[parameters('securityLogsEnableWarning')]"
                     },
                     "enableVerbose": {
-                        "value": "securityLogsEnableVerbose"
+                        "value": "[parameters('securityLogsEnableVerbose')]"
                     }
                 }
             }
