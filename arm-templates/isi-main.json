@@ -112,7 +112,6 @@
         }
     },
     "variables": {
-        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
         "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
         "tenantId": "[subscription().tenantId]",
         "location": "[deployment().location]"
