@@ -259,6 +259,9 @@
             "name": "aadDataConnector",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
+            "dependsOn": [
+                "deployAzureSentinel"
+            ],
             "resourceGroup": "[parameters('resourceGroupName')]",
             "properties": {
                 "mode": "Incremental",
