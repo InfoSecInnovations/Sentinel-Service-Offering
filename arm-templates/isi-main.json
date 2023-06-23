@@ -271,7 +271,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[parameters('workspaceName')]"
+                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
                     "tenantId": {
                         "value": "[variables('tenantId')]"
