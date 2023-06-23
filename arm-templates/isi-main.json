@@ -78,30 +78,24 @@
                 "enabled"
             ]
         },
+        "enableAzureActiveDirectory": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "You should enable this if you use Azure Active Directory to get the appropriate logs and workspaces."
+            }
+        },
         "securityCollectionTier": {
             "type": "string",
             "metadata": {
                 "description": "Tier for gathering Windows Security Events."
             },
             "allowedValues": [
-                "All",
-                "Recommended",
-                "Minimal",
-                "None"
+                "Minimum",
+                "Common",
+                "All"
             ],
-            "defaultValue": "Minimal"
-        },
-        "securityLogsEnableCritical": {
-            "type": "bool",
-            "defaultValue": true
-        },
-        "securityLogsEnableWarning": {
-            "type": "bool",
-            "defaultValue": false
-        },
-        "securityLogsEnableVerbose": {
-            "type": "bool",
-            "defaultValue": false
+            "defaultValue": "Common"
         },
         "guidSeed": {
             "type": "string",
@@ -113,6 +107,7 @@
     },
     "variables": {
         "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+        "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
         "tenantId": "[subscription().tenantId]",
         "location": "[deployment().location]"
     },
@@ -223,14 +218,8 @@
                     "location": {
                         "value": "[variables('location')]"
                     },
-                    "enableCritical": {
-                        "value": "[parameters('securityLogsEnableCritical')]"
-                    },
-                    "enableWarning": {
-                        "value": "[parameters('securityLogsEnableWarning')]"
-                    },
-                    "enableVerbose": {
-                        "value": "[parameters('securityLogsEnableVerbose')]"
+                    "loggingLevel": {
+                        "value": "[parameters('securityCollectionTier')]"
                     }
                 }
             }
@@ -261,6 +250,37 @@
                     },
                     "guidSeed": {
                         "value": "[parameters('guidSeed')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[parameters('enableAzureActiveDirectory')]",
+            "name": "aadDataConnector",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2022-09-01",
+            "resourceGroup": "[parameters('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/azureADIdentityProtection.json')]",
+                "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "tenantId": {
+                        "value": "[variables('tenantId')]"
+                    },
+                    "location": {
+                        "value": "[variables('location')]"
+                    },
+                    "guidValue": {
+                        "value": "[guid(parameters('guidSeed'), 'azure active directory data connector')]"
+                    },
+                    "createAADIdentityProtectionIncidents": { 
+                        "value": false
                     }
                 }
             }
