@@ -32,7 +32,11 @@
   },
   "variables": {
     "workbookSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]",
-    "workbookDisplayName": "[concat(parameters('displayName'), ' - ', parameters('workspaceName'))]"
+    "workbookDisplayName": "[concat(parameters('displayName'), ' - ', parameters('workspaceName'))]",
+    "contentId": "AzureActivityWorkbook",
+    "workbookVersion": "2.0.0",
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivity",
+    "email": "support@microsoft.com"
   },
   "resources": [
     {
@@ -48,6 +52,46 @@
         "version": "1.0",
         "sourceId": "[variables('workbookSourceId')]",
         "category": "[parameters('workbookType')]"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('Workbook-', parameters('workbookId')))]",
+      "properties": {
+        "description": "@{workbookKey=AzureActivityWorkbook; logoFileName=azureactivity_logo.svg; description=Gain extensive insight into your organization's Azure Activity by analyzing, and correlating all user operations and events.\nYou can learn about all user operations, trends, and anomalous changes over time.\nThis workbook gives you the ability to drill down into caller activities and summarize detected failure and warning events.; dataTypesDependencies=System.Object[]; dataConnectorsDependencies=System.Object[]; previewImagesFileNames=System.Object[]; version=2.0.0; title=Azure Activity; templateRelativePath=AzureActivity.json; subtitle=; provider=Microsoft}.description",
+        "parentId": "[resourceId('Microsoft.Insights/workbooks', parameters('workbookId'))]",
+        "contentId": "[variables('contentId')]",
+        "kind": "Workbook",
+        "version": "[variables('workbookVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Azure Activity",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "author": {
+          "name": "Microsoft",
+          "email": "[variables('email')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        },
+        "dependencies": {
+          "operator": "AND",
+          "criteria": [
+            {
+              "contentId": "AzureActivity",
+              "kind": "DataType"
+            },
+            {
+              "contentId": "AzureActivity",
+              "kind": "DataConnector"
+            }
+          ]
+        }
       }
     }
   ],

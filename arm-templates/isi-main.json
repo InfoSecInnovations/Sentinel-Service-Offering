@@ -283,7 +283,7 @@
                         "value": "[guid(parameters('guidSeed'), 'azure active directory data connector')]"
                     },
                     "createAADIdentityProtectionIncidents": { 
-                        "value": false
+                        "value": true
                     }
                 }
             }
