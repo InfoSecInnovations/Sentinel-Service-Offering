@@ -24,9 +24,37 @@
     }
   },
   "variables": {
-    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/"
+    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/"
   },
   "resources": [
+    {
+      "name": "azureActivityContentPackage",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/Azure%20Activity/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "workbook1-name": {
+            "value": "Azure Activity"
+          }
+        }
+      }
+    },
     {
       "name": "azureActivityDataConnector",
       "type": "Microsoft.Resources/deployments",
