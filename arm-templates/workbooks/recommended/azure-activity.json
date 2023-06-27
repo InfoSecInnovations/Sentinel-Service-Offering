@@ -34,14 +34,14 @@
     "workbookSourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]",
     "workbookDisplayName": "[concat(parameters('displayName'), ' - ', parameters('workspaceName'))]",
     "contentId": "AzureActivityWorkbook",
-    "workbookId": "[resourceId('Microsoft.Insights/workbooks', variables('contentId'))]",
+    "workbookResourceId": "[resourceId('Microsoft.Insights/workbooks', parameters('workbookId'))]",
     "workbookVersion": "2.0.0",
     "solutionId": "azuresentinel.azure-sentinel-solution-azureactivity",
     "email": "support@microsoft.com"
   },
   "resources": [
     {
-      "name": "[variables('contentId')]",
+      "name": "[parameters('workbookId')]",
       "type": "microsoft.insights/workbooks",
       "location": "[parameters('location')]",
       "apiVersion": "2022-04-01",
@@ -61,7 +61,7 @@
     {
       "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
       "apiVersion": "2022-01-01-preview",
-      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('Workbook-', last(split(variables('workbookId'),'/'))))]",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('Workbook-', last(split(variables('workbookResourceId'),'/'))))]",
       "properties": {
         "description": "@{workbookKey=AzureActivityWorkbook; logoFileName=azureactivity_logo.svg; description=Gain extensive insight into your organization's Azure Activity by analyzing, and correlating all user operations and events.\nYou can learn about all user operations, trends, and anomalous changes over time.\nThis workbook gives you the ability to drill down into caller activities and summarize detected failure and warning events.; dataTypesDependencies=System.Object[]; dataConnectorsDependencies=System.Object[]; previewImagesFileNames=System.Object[]; version=2.0.0; title=Azure Activity; templateRelativePath=AzureActivity.json; subtitle=; provider=Microsoft}.description",
         "parentId": "[resourceId('Microsoft.Insights/workbooks', variables('contentId'))]",
