@@ -36,8 +36,7 @@
     "contentId": "AzureActivityWorkbook",
     "workbookResourceId": "[resourceId('Microsoft.Insights/workbooks', parameters('workbookId'))]",
     "workbookVersion": "2.0.0",
-    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivity",
-    "email": "support@microsoft.com"
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivity"
   },
   "resources": [
     {
@@ -71,6 +70,19 @@
           "kind": "Solution",
           "name": "Azure Activity",
           "sourceId": "[variables('solutionId')]"
+        },
+        "dependencies": {
+          "operator": "AND",
+          "criteria": [
+            {
+              "contentId": "AzureActivity",
+              "kind": "DataType"
+            },
+            {
+              "contentId": "AzureActivity",
+              "kind": "DataConnector"
+            }
+          ]
         }
       }
     }
