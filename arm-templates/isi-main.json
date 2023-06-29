@@ -1,14 +1,7 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
     "parameters": {
-        "resourceGroupName": {
-          "type": "string",
-          "defaultValue": "RG-ISI-Default",
-          "metadata": {
-              "description": "the Resource Group containing the Log Analytics Workspace."
-          }
-        },
         "workspaceName": {
             "type": "string",
             "defaultValue": "LAW-ISI-Default",
@@ -109,23 +102,13 @@
         "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
         "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
         "tenantId": "[subscription().tenantId]",
-        "location": "[deployment().location]"
+        "location": "[resourceGroup().location]"
     },
     "resources": [
         {
-            "name": "[parameters('resourceGroupName')]",
-            "type": "Microsoft.Resources/resourceGroups",
-            "apiVersion": "2019-05-01",
-            "location": "[variables('location')]"
-        },
-        {
             "name": "deployAzureSentinel",
-            "resourceGroup": "[parameters('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -157,7 +140,6 @@
         {
             "condition": "[parameters('enableOffice365')]",
             "name": "enableOffice365Pack",
-            "resourceGroup": "[parameters('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
@@ -196,7 +178,6 @@
         },
         {
             "name": "enableSecurityEventDataConnector",
-            "resourceGroup": "[parameters('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
@@ -231,7 +212,6 @@
             "dependsOn": [
                 "deployAzureSentinel"
             ],
-            "location": "[variables('location')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -243,7 +223,7 @@
                         "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
                     "resourceGroupName": {
-                        "value": "[parameters('resourceGroupName')]"
+                        "value": "[resourceGroup().name]"
                     },
                     "location": {
                         "value": "[variables('location')]"
@@ -262,7 +242,6 @@
             "dependsOn": [
                 "deployAzureSentinel"
             ],
-            "resourceGroup": "[parameters('resourceGroupName')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
