@@ -1,0 +1,257 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
+  "view": {
+    "kind": "Form",
+    "properties": {
+      "title": "InfoSec Innovations Sentinel Defaults",
+      "steps": [
+        {
+          "name": "basics",
+          "label": "Basics",
+          "elements": [
+            {
+              "name": "resourceScope",
+              "type": "Microsoft.Common.ResourceScope",
+              "location": {
+                "resourceTypes": []
+              }
+            },
+            {
+              "name": "resourceGroupName",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Resource Group Name",
+              "subLabel": "",
+              "defaultValue": "RG-ISI-Default",
+              "toolTip": "the Resource Group containing the Log Analytics Workspace.",
+              "constraints": {
+                "required": false,
+                "regex": "",
+                "validationMessage": "",
+                "validations": []
+              },
+              "infoMessages": [],
+              "visible": true
+            },
+            {
+              "name": "workspaceName",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Workspace Name",
+              "subLabel": "",
+              "defaultValue": "LAW-ISI-Default",
+              "toolTip": "Name for the Log Analytics workspace used to aggregate data",
+              "constraints": {
+                "required": false,
+                "regex": "",
+                "validationMessage": "",
+                "validations": []
+              },
+              "infoMessages": [],
+              "visible": true
+            },
+            {
+              "name": "pricingTier",
+              "type": "Microsoft.Common.DropDown",
+              "label": "Pricing Tier",
+              "subLabel": "",
+              "defaultValue": "PerGB2018",
+              "toolTip": "Pricing tier: pergb2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers.",
+              "constraints": {
+                "required": false,
+                "allowedValues": [
+                  {
+                    "label": "PerGB2018",
+                    "value": "PerGB2018"
+                  },
+                  {
+                    "label": "Free",
+                    "value": "Free"
+                  },
+                  {
+                    "label": "Standalone",
+                    "value": "Standalone"
+                  },
+                  {
+                    "label": "PerNode",
+                    "value": "PerNode"
+                  },
+                  {
+                    "label": "Standard",
+                    "value": "Standard"
+                  },
+                  {
+                    "label": "Premium",
+                    "value": "Premium"
+                  }
+                ],
+                "validations": []
+              },
+              "infoMessages": [],
+              "visible": true
+            },
+            {
+              "name": "dataRetention",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Data Retention",
+              "subLabel": "",
+              "defaultValue": "30",
+              "toolTip": "Number of days of retention. Workspaces in the legacy Free pricing tier can only have 7 days.",
+              "constraints": {
+                "required": false,
+                "regex": "",
+                "validationMessage": "",
+                "validations": [
+                  {
+                    "isValid": "[or(or(empty(steps('basics').dataRetention),and(not(startsWith(steps('basics').dataRetention,'[[')),startsWith(steps('basics').dataRetention,'['),endsWith(steps('basics').dataRetention,']'),greater(indexOf(steps('basics').dataRetention,'('),-1),greater(indexOf(steps('basics').dataRetention,')'),-1))),greaterOrEquals(if(regex(steps('basics').dataRetention,'[a-zA-Z]+'),6,steps('basics').dataRetention),7))]",
+                    "message": "The value must be at least 7."
+                  },
+                  {
+                    "isValid": "[or(or(empty(steps('basics').dataRetention),and(not(startsWith(steps('basics').dataRetention,'[[')),startsWith(steps('basics').dataRetention,'['),endsWith(steps('basics').dataRetention,']'),greater(indexOf(steps('basics').dataRetention,'('),-1),greater(indexOf(steps('basics').dataRetention,')'),-1))),lessOrEquals(if(regex(steps('basics').dataRetention,'[a-zA-Z]+'),731,steps('basics').dataRetention),730))]",
+                    "message": "The value must be at most 730."
+                  }
+                ]
+              },
+              "infoMessages": [],
+              "visible": true
+            },
+            {
+              "name": "immediatePurgeDataOn30Days",
+              "type": "Microsoft.Common.DropDown",
+              "label": "Immediate Purge Data On30Days",
+              "subLabel": "",
+              "defaultValue": "true",
+              "toolTip": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days.",
+              "constraints": {
+                "required": false,
+                "allowedValues": [
+                  {
+                    "label": "true",
+                    "value": true
+                  },
+                  {
+                    "label": "false",
+                    "value": false
+                  }
+                ],
+                "validations": []
+              },
+              "infoMessages": [],
+              "visible": true
+            },
+            {
+              "name": "guidSeed",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Guid Seed",
+              "subLabel": "",
+              "defaultValue": "[[newGuid()]",
+              "toolTip": "This value is used to generate unique identifiers for the resources that need them, don't modify this!",
+              "constraints": {
+                "required": false,
+                "regex": "",
+                "validationMessage": "",
+                "validations": []
+              },
+              "infoMessages": [],
+              "visible": false
+            }
+          ]
+        },
+        {
+          "name": "resources",
+          "label": "Resource Packs",
+          "elements": [
+            {
+              "name": "securityCollectionTier",
+              "type": "Microsoft.Common.DropDown",
+              "label": "Security Collection Tier",
+              "subLabel": "",
+              "defaultValue": "Common",
+              "toolTip": "Tier for gathering Windows Security Events.",
+              "constraints": {
+                "required": false,
+                "allowedValues": [
+                  {
+                    "label": "Minimum",
+                    "value": "Minimum"
+                  },
+                  {
+                    "label": "Common",
+                    "value": "Common"
+                  },
+                  {
+                    "label": "All",
+                    "value": "All"
+                  }
+                ],
+                "validations": []
+              },
+              "infoMessages": [],
+              "visible": true
+            },
+            {
+              "name": "enableAzureActiveDirectory",
+              "type": "Microsoft.Common.CheckBox",
+              "label": "Enable Azure Active Directory",
+              "toolTip": "You should enable this if you use Azure Active Directory to get the appropriate logs and workspaces.",
+              "visible": true
+            },
+            {
+              "name": "office365",
+              "type": "Microsoft.Common.Section",
+              "label": "Office365",
+              "visible": true,
+              "elements": [
+                {
+                  "name": "enableOffice365",
+                  "type": "Microsoft.Common.CheckBox",
+                  "label": "Enable Office365",
+                  "toolTip": "You should enable this if you use Office 365 to get the appropriate logs and workspaces.",
+                  "visible": true
+                },
+                {
+                  "name": "exchangeState",
+                  "type": "Microsoft.Common.CheckBox",
+                  "label": "Exchange State",
+                  "toolTip": "",
+                  "visible": "[steps('resources').office365.enableOffice365]"
+                },
+                {
+                  "name": "sharepointState",
+                  "type": "Microsoft.Common.CheckBox",
+                  "label": "Sharepoint State",
+                  "toolTip": "",
+                  "visible": "[steps('resources').office365.enableOffice365]"
+                },
+                {
+                  "name": "teamsState",
+                  "type": "Microsoft.Common.CheckBox",
+                  "label": "Teams State",
+                  "toolTip": "",
+                  "visible": "[steps('resources').office365.enableOffice365]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "outputs": {
+      "parameters": {
+        "resourceGroupName": "[steps('basics').resourceGroupName]",
+        "workspaceName": "[steps('basics').workspaceName]",
+        "pricingTier": "[steps('basics').pricingTier]",
+        "dataRetention": "[steps('basics').dataRetention]",
+        "immediatePurgeDataOn30Days": "[steps('basics').immediatePurgeDataOn30Days]",
+        "enableOffice365": "[steps('resources').office365.enableOffice365]",
+        "exchangeState": "[if(steps('resources').office365.exchangeState, 'enabled', 'disabled')]",
+        "sharepointState": "[if(steps('resources').office365.sharepointState, 'enabled', 'disabled')]",
+        "teamsState": "[if(steps('resources').office365.teamsState, 'enabled', 'disabled')]",
+        "enableAzureActiveDirectory": "[steps('resources').enableAzureActiveDirectory]",
+        "securityCollectionTier": "[steps('resources').securityCollectionTier]",
+        "guidSeed": "[steps('basics').guidSeed]"
+      },
+      "kind": "Subscription",
+      "location": "[steps('basics').resourceScope.location.name]",
+      "subscriptionId": "[steps('basics').resourceScope.subscription.id]"
+    }
+  }
+}
