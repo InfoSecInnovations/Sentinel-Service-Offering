@@ -222,9 +222,6 @@
                     "workspaceName": {
                         "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
-                    "resourceGroupName": {
-                        "value": "[resourceGroup().name]"
-                    },
                     "location": {
                         "value": "[variables('location')]"
                     },
