@@ -17,22 +17,6 @@
               }
             },
             {
-              "name": "resourceGroupName",
-              "type": "Microsoft.Common.TextBox",
-              "label": "Resource Group Name",
-              "subLabel": "",
-              "defaultValue": "RG-ISI-Default",
-              "toolTip": "the Resource Group containing the Log Analytics Workspace.",
-              "constraints": {
-                "required": false,
-                "regex": "",
-                "validationMessage": "",
-                "validations": []
-              },
-              "infoMessages": [],
-              "visible": true
-            },
-            {
               "name": "workspaceName",
               "type": "Microsoft.Common.TextBox",
               "label": "Workspace Name",
@@ -236,7 +220,6 @@
     },
     "outputs": {
       "parameters": {
-        "resourceGroupName": "[steps('basics').resourceGroupName]",
         "workspaceName": "[steps('basics').workspaceName]",
         "pricingTier": "[steps('basics').pricingTier]",
         "dataRetention": "[steps('basics').dataRetention]",
