@@ -7,3 +7,7 @@ We have made use of https://github.com/OTRF/Blacksmith and https://github.com/OT
 InfoSec Innovations does not bear responsibility for the consequences of using this repository, the files have mostly been made public for our own convenience, but you are free to use them at your own risk.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Fisi-main.json)
+
+To deploy with the nice(r) UI you need to make this into a template spec. You can do this using PowerShell, you will need the Az module installed.
+
+`New-AzTemplateSpec -Name <SpecName> -Version 1 -ResourceGroupName <RGName> -location <Region> -TemplateFile <full/path/to/file.json> -UIFormDefinitionFile <full/path/to/file.json>`
