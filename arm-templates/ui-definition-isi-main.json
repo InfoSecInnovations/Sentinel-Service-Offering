@@ -232,9 +232,9 @@
         "securityCollectionTier": "[steps('resources').securityCollectionTier]",
         "guidSeed": "[steps('basics').guidSeed]"
       },
-      "kind": "Subscription",
+      "kind": "ResourceGroup",
       "location": "[steps('basics').resourceScope.location.name]",
-      "subscriptionId": "[steps('basics').resourceScope.subscription.id]"
+      "resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]"
     }
   }
 }
