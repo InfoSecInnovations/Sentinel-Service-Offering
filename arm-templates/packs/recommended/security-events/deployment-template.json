@@ -27,9 +27,39 @@
   },
   "variables": {
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
-    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/"
+    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/"
   },
   "resources": [
+    {
+      "name": "windowsSecurityEventsContentPackage",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/Windows%20Security%20Events/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "workbook1-name": {
+            "value": "Event Analyzer"
+          },
+          "workbook2-name": {
+            "value": "Identity & Access"
+          }
+        }
+      }
+    },
     {
         "name": "enableAMALogs",
         "type": "Microsoft.Resources/deployments",

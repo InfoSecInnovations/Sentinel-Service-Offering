@@ -8,6 +8,13 @@
     },
     "workspaceName": {
       "type": "string"
+    },
+    "guidSeed": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
+      }
     }
   },
   "variables": {
@@ -17,7 +24,7 @@
   },
   "resources": [
     {
-      "name": "installSOCHandbook",
+      "name": "socHandbookContentPackage",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -74,6 +81,32 @@
           },
           "workbook13-name": {
             "value": "Microsoft Sentinel Central"
+          }
+        }
+      }
+    },
+    {
+      "name": "analyticsEfficiencyWorkbook",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/workbooks/analytics-efficiency.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workbookId": {
+            "value": "[guid(parameters('guidSeed'), 'analytics efficiency workbook')]"
+          },
+          "displayName": {
+            "value": "Analytics Efficiency"
           }
         }
       }
