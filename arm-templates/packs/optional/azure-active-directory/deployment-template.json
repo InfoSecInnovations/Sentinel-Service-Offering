@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "guidSeed": {
+        "type": "string",
+        "defaultValue": "[newGuid()]",
+        "metadata": {
+            "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
+        }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "workspaceName": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
+    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+    "tenantId": "[subscription().tenantId]"
+  },
+  "resources": [
+    {
+        "name": "enableAADDataConnector",
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2022-09-01",
+        "dependsOn": [
+            "deployAzureSentinel"
+        ],
+        "properties": {
+            "mode": "Incremental",
+            "templateLink": {
+            "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/azureADIdentityProtection.json')]",
+            "contentVersion": "1.0.0.0"
+            },
+            "parameters": {
+                "workspaceName": {
+                    "value": "[parameters('workspaceName')]"
+                },
+                "tenantId": {
+                    "value": "[variables('tenantId')]"
+                },
+                "location": {
+                    "value": "[parameters('location')]"
+                },
+                "guidValue": {
+                    "value": "[guid(parameters('guidSeed'), 'azure active directory data connector')]"
+                },
+                "createAADIdentityProtectionIncidents": { 
+                    "value": true
+                }
+            }
+        }
+    }
+  ]
+}

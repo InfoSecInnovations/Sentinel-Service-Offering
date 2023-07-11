@@ -148,7 +148,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365.json')]",
+                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/deployment-template.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -177,7 +177,7 @@
             }
         },
         {
-            "name": "enableSecurityEventDataConnector",
+            "name": "enableSecurityEventPack",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
@@ -186,7 +186,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/data-connectors/recommended/enable-ama-logs.json')]",
+                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/deployment-template.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -199,7 +199,7 @@
                     "location": {
                         "value": "[variables('location')]"
                     },
-                    "loggingLevel": {
+                    "securityCollectionTier": {
                         "value": "[parameters('securityCollectionTier')]"
                     }
                 }
@@ -215,7 +215,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/azure-activity.json')]",
+                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/azure-activity/deployment-template.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -233,7 +233,7 @@
         },
         {
             "condition": "[parameters('enableAzureActiveDirectory')]",
-            "name": "aadDataConnector",
+            "name": "enableAADPack",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
@@ -242,7 +242,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/azureADIdentityProtection.json')]",
+                "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/deployment-template.json')]",
                 "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -255,11 +255,8 @@
                     "location": {
                         "value": "[variables('location')]"
                     },
-                    "guidValue": {
-                        "value": "[guid(parameters('guidSeed'), 'azure active directory data connector')]"
-                    },
-                    "createAADIdentityProtectionIncidents": { 
-                        "value": true
+                    "guidSeed": {
+                        "value": "[parameters('guidSeed')]"
                     }
                 }
             }
