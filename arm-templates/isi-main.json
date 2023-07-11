@@ -156,6 +156,9 @@
                     },
                     "location": {
                         "value": "[variables('location')]"
+                    },
+                    "guidSeed": {
+                        "value": "[parameters('guidSeed')]"
                     }
                 }
             }
