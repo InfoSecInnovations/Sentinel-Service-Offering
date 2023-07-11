@@ -60,7 +60,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/data-connectors/recommended/enable-azure-activity-logs.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/azure-activity/data-connectors/enable-azure-activity-logs.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -80,7 +80,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/workbooks/recommended/azure-activity.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/azure-activity/workbooks/azure-activity.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
