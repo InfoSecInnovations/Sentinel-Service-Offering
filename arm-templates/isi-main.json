@@ -1,6 +1,6 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
     "parameters": {
         "workspaceName": {
             "type": "string",
@@ -138,6 +138,29 @@
             }
         },
         {
+            "name": "enableBasicsPack",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2022-09-01",
+            "dependsOn": [
+                "deployAzureSentinel"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/deployment-template.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
+                    },
+                    "location": {
+                        "value": "[variables('location')]"
+                    }
+                }
+            }
+        },
+        {
             "condition": "[parameters('enableOffice365')]",
             "name": "enableOffice365Pack",
             "type": "Microsoft.Resources/deployments",
@@ -242,8 +265,8 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/deployment-template.json')]",
-                "contentVersion": "1.0.0.0"
+                    "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/deployment-template.json')]",
+                    "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
                     "workspaceName": {

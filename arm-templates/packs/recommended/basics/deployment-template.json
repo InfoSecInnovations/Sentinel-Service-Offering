@@ -1,3 +1,82 @@
 {
-  
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "workspaceName": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
+    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/"
+  },
+  "resources": [
+    {
+      "name": "installSOCHandbook",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/SOC%20Handbook/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "workbook1-name": {
+            "value": "Analytics Efficiency"
+          },
+          "workbook2-name": {
+            "value": "AnomaliesVisulization"
+          },
+          "workbook3-name": {
+            "value": "AnomalyData"
+          },
+          "workbook4-name": {
+            "value": "Attack Surface Reduction Dashboard"
+          },
+          "workbook5-name": {
+            "value": "Microsoft Sentinel Cost"
+          },
+          "workbook6-name": {
+            "value": "Security Alerts"
+          },
+          "workbook7-name": {
+            "value": "Incident overview"
+          },
+          "workbook8-name": {
+            "value": "IntSights IOC Workbook"
+          },
+          "workbook9-name": {
+            "value": "Investigation Insights"
+          },
+          "workbook10-name": {
+            "value": "MITRE ATT&CK Workbook"
+          },
+          "workbook11-name": {
+            "value": "Security Operations Efficiency"
+          },
+          "workbook12-name": {
+            "value": "Security Status"
+          },
+          "workbook13-name": {
+            "value": "Microsoft Sentinel Central"
+          }
+        }
+      }
+    }
+  ]
 }
