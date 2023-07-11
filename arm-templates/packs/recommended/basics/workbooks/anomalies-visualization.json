@@ -53,7 +53,7 @@
     {
       "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
       "apiVersion": "2022-01-01-preview",
-      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('Workbook-', last(split(variables('workbookId2'),'/'))))]",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('Workbook-', last(split(variables('workbookResourceId'),'/'))))]",
       "properties": {
         "description": "@{workbookKey=AnomaliesVisualizationWorkbook; logoFileName=; description=A workbook that provides contextual information to a user for better insight on Anomalies and their impact. The workbook will help with investigation of anomalies as well as identify patterns that can lead to a threat.; dataTypesDependencies=System.Object[]; dataConnectorsDependencies=System.Object[]; previewImagesFileNames=System.Object[]; version=1.0.0; title=AnomaliesVisulization; templateRelativePath=AnomaliesVisualization.json; subtitle=; provider=Microsoft Sentinel Community}.description",
         "parentId": "[variables('workbookResourceId')]",
