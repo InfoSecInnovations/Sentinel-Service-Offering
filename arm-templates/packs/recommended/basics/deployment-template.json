@@ -111,7 +111,7 @@
         }
       }
     },
-        {
+    {
       "name": "anomaliesVisualizationWorkbook",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -133,6 +133,32 @@
           },
           "displayName": {
             "value": "AnomaliesVisulization"
+          }
+        }
+      }
+    },
+    {
+      "name": "archivingBasicLogsRetentionWorkbook",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/workbooks/archiving-basic-logs-and-retention.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workbookId": {
+            "value": "[guid(parameters('guidSeed'), 'archiving basic logs retention workbook')]"
+          },
+          "displayName": {
+            "value": "Archiving, Basic Logs, and Retention"
           }
         }
       }
