@@ -11,13 +11,6 @@
         "description": "The friendly name for the workbook that is used in the Gallery or Saved List."
       }
     },
-    "workbookType": {
-      "type": "string",
-      "defaultValue": "sentinel",
-      "metadata": {
-        "description": "The gallery that the workbook will been shown under. Supported values include workbook, tsg, etc. Usually, this is 'workbook'"
-      }
-    },
     "workbookId": {
       "type": "string",
       "defaultValue": "[newGuid()]",
