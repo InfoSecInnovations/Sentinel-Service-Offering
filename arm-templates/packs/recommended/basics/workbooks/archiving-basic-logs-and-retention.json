@@ -25,7 +25,10 @@
   },
   "variables": {
     "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]",
-    "workbookDisplayName": "[concat(parameters('displayName'), ' - ', parameters('workspaceName'))]"
+    "workbookDisplayName": "[concat(parameters('displayName'), ' - ', parameters('workspaceName'))]",
+    "contentId": "ArchivingBasicLogsRetention",
+    "workbookResourceId": "[resourceId('Microsoft.Insights/workbooks', parameters('workbookId'))]",
+    "workbookVersion": "1.2.0"
   },
   "resources": [
     {
@@ -41,6 +44,27 @@
         "version": "1.0",
         "sourceId": "[variables('workspaceResourceId')]",
         "category": "sentinel"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('Workbook-', last(split(variables('workbookResourceId'),'/'))))]",
+      "properties": {
+        "description": "This workbooks shows workspace and table retention periods, basic logs, and search & restore tables. It also allows you to update table retention periods, plans, and delete search or restore tables.",
+        "parentId": "[variables('workbookResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "Workbook",
+        "version": "[variables('workbookVersion')]",
+        "author": {
+          "name": "seanstark-ms"
+        },
+        "source": {
+          "kind": "Community"
+        },
+        "support": {
+          "tier": "Community"
+        }
       }
     }
   ],
