@@ -27,9 +27,6 @@
       "name": "enableAADDataConnector",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "dependsOn": [
-        "deployAzureSentinel"
-      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
