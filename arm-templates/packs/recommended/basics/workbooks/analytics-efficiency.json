@@ -82,7 +82,7 @@
   "outputs": {
     "workbookId": {
       "type": "string",
-      "value": "[resourceId( 'microsoft.insights/workbooks', parameters('workbookId'))]"
+      "value": "[variables('workbookResourceId')]"
     }
   },
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
