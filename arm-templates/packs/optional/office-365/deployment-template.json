@@ -30,10 +30,6 @@
       "metadata": {
         "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
       }
-    },
-    "tenantId": {
-      "type": "string",
-      "defaultValue": "[subscription().tenantId]"
     }
   },
   "variables": {
@@ -99,7 +95,7 @@
             "value": "[parameters('teamsState')]"
           },
           "tenantId": {
-            "value": "[variables('tenantID')]"
+            "value": "[variables('tenantId')]"
           },
           "location": {
             "value": "[parameters('location')]"
