@@ -190,9 +190,6 @@
                     "teamsState": {
                         "value": "[parameters('teamsState')]"
                     },
-                    "tenantId": {
-                        "value": "[variables('tenantID')]"
-                    },
                     "location": {
                         "value": "[variables('location')]"
                     },
@@ -274,9 +271,6 @@
                 "parameters": {
                     "workspaceName": {
                         "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
-                    },
-                    "tenantId": {
-                        "value": "[variables('tenantId')]"
                     },
                     "location": {
                         "value": "[variables('location')]"

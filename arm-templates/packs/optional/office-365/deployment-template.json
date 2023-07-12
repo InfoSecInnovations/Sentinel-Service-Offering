@@ -39,7 +39,8 @@
   "variables": {
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
-    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/"
+    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
+    "tenantId": "[subscription().tenantId]"
   },
   "resources": [
     {
@@ -98,7 +99,7 @@
             "value": "[parameters('teamsState')]"
           },
           "tenantId": {
-            "value": "[parameters('tenantID')]"
+            "value": "[variables('tenantID')]"
           },
           "location": {
             "value": "[parameters('location')]"
