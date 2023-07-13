@@ -128,6 +128,32 @@
           }
         }
       }
+    },
+    {
+      "name": "exchangeWorkbook",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/workbooks/exchange-online.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workbookId": {
+            "value": "[guid(parameters('guidSeed'), 'exchange online workbook')]"
+          },
+          "displayName": {
+            "value": "Exchange Online"
+          }
+        }
+      }
     }
   ]
 }

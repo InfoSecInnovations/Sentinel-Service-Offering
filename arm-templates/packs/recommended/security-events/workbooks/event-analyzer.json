@@ -36,7 +36,7 @@
     {
       "type": "Microsoft.Insights/workbooks",
       "name": "[parameters('workbookId')]",
-      "location": "[parameters('workbookId')]",
+      "location": "[parameters('location')]",
       "kind": "shared",
       "apiVersion": "2021-08-01",
       "metadata": {
