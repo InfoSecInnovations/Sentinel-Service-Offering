@@ -24,7 +24,7 @@
     }
   },
   "variables": {
-	  "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]",
+    "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]",
     "workbookDisplayName": "[concat(parameters('displayName'), ' - ', parameters('workspaceName'))]",
     "workbookResourceId": "[resourceId('Microsoft.Insights/workbooks', parameters('workbookId'))]"
   },
@@ -43,6 +43,20 @@
         "sourceId": "[variables('workspaceResourceId')]",
         "category": "sentinel"
       }
+    },
+    {
+      "type": "Microsoft.SecurityInsights/settings",
+      "apiVersion": "2023-02-01-preview",
+      "name": "enableUEBA",
+      "kind": "Ueba",
+      "properties": {
+        "dataSources": [
+          "AuditLogs",
+          "AzureActivity",
+          "SecurityEvent",
+          "SigninLogs"
+        ]
+      }
     }
   ],
   "outputs": {
@@ -51,5 +65,5 @@
       "value": "[variables('workbookResourceId')]"
     }
   },
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#"
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
 }
