@@ -188,6 +188,32 @@
           }
         }
       }
+    },
+        {
+      "name": "microsoftSentinelCostWorkbook",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/workbooks/microsoft-sentinel-cost.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workbookId": {
+            "value": "[guid(parameters('guidSeed'), 'microsoft sentinel cost workbook')]"
+          },
+          "displayName": {
+            "value": "Microsoft Sentinel Cost"
+          }
+        }
+      }
     }
   ]
 }
