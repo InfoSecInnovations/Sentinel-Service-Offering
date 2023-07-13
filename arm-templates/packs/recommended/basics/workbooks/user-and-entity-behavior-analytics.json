@@ -43,20 +43,6 @@
         "sourceId": "[variables('workspaceResourceId')]",
         "category": "sentinel"
       }
-    },
-    {
-      "type": "Microsoft.SecurityInsights/settings",
-      "apiVersion": "2023-02-01-preview",
-      "name": "enableUEBA",
-      "kind": "Ueba",
-      "properties": {
-        "dataSources": [
-          "AuditLogs",
-          "AzureActivity",
-          "SecurityEvent",
-          "SigninLogs"
-        ]
-      }
     }
   ],
   "outputs": {
