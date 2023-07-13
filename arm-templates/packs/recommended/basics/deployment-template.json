@@ -240,32 +240,6 @@
           }
         }
       }
-    },
-    {
-      "name": "userEntityBehaviourAnalyticsWorkbook",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/workbooks/user-and-entity-behavior-analytics.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[parameters('workspaceName')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "workbookId": {
-            "value": "[guid(parameters('guidSeed'), 'user and entity behaviour analytics workbook')]"
-          },
-          "displayName": {
-            "value": "User And Entity Behavior Analytics"
-          }
-        }
-      }
     }
   ]
 }
