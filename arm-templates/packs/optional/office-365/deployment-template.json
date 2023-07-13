@@ -4,15 +4,27 @@
   "parameters": {
     "exchangeState": {
       "type": "string",
-      "defaultValue": "test"
+      "defaultValue": "disabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ]
     },
     "sharepointState": {
       "type": "string",
-      "defaultValue": "test"
+      "defaultValue": "disabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ]
     },
     "teamsState": {
       "type": "string",
-      "defaultValue": "test"
+      "defaultValue": "disabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ]
     },
     "workspaceName": {
       "type": "string"
@@ -130,6 +142,7 @@
       }
     },
     {
+      "condition": "[equals(parameters('exchangeState'), 'enabled')]",
       "name": "exchangeWorkbook",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
