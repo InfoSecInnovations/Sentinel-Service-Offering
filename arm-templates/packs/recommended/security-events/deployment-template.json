@@ -24,6 +24,10 @@
       ],
       "defaultValue": "Common"
     },
+    "arcServers": {
+      "type": "array",
+      "defaultValue": []
+    },
     "guidSeed": {
       "type": "string",
       "defaultValue": "[newGuid()]",
@@ -89,6 +93,33 @@
           },
           "loggingLevel": {
             "value": "[parameters('securityCollectionTier')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "associateArcServers",
+      "condition": "[greater(parameters('arcServers').length, 0)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/onboarding/arc-server-association.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "arcServers": {
+            "value": "[parameters('arcServers')]"
+          },
+          "dataCollectionRuleId": {
+            "value": "[reference('enableAMALogs', '2022-09-01').outputs.dataCollectionRuleId.value]"
+          },
+          "dataCollectionRuleName": {
+            "value": "[reference('enableAMALogs', '2022-09-01').outputs.dataCollectionRuleName.value]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }

@@ -90,6 +90,10 @@
             ],
             "defaultValue": "Common"
         },
+        "arcServers": {
+            "type": "array",
+            "defaultValue": []
+        },
         "guidSeed": {
             "type": "string",
             "defaultValue": "[newGuid()]",
@@ -224,6 +228,9 @@
                     },
                     "securityCollectionTier": {
                         "value": "[parameters('securityCollectionTier')]"
+                    },
+                    "arcServers": {
+                        "value": "[parameters('arcServers')]"
                     }
                 }
             }
