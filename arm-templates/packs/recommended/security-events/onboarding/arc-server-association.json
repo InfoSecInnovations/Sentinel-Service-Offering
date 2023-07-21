@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "arcServers": {
+      "type": "array",
+      "metadata": {
+        "description": "List of endpoints to associate data collection rules to"
+      }
+    },
+    "dataCollectionRuleId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the data collection rule that will be associated to the VMs deployed."
+      }
+    },
+    "dataCollectionRuleName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the data collection rule associated with the VMs deployed"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Location for all resources."
+      },
+      "defaultValue": "[resourceGroup().location]"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[concat(parameters('arcServers')[copyIndex('serverDCRCopy')], '-', parameters('dataCollectionRuleName'))]",
+      "type": "Microsoft.Insights/dataCollectionRuleAssociations",
+      "apiVersion": "2019-11-01-preview",
+      "location": "[parameters('location')]",
+      "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('arcServers')[copyIndex('serverDCRCopy')])]",
+      "copy": {
+        "name": "serverDCRCopy",
+        "count": "[length(parameters('arcServers'))]"
+      },
+      "properties": {
+        "description": "Association of data collection rule. Deleting this association will break the data collection for this virtual machine.",
+        "dataCollectionRuleId": "[parameters('dataCollectionRuleId')]"
+      }
+    }
+  ],
+  "outputs": {}
+}
