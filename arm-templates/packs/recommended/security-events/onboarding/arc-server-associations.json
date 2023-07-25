@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "arcServers": {
+      "type": "array",
+      "metadata": {
+        "description": "List of endpoints to associate data collection rules to"
+      }
+    },
+    "dataCollectionRuleId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the data collection rule that will be associated to the VMs deployed."
+      }
+    },
+    "dataCollectionRuleName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the data collection rule associated with the VMs deployed"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Location for all resources."
+      },
+      "defaultValue": "[deployment().location]"
+    }
+  },
+  "variables": {
+    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+  },
+  "resources": [
+    {
+      "name": "[concat('deploy', last(split(parameters('arcServers')[copyIndex('serverDCRCopy')],'/')), '-', parameters('dataCollectionRuleName'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "resourceGroup": "[reference(parameters('arcServers')[copyIndex('serverDCRCopy')]).resourceGroupName]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/onboarding/arc-server-association.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "arcServer": {
+            "value": "[last(split(parameters('arcServers')[copyIndex('serverDCRCopy')],'/'))]"
+          },
+          "dataCollectionRuleId": {
+            "value": "[parameters('dataCollectionRuleId')]"
+          },
+          "dataCollectionRuleName": {
+            "value": "[parameters('dataCollectionRuleName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          }
+        }
+      },
+      "copy": {
+        "name": "serverDCRCopy",
+        "count": "[length(parameters('arcServers'))]"
+      }
+    }
+  ],
+  "outputs": {}
+}

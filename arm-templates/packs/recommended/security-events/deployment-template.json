@@ -110,7 +110,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/onboarding/arc-server-association.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/onboarding/arc-server-associations.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
