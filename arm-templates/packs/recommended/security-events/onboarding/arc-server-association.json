@@ -31,11 +31,11 @@
   "variables": {},
   "resources": [
     {
-      "name": "[concat(parameters('arcServers')[copyIndex('serverDCRCopy')], '-', parameters('dataCollectionRuleName'))]",
+      "name": "[concat(last(split(variables(parameters('arcServers')[copyIndex('serverDCRCopy')]),'/')), '-', parameters('dataCollectionRuleName'))]",
       "type": "Microsoft.Insights/dataCollectionRuleAssociations",
       "apiVersion": "2019-11-01-preview",
       "location": "[parameters('location')]",
-      "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('arcServers')[copyIndex('serverDCRCopy')])]",
+      "scope": "[parameters('arcServers')[copyIndex('serverDCRCopy')]]",
       "copy": {
         "name": "serverDCRCopy",
         "count": "[length(parameters('arcServers'))]"
