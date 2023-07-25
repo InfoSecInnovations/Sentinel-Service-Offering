@@ -31,7 +31,7 @@
   "variables": {},
   "resources": [
     {
-      "name": "[concat(last(split(variables(parameters('arcServers')[copyIndex('serverDCRCopy')]),'/')), '-', parameters('dataCollectionRuleName'))]",
+      "name": "[concat(last(split(parameters('arcServers')[copyIndex('serverDCRCopy')],'/')), '-', parameters('dataCollectionRuleName'))]",
       "type": "Microsoft.Insights/dataCollectionRuleAssociations",
       "apiVersion": "2019-11-01-preview",
       "location": "[parameters('location')]",
