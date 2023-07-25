@@ -29,14 +29,14 @@
     }
   },
   "variables": {
-    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/"
   },
   "resources": [
     {
-      "name": "[concat('deploy', last(split(parameters('arcServers')[copyIndex('serverDCRCopy')],'/')), '-', parameters('dataCollectionRuleName'))]",
+      "name": "[concat('deploy', parameters('arcServers')[copyIndex('serverDCRCopy')].name, '-', parameters('dataCollectionRuleName'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "resourceGroup": "[reference(parameters('arcServers')[copyIndex('serverDCRCopy')]).resourceGroupName]",
+      "resourceGroup": "[parameters('arcServers')[copyIndex('serverDCRCopy')].resourceGroup]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -45,7 +45,7 @@
         },
         "parameters": {
           "arcServer": {
-            "value": "[last(split(parameters('arcServers')[copyIndex('serverDCRCopy')],'/'))]"
+            "value": "[parameters('arcServers')[copyIndex('serverDCRCopy')].name]"
           },
           "dataCollectionRuleId": {
             "value": "[parameters('dataCollectionRuleId')]"
