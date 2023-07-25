@@ -99,9 +99,12 @@
     },
     {
       "name": "associateArcServers",
-      "condition": "[greater(parameters('arcServers').length, 0)]",
+      "condition": "[greater(length(parameters('arcServers')), 0)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
+      "dependsOn": [
+        "enableAMALogs"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
