@@ -105,6 +105,8 @@
       "dependsOn": [
         "enableAMALogs"
       ],
+      "subscriptionId": "[subscription().subscriptionId]",
+      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
