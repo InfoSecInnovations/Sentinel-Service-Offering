@@ -48,11 +48,15 @@
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
     "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
-    "tenantId": "[subscription().tenantId]"
+    "tenantId": "[subscription().tenantId]",
+    "microsoft365ContentPackageName": "[concat('microsoft365ContentPackage', '-', parameters('location'))]",
+    "office365DataConnectorName": "[concat('office365DataConnector', '-', parameters('location'))]",
+    "office365WorkbookName": "[concat('office365Workbook', '-', parameters('location'))]",
+    "exchangeWorkbookName": "[concat('exchangeWorkbook', '-', parameters('location'))]"
   },
   "resources": [
     {
-      "name": "microsoft365ContentPackage",
+      "name": "[variables('microsoft365ContentPackageName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -84,7 +88,7 @@
       }
     },
     {
-      "name": "office365DataConnector",
+      "name": "[variables('office365DataConnectorName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -116,7 +120,7 @@
       }
     },
     {
-      "name": "office365Workbook",
+      "name": "[variables('office365WorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -143,7 +147,7 @@
     },
     {
       "condition": "[equals(parameters('exchangeState'), 'enabled')]",
-      "name": "exchangeWorkbook",
+      "name": "[variables('exchangeWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {

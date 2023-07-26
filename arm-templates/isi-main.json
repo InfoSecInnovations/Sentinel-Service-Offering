@@ -105,12 +105,17 @@
     "variables": {
         "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
         "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
-        "tenantId": "[subscription().tenantId]",
-        "location": "[resourceGroup().location]"
+        "location": "[resourceGroup().location]",
+        "deployAzureSentinelName": "[concat('deployAzureSentinel', '-', variables('location'))]",
+        "enableBasicsPackName": "[concat('enableBasicsPack', '-', variables('location'))]",
+        "enableOffice365PackName": "[concat('enableOffice365Pack', '-', variables('location'))]",
+        "enableSecurityEventPackName": "[concat('enableSecurityEventPack', '-', variables('location'))]",
+        "enableAzureActivityPackName": "[concat('enableAzureActivityPack', '-', variables('location'))]",
+        "enableAADPackName": "[concat('enableAADPack', '-', variables('location'))]"
     },
     "resources": [
         {
-            "name": "deployAzureSentinel",
+            "name": "[variables('deployAzureSentinelName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "properties": {
@@ -142,11 +147,11 @@
             }
         },
         {
-            "name": "enableBasicsPack",
+            "name": "[variables('enableBasicsPackName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
-                "deployAzureSentinel"
+                "[variables('deployAzureSentinelName')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -156,7 +161,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
+                        "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
                     "location": {
                         "value": "[variables('location')]"
@@ -169,11 +174,11 @@
         },
         {
             "condition": "[parameters('enableOffice365')]",
-            "name": "enableOffice365Pack",
+            "name": "[variables('enableOffice365PackName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
-                "deployAzureSentinel"
+                "[variables('deployAzureSentinelName')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -183,7 +188,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
+                        "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
                     "exchangeState": {
                         "value": "[parameters('exchangeState')]"
@@ -204,11 +209,11 @@
             }
         },
         {
-            "name": "enableSecurityEventPack",
+            "name": "[variables('enableSecurityEventPackName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
-                "deployAzureSentinel"
+                "[variables('deployAzureSentinelName')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -218,10 +223,10 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
+                        "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
                     "workspaceId": {
-                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceIdOutput.value]"
+                        "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceIdOutput.value]"
                     },
                     "location": {
                         "value": "[variables('location')]"
@@ -236,11 +241,11 @@
             }
         },
         {
-            "name": "enableAzureActivityPack",
+            "name": "[variables('enableAzureActivityPackName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
-                "deployAzureSentinel"
+                "[variables('deployAzureSentinelName')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -250,7 +255,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
+                        "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
                     "location": {
                         "value": "[variables('location')]"
@@ -263,11 +268,11 @@
         },
         {
             "condition": "[parameters('enableAzureActiveDirectory')]",
-            "name": "enableAADPack",
+            "name": "[variables('enableAADPackName')]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
             "dependsOn": [
-                "deployAzureSentinel"
+                "[variables('deployAzureSentinelName')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -277,7 +282,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('deployAzureSentinel', '2022-09-01').outputs.workspaceNameOutput.value]"
+                        "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
                     },
                     "location": {
                         "value": "[variables('location')]"

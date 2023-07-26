@@ -22,11 +22,14 @@
   },
   "variables": {
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
-    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/"
+    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
+    "azureActivityContentPackageName": "[concat('azureActivityContentPackage', '-', parameters('location'))]",
+    "azureActivityDataConnectorName": "[concat('azureActivityDataConnector', '-', parameters('location'))]",
+    "azureActivityWorkbookName": "[concat('azureActivityWorkbook', '-', parameters('location'))]"
   },
   "resources": [
     {
-      "name": "azureActivityContentPackage",
+      "name": "[variables('azureActivityContentPackageName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -52,7 +55,7 @@
       }
     },
     {
-      "name": "azureActivityDataConnector",
+      "name": "[variables('azureActivityDataConnectorName')]",
       "type": "Microsoft.Resources/deployments",
       "location": "[parameters('location')]",
       "apiVersion": "2022-09-01",
@@ -74,7 +77,7 @@
       }
     },
     {
-      "name": "azureActivityWorkbook",
+      "name": "[variables('azureActivityWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {

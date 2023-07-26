@@ -172,6 +172,12 @@
               "visible": true
             },
             {
+              "name": "serverSelector",
+              "type": "Microsoft.Solutions.ResourceSelector",
+              "label": "Select Arc Servers",
+              "resourceType": "Microsoft.HybridCompute/machines/"
+            },
+            {
               "name": "enableAzureActiveDirectory",
               "type": "Microsoft.Common.CheckBox",
               "label": "Enable Azure Active Directory",

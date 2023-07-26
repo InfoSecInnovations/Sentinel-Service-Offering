@@ -56,11 +56,12 @@
     },
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "xPath": "[variables('xPathValues')[parameters('loggingLevel')]]",
-    "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
+    "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]",
+    "deployDCRName": "[concat('deployDCR', '-', parameters('location'))]"
   },
   "resources": [
     {
-      "name": "deployDCR",
+      "name": "[variables('deployDCRName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -123,7 +124,7 @@
   "outputs": {
     "dataCollectionRuleId": {
       "type": "string",
-      "value": "[reference('deployDCR', '2022-09-01').outputs.dataCollectionRuleId.value]"
+      "value": "[reference(variables('deployDCRName'), '2022-09-01').outputs.dataCollectionRuleId.value]"
     },
     "dataCollectionRuleName": {
       "type": "string",

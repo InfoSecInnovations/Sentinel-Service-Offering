@@ -33,7 +33,7 @@
   },
   "resources": [
     {
-      "name": "[concat('deploy', parameters('arcServers')[copyIndex('serverDCRCopy')].name, '-', parameters('dataCollectionRuleName'))]",
+      "name": "[concat('deploy', parameters('arcServers')[copyIndex('serverDCRCopy')].name, '-', parameters('dataCollectionRuleName'), '-', parameters('location'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "resourceGroup": "[parameters('arcServers')[copyIndex('serverDCRCopy')].resourceGroup]",

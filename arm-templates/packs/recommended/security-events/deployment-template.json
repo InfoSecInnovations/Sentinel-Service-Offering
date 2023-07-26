@@ -39,11 +39,15 @@
   "variables": {
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
-    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/"
+    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
+    "windowsSecurityEventsContentPackageName": "[concat('windowsSecurityEventsContentPackage', '-', parameters('location'))]",
+    "enableAMALogsName": "[concat('enableAMALogs', '-', parameters('location'))]",
+    "associateArcServersName": "[concat('associateArcServers', '-', parameters('location'))]",
+    "eventAnalyzerWorkbookName": "[concat('eventAnalyzerWorkbook', '-', parameters('location'))]"
   },
   "resources": [
     {
-      "name": "windowsSecurityEventsContentPackage",
+      "name": "[variables('windowsSecurityEventsContentPackageName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -72,7 +76,7 @@
       }
     },
     {
-      "name": "enableAMALogs",
+      "name": "[variables('enableAMALogsName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -98,12 +102,12 @@
       }
     },
     {
-      "name": "associateArcServers",
+      "name": "[variables('associateArcServersName')]",
       "condition": "[greater(length(parameters('arcServers')), 0)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "dependsOn": [
-        "enableAMALogs"
+        "[variables('enableAMALogsName')]"
       ],
       "subscriptionId": "[subscription().subscriptionId]",
       "location": "[parameters('location')]",
@@ -118,10 +122,10 @@
             "value": "[parameters('arcServers')]"
           },
           "dataCollectionRuleId": {
-            "value": "[reference('enableAMALogs', '2022-09-01').outputs.dataCollectionRuleId.value]"
+            "value": "[reference(variables('enableAMALogsName'), '2022-09-01').outputs.dataCollectionRuleId.value]"
           },
           "dataCollectionRuleName": {
-            "value": "[reference('enableAMALogs', '2022-09-01').outputs.dataCollectionRuleName.value]"
+            "value": "[reference(variables('enableAMALogsName'), '2022-09-01').outputs.dataCollectionRuleName.value]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -130,7 +134,7 @@
       }
     },
     {
-      "name": "eventAnalyzerWorkbook",
+      "name": "[variables('eventAnalyzerWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {

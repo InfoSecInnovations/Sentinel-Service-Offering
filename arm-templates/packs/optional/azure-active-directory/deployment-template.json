@@ -20,11 +20,14 @@
   "variables": {
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
-    "tenantId": "[subscription().tenantId]"
+    "tenantId": "[subscription().tenantId]",
+    "enableAADDataConnectorName": "[concat('enableAADDataConnector', '-', parameters('location'))]",
+    "AADAuditActivitySignInWorkbookName": "[concat('AADAuditActivitySignInWorkbook', '-', parameters('location'))]",
+    "UEBAWorkbookName": "[concat('UEBAWorkbook', '-', parameters('location'))]"
   },
   "resources": [
     {
-      "name": "enableAADDataConnector",
+      "name": "[variables('enableAADDataConnectorName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -53,7 +56,7 @@
       }
     },
     {
-      "name": "AADAuditActivitySignInWorkbook",
+      "name": "[variables('AADAuditActivitySignInWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -79,7 +82,7 @@
       }
     },
     {
-      "name": "userEntityBehaviourAnalyticsWorkbook",
+      "name": "[variables('UEBAWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {

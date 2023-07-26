@@ -20,11 +20,18 @@
   "variables": {
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
-    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/"
+    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
+    "socHandbookContentPackageName": "[concat('socHandbookContentPackage', '-', parameters('location'))]",
+    "analyticsEfficiencyWorkbookName": "[concat('analyticsEfficiencyWorkbook', '-', parameters('location'))]",
+    "anomaliesVisualizationWorkbookName": "[concat('anomaliesVisualizationWorkbook', '-', parameters('location'))]",
+    "archivingBasicLogsRetentionWorkbookName": "[concat('archivingBasicLogsRetentionWorkbook', '-', parameters('location'))]",
+    "incidentOverviewWorkbookName": "[concat('incidentOverviewWorkbook', '-', parameters('location'))]",
+    "microsoftSentinelCostWorkbookName": "[concat('microsoftSentinelCostWorkbook', '-', parameters('location'))]",
+    "securityAlertsWorkbookName": "[concat('securityAlertsWorkbook', '-', parameters('location'))]"
   },
   "resources": [
     {
-      "name": "socHandbookContentPackage",
+      "name": "[variables('socHandbookContentPackageName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -86,7 +93,7 @@
       }
     },
     {
-      "name": "analyticsEfficiencyWorkbook",
+      "name": "[variables('analyticsEfficiencyWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -112,7 +119,7 @@
       }
     },
     {
-      "name": "anomaliesVisualizationWorkbook",
+      "name": "[variables('anomaliesVisualizationWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -138,7 +145,7 @@
       }
     },
     {
-      "name": "archivingBasicLogsRetentionWorkbook",
+      "name": "[variables('archivingBasicLogsRetentionWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -164,7 +171,7 @@
       }
     },
     {
-      "name": "incidentOverviewWorkbook",
+      "name": "[variables('incidentOverviewWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -190,7 +197,7 @@
       }
     },
     {
-      "name": "microsoftSentinelCostWorkbook",
+      "name": "[variables('microsoftSentinelCostWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -216,7 +223,7 @@
       }
     },
     {
-      "name": "securityAlertsWorkbook",
+      "name": "[variables('securityAlertsWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
