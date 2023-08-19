@@ -20,12 +20,43 @@
   "variables": {
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
     "tenantId": "[subscription().tenantId]",
+    "AADContentPackageName": "[concat('AADContentPackage', '-', parameters('location'))]",
     "enableAADDataConnectorName": "[concat('enableAADDataConnector', '-', parameters('location'))]",
     "AADAuditActivitySignInWorkbookName": "[concat('AADAuditActivitySignInWorkbook', '-', parameters('location'))]",
     "UEBAWorkbookName": "[concat('UEBAWorkbook', '-', parameters('location'))]"
   },
   "resources": [
+    {
+      "name": "[variables('AADContentPackageName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/Azure%20Active%20Directory/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "workbook1-name": {
+            "value": "Azure AD Audit logs"
+          },
+          "workbook2-name": {
+            "value": "Azure AD Sign-in logs"
+          }
+        }
+      }
+    },
     {
       "name": "[variables('enableAADDataConnectorName')]",
       "type": "Microsoft.Resources/deployments",
