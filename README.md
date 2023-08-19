@@ -14,7 +14,7 @@ Is setting up or tuning Azure Sentinel by yourself a bit too overwhelming? Would
 
 ## Installed items
 
-We have grouped the items into "packs" based around a data source, as most of the items depend on a specific data source to function. We recommend you install all of these packs unless you don't have the feature they draw data from installed, the ones where that can be the case are marked as "optional" and can be toggled from the main template. All of the items are what we would consider the baseline set of "must-haves" to start working with Sentinel. Depending on your particular setup you will probably want to include additional items and possible custom content. 
+We have grouped the items into "packs" based around a data source, as most of the items depend on a specific data source to function. We recommend you install all of these packs unless you don't have the feature they draw data from installed, the ones where that can be the case are marked as "optional" and can be toggled from the main template. All of the items are what we would consider the baseline set of "must-haves" to start working with Sentinel. Depending on your particular setup you will probably want to include additional items and possible custom content, see above if you would like our assistance with that.
 
 ### Main template
 

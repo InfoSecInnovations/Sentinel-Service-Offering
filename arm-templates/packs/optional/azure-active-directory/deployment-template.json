@@ -24,6 +24,7 @@
     "tenantId": "[subscription().tenantId]",
     "AADContentPackageName": "[concat('AADContentPackage', '-', parameters('location'))]",
     "enableAADDataConnectorName": "[concat('enableAADDataConnector', '-', parameters('location'))]",
+    "enableUEBAName": "[concat('enableUEBA', '-', parameters('location'))]",
     "AADAuditActivitySignInWorkbookName": "[concat('AADAuditActivitySignInWorkbook', '-', parameters('location'))]",
     "UEBAWorkbookName": "[concat('UEBAWorkbook', '-', parameters('location'))]"
   },
@@ -78,6 +79,23 @@
           },
           "subscriptionId": {
             "value": "[subscription().subscriptionId]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('enableUEBAName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/onboarding/enable-ueba.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
           }
         }
       }

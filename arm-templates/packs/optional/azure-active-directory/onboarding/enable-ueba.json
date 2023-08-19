@@ -11,6 +11,18 @@
     {
       "type": "Microsoft.SecurityInsights/settings",
       "apiVersion": "2023-02-01-preview",
+      "name": "enableEntityAnalytics",
+      "kind": "EntityAnalytics",
+      "scope": "[concat('Microsoft.OperationalInsights/workspaces', '/', parameters('workspaceName'))]",
+      "properties": {
+        "entityProviders": [
+          "AzureActiveDirectory"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.SecurityInsights/settings",
+      "apiVersion": "2023-02-01-preview",
       "name": "enableUeba",
       "kind": "Ueba",
       "scope": "[concat('Microsoft.OperationalInsights/workspaces', '/', parameters('workspaceName'))]",
