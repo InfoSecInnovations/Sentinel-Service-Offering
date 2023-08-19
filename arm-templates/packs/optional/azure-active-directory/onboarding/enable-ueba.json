@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.SecurityInsights/settings",
+      "apiVersion": "2023-02-01-preview",
+      "name": "enableUeba",
+      "kind": "Ueba",
+      "scope": "[concat('Microsoft.OperationalInsights/workspaces', '/', parameters('workspaceName'))]",
+      "properties": {
+        "dataSources": [
+          "AuditLogs",
+          "AzureActivity",
+          "SecurityEvent",
+          "SigninLogs"
+        ]
+      }
+    }
+  ]
+}
