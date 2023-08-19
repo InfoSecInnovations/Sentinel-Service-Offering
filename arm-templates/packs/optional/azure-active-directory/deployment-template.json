@@ -64,24 +64,15 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/azureADIdentityProtection.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/data-connectors/azure-active-directory.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
           "workspaceName": {
             "value": "[parameters('workspaceName')]"
           },
-          "tenantId": {
-            "value": "[variables('tenantId')]"
-          },
           "location": {
             "value": "[parameters('location')]"
-          },
-          "guidValue": {
-            "value": "[guid(parameters('guidSeed'), 'azure active directory data connector')]"
-          },
-          "createAADIdentityProtectionIncidents": {
-            "value": true
           }
         }
       }
