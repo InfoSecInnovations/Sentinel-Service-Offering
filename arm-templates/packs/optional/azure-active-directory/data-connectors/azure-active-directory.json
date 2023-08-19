@@ -1,184 +1,49 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "workspaceName": {
       "type": "string"
-    },    
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]"
+    },
+    "subscriptionId": {
+      "type": "string"
+    },
+    "resourceGroupName": {
+      "type": "string"
     }
   },
   "variables": {
-    "contentId": "AzureActiveDirectory",
-    "dataConnectorVersion": "1.0.0",
-    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivedirectory",
-    "uiConfigId": "AzureActiveDirectory",
-    "dataConnectorId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'Microsoft.SecurityInsights/dataConnectors', variables('contentId'))]"
+    "workspaceId": "[resourceId(parameters('subscriptionId'), parameters('resourceGroupName'), 'Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]"
   },
   "resources": [
     {
-      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',variables('contentId'))]",
-      "apiVersion": "2021-03-01-preview",
-      "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
-      "location": "[parameters('location')]",
-      "kind": "StaticUI",
+      "type": "microsoft.aadiam/diagnosticSettings",
+      "apiVersion": "2017-04-01-preview",
+      "name": "aadLogsToLogAnalytics",
       "properties": {
-        "connectorUiConfig": {
-          "id": "[variables('uiConfigId')]",
-          "title": "Azure Active Directory",
-          "publisher": "Microsoft",
-          "descriptionMarkdown": "Gain insights into Azure Active Directory by connecting Audit and Sign-in logs to Microsoft Sentinel to gather insights around Azure Active Directory scenarios. You can learn about app usage, conditional access policies, legacy auth relate details using our Sign-in logs. You can get information on your Self Service Password Reset (SSPR) usage, Azure Active Directory Management activities like user, group, role, app management using our Audit logs table. For more information, see the [Microsoft Sentinel documentation](https://go.microsoft.com/fwlink/?linkid=2219715&wt.mc_id=sentinel_dataconnectordocs_content_cnl_csasci).",
-          "graphQueries": [
-            {
-              "metricName": "Total data received",
-              "legend": "SigninLogs",
-              "baseQuery": "SigninLogs"
-            },
-            {
-              "metricName": "Total data received",
-              "legend": "AuditLogs",
-              "baseQuery": "AuditLogs"
-            },
-            {
-              "metricName": "Total data received",
-              "legend": "AADNonInteractiveUserSignInLogs",
-              "baseQuery": "AADNonInteractiveUserSignInLogs"
-            },
-            {
-              "metricName": "Total data received",
-              "legend": "AADServicePrincipalSignInLogs",
-              "baseQuery": "AADServicePrincipalSignInLogs"
-            },
-            {
-              "metricName": "Total data received",
-              "legend": "AADManagedIdentitySignInLogs",
-              "baseQuery": "AADManagedIdentitySignInLogs"
-            },
-            {
-              "metricName": "Total data received",
-              "legend": "AADProvisioningLogs",
-              "baseQuery": "AADProvisioningLogs"
-            },
-            {
-              "metricName": "Total data received",
-              "legend": "ADFSSignInLogs",
-              "baseQuery": "ADFSSignInLogs"
-            },
-            {
-              "metricName": "Total data received",
-              "legend": "AADUserRiskEvents",
-              "baseQuery": "AADUserRiskEvents"
-            },
-            {
-              "metricName": "Total data received",
-              "legend": "AADRiskyUsers",
-              "baseQuery": "AADRiskyUsers"
-            },
-            {
-              "metricName": "Total data received",
-              "legend": "NetworkAccessTraffic",
-              "baseQuery": "NetworkAccessTraffic"
-            },
-            {
-              "metricName": "Total data received",
-              "legend": "AADRiskyServicePrincipals",
-              "baseQuery": "AADRiskyServicePrincipals"
-            },
-            {
-              "metricName": "Total data received",
-              "legend": "AADServicePrincipalRiskEvents",
-              "baseQuery": "AADServicePrincipalRiskEvents"
+        "workspaceId": "[variables('workspaceId')]",
+        "logAnalyticsDestinationType": null,
+        "logs": [
+          {
+            "category": "AuditLogs",
+            "enabled": true,
+            "retentionPolicy": {
+              "days": 0,
+              "enabled": false
             }
-          ],
-          "connectivityCriterias": [
-            {
-              "type": "IsConnectedQuery",
-              "value": [
-                "SigninLogs\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)",
-                "AuditLogs\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)",
-                "AADNonInteractiveUserSignInLogs\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)",
-                "AADServicePrincipalSignInLogs\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)",
-                "AADManagedIdentitySignInLogs\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)",
-                "AADProvisioningLogs\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)",
-                "ADFSSignInLogs\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)",
-                "AADUserRiskEvents\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)",
-                "AADRiskyUsers\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)",
-                "NetworkAccessTraffic\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)",
-                "AADRiskyServicePrincipals\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)",
-                "AADServicePrincipalRiskEvents\n            | summarize LastLogReceived = max(TimeGenerated)\n            | project IsConnected = LastLogReceived > ago(7d)"
-              ]
+          },
+          {
+            "category": "SignInLogs",
+            "enabled": true,
+            "retentionPolicy": {
+              "days": 0,
+              "enabled": false
             }
-          ],
-          "dataTypes": [
-            {
-              "name": "SigninLogs",
-              "lastDataReceivedQuery": "SigninLogs\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            },
-            {
-              "name": "AuditLogs",
-              "lastDataReceivedQuery": "AuditLogs\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            },
-            {
-              "name": "AADNonInteractiveUserSignInLogs",
-              "lastDataReceivedQuery": "AADNonInteractiveUserSignInLogs\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            },
-            {
-              "name": "AADServicePrincipalSignInLogs",
-              "lastDataReceivedQuery": "AADServicePrincipalSignInLogs\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            },
-            {
-              "name": "AADManagedIdentitySignInLogs",
-              "lastDataReceivedQuery": "AADManagedIdentitySignInLogs\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            },
-            {
-              "name": "AADProvisioningLogs",
-              "lastDataReceivedQuery": "AADProvisioningLogs\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            },
-            {
-              "name": "ADFSSignInLogs",
-              "lastDataReceivedQuery": "ADFSSignInLogs\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            },
-            {
-              "name": "AADUserRiskEvents",
-              "lastDataReceivedQuery": "AADUserRiskEvents\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            },
-            {
-              "name": "AADRiskyUsers",
-              "lastDataReceivedQuery": "AADRiskyUsers\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            },
-            {
-              "name": "NetworkAccessTraffic",
-              "lastDataReceivedQuery": "NetworkAccessTraffic\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            },
-            {
-              "name": "AADRiskyServicePrincipals",
-              "lastDataReceivedQuery": "AADRiskyServicePrincipals\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            },
-            {
-              "name": "AADServicePrincipalRiskEvents",
-              "lastDataReceivedQuery": "AADServicePrincipalRiskEvents\n            | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
-      "apiVersion": "2023-04-01-preview",
-      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('DataConnector-', last(split(variables('dataConnectorId'),'/'))))]",
-      "properties": {
-        "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'Microsoft.SecurityInsights/dataConnectors', variables('contentId'))]",
-        "contentId": "[variables('contentId')]",
-        "kind": "DataConnector",
-        "version": "[variables('dataConnectorVersion')]",
-        "source": {
-          "kind": "Solution",
-          "name": "Azure Active Directory",
-          "sourceId": "[variables('solutionId')]"
-        }
+          }
+        ],
+        "metrics": []
       }
     }
-  ]
+  ],
+  "outputs": {}
 }
