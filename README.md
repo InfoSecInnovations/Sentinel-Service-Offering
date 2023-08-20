@@ -56,6 +56,7 @@ Some items that work out of the box regardless of the configured Data Connectors
 - Azure Active Directory Content Hub Package
   - Enable Azure Active Directory Data Connector by setting up a diagnostic setting that sends Azure Active Directory logs to the LAW
 - Azure AD Audit, Activity and Sign-in logs Workbook (standalone)
+- Enable User and Entity Behaviour Analytics (UEBA) logs in the LAW
 - User And Entity Behavior Analytics Workbook (standalone)
 
 ## Requirements
