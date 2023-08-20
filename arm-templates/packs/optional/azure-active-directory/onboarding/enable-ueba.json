@@ -35,7 +35,7 @@
         ]
       },
       "dependsOn": [
-        "[resourceId('Microsoft.SecurityInsights/settings', 'EntityAnalytics')]"
+        "EntityAnalytics"
       ]
     }
   ]
