@@ -33,7 +33,10 @@
           "SecurityEvent",
           "SigninLogs"
         ]
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.SecurityInsights/settings', 'EntityAnalytics')]"
+      ]
     }
   ]
 }
