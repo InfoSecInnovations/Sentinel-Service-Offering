@@ -6,6 +6,27 @@ We have made use of https://github.com/OTRF/Blacksmith and https://github.com/OT
 
 InfoSec Innovations does not bear responsibility for the consequences of using this repository without our oversight, the files have mostly been made public for our own convenience, but you are free to use them without any expectation of support should any issues arise (unless you are one of our clients).
 
+## Requirements
+
+If using the Azure Active Directory pack you will need the correct permission to deploy to the tenant scope, this may be disabled by default. To configure these options your account will need to have `Global Administrator` permissions.
+
+- In the portal go to Azure Active Directory/Properties and enable _Access management for Azure resources_
+
+- Do the following in PowerShell using the `Az` module to assign ownership of the tenant scope:
+
+      #sign in to Azure from Powershell, this will redirect you to a webbrowser for authentication, if required
+      Connect-AzAccount
+    
+      #get object Id of the current user (that is used above)
+      $user = Get-AzADUser -UserPrincipalName (Get-AzContext).Account
+
+      #assign Owner role at Tenant root scope ("/") as a User Access Administrator to current user
+      New-AzRoleAssignment -Scope '/' -RoleDefinitionName 'Owner' -ObjectId $user.Id
+
+## Install
+
+Just click the button!
+
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Fisi-main.json)
 
 ## Have InfoSec Innovations take care of setting up your Sentinel instance
@@ -59,20 +80,5 @@ Some items that work out of the box regardless of the configured Data Connectors
 - Enable User and Entity Behaviour Analytics (UEBA) logs in the LAW
 - User And Entity Behavior Analytics Workbook (standalone)
 
-## Requirements
 
-If using the Azure Active Directory pack you will need the correct permission to deploy to the tenant scope, this may be disabled by default. To configure these options your account will need to have `Global Administrator` permissions.
-
-- In the portal go to Azure Active Directory/Properties and enable _Access management for Azure resources_
-
-- Do the following in PowerShell using the `Az` module to assign ownership of the tenant scope:
-
-      #sign in to Azure from Powershell, this will redirect you to a webbrowser for authentication, if required
-      Connect-AzAccount
-    
-      #get object Id of the current user (that is used above)
-      $user = Get-AzADUser -UserPrincipalName (Get-AzContext).Account
-
-      #assign Owner role at Tenant root scope ("/") as a User Access Administrator to current user
-      New-AzRoleAssignment -Scope '/' -RoleDefinitionName 'Owner' -ObjectId $user.Id
 
