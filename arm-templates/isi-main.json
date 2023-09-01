@@ -40,6 +40,25 @@
                 "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
             }
         },
+        "securityCollectionTier": {
+            "type": "string",
+            "metadata": {
+                "description": "Tier for gathering Windows Security Events. These match the defaults for Data Collection Rules."
+            },
+            "allowedValues": [
+                "Minimum",
+                "Common",
+                "All"
+            ],
+            "defaultValue": "Common"
+        },
+        "arcServers": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "JSON formatted array of the names of any existing Arc servers you wish to add to Security Events log gathering. We also have tools to automate this process after setting up the Sentinel instance."
+            }
+        },
         "enableOffice365": {
             "type": "bool",
             "defaultValue": false,
@@ -53,7 +72,10 @@
             "allowedValues": [
                 "disabled",
                 "enabled"
-            ]
+            ],
+            "metadata": {
+                "description": "Track logs from Exchange, only relevant if Office 365 is enabled above."
+            }
         },
         "sharepointState": {
             "type": "string",
@@ -61,7 +83,10 @@
             "allowedValues": [
                 "disabled",
                 "enabled"
-            ]
+            ],
+            "metadata": {
+                "description": "Track logs from SharePoint, only relevant if Office 365 is enabled above."
+            }
         },
         "teamsState": {
             "type": "string",
@@ -69,7 +94,10 @@
             "allowedValues": [
                 "disabled",
                 "enabled"
-            ]
+            ],
+            "metadata": {
+                "description": "Track logs from Teams, only relevant if Office 365 is enabled above."
+            }
         },
         "enableAzureActiveDirectory": {
             "type": "bool",
@@ -77,22 +105,6 @@
             "metadata": {
                 "description": "You should enable this if you use Azure Active Directory to get the appropriate logs and workspaces."
             }
-        },
-        "securityCollectionTier": {
-            "type": "string",
-            "metadata": {
-                "description": "Tier for gathering Windows Security Events."
-            },
-            "allowedValues": [
-                "Minimum",
-                "Common",
-                "All"
-            ],
-            "defaultValue": "Common"
-        },
-        "arcServers": {
-            "type": "array",
-            "defaultValue": []
         },
         "guidSeed": {
             "type": "string",

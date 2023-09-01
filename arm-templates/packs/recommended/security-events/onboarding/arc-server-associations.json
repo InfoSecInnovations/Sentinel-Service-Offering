@@ -5,13 +5,13 @@
     "arcServers": {
       "type": "array",
       "metadata": {
-        "description": "List of endpoints to associate data collection rules to"
+        "description": "List of endpoints to associate data collection rules with"
       }
     },
     "dataCollectionRuleId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the data collection rule that will be associated to the VMs deployed."
+        "description": "The resource ID of the data collection rule that will be associated with the VMs deployed."
       }
     },
     "dataCollectionRuleName": {
