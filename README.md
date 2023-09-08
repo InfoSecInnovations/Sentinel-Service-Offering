@@ -35,6 +35,19 @@ Just click the button!
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Fisi-main.json)
 
+### Manually enabling Azure Active Directory Data Connector
+
+See Requirements above for information about this issue.
+
+If you need the AAD Data Connector without having Tenant root scope Owner permissions, after installing the template using the button above: 
+- Go to Microsoft Sentinel in the Azure Portal.
+- Select the Log Analytics Workspace created by the template. If you didn't set a custom name during deployment it will be called `LAW-ISI-Default-xxxxxxxxxxxxx`.
+- Go to the Data Connectors area.
+- If you enabled Azure Active Directory in the deployment template, you should have a Data Connector available there called `Azure Active Directory`.
+- Select it and click _Open connector page_.
+- Make sure you meet the permissions requirements listed there.
+- Enable the logs you wish to collect. TODO: ISI recommended list.
+
 ## Have InfoSec Innovations take care of setting up your Sentinel instance
 
 Is setting up or tuning Azure Sentinel by yourself a bit too overwhelming? Would you like to be able to rely on professional support if things don't go smoothly? Please get in touch with us to discuss becoming a client: https://www.infosecinnovations.com/.
