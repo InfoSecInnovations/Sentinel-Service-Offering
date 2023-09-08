@@ -16,7 +16,7 @@ However, if you really want to deploy the Data Connector programmatically, you w
 
 - Have `Global Administrator` permissions.
 
-- In the portal go to Azure Active Directory/Properties and enable _Access management for Azure resources_
+- In the portal go to Azure Active Directory/Properties and enable _Access management for Azure resources_ and save the change.
 
 - Do the following in PowerShell using the `Az` module to assign ownership of the tenant scope:
 
