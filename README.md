@@ -8,6 +8,8 @@ InfoSec Innovations does not bear responsibility for the consequences of using t
 
 ## Requirements
 
+TODO: requirements to be able to deploy resource group and subscription level templates?
+
 Due to current limitations with the Azure API, it's not officially possible to enable the Azure Active Directory Data Connector through an ARM template. There is a workaround requiring ownership of the Tenant root scope, however in many cases you will not be granted this level of permission, so you should just enable it from the Azure Portal web UI until it becomes available via ARM templates.
 
 However, if you really want to deploy the Data Connector programmatically, you will need to do the following:
