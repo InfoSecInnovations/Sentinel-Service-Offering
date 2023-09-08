@@ -37,7 +37,7 @@ Just click the button!
 
 ### Manually enabling Azure Active Directory Data Connector
 
-See Requirements above for information about this issue.
+See [Requirements](#requirements) above for information about this issue.
 
 If you need the AAD Data Connector without having Tenant root scope Owner permissions, after installing the template using the button above: 
 - Go to Microsoft Sentinel in the Azure Portal.
@@ -94,7 +94,7 @@ Some items that work out of the box regardless of the configured Data Connectors
 ### Azure Active Directory (optional)
 
 - Azure Active Directory Content Hub Package
-  - (optional, see requirements section above) Enable Azure Active Directory Data Connector by setting up a diagnostic setting that sends Azure Active Directory logs to the LAW
+  - (optional, see [Requirements](#requirements) section above) Enable Azure Active Directory Data Connector by setting up a diagnostic setting that sends Azure Active Directory logs to the LAW
 - Azure AD Audit, Activity and Sign-in logs Workbook (standalone)
 - Enable User and Entity Behaviour Analytics (UEBA) logs in the LAW
 - User And Entity Behavior Analytics Workbook (standalone)
