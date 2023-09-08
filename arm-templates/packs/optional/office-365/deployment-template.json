@@ -54,7 +54,9 @@
     "office365WorkbookName": "[concat('office365Workbook', '-', parameters('location'))]",
     "exchangeWorkbookName": "[concat('exchangeWorkbook', '-', parameters('location'))]",
     "accessedFilesSharedByTemporaryExternalUserName": "[concat('accessedFilesSharedByTemporaryExternalUser', '-', parameters('location'))]",
-    "forestBlizzardCredHarvestingName": "[concat('forestBlizzardCredHarvesting', '-', parameters('location'))]"
+    "forestBlizzardCredHarvestingName": "[concat('forestBlizzardCredHarvesting', '-', parameters('location'))]",
+    "mailRedirectViaExoName": "[concat('mailRedirectViaExo', '-', parameters('location'))]",
+    "maliciousInboxRuleName": "[concat('maliciousInboxRule', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -191,7 +193,7 @@
         }
       }
     },
-        {
+    {
       "name": "[variables('forestBlizzardCredHarvestingName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -199,6 +201,40 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/forest-blizzard-cred-harvesting.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('mailRedirectViaExoName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/mail-redirect-via-exo-transport-rule.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('maliciousInboxRuleName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/malicious-inbox-rule.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
