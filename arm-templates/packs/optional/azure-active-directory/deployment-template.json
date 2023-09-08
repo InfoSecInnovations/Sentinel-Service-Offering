@@ -15,13 +15,19 @@
     },
     "workspaceName": {
       "type": "string"
+    },
+    "enableAADDataConnector": {
+        "type": "bool",
+        "defaultValue": false,
+        "metadata": {
+            "description": "Due to current limitations you need to have tenant root scope ownership to enable the Azure Active Directory Data Connector through an ARM template. In most cases we won't have this permission level, so we should enable it through the web UI until it becomes officially supported via ARM template. However, if you do have tenant root scope ownership, you can go ahead and enable this."
+        }
     }
   },
   "variables": {
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
     "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
-    "tenantId": "[subscription().tenantId]",
     "AADContentPackageName": "[concat('AADContentPackage', '-', parameters('location'))]",
     "enableAADDataConnectorName": "[concat('enableAADDataConnector', '-', parameters('location'))]",
     "enableUEBAName": "[concat('enableUEBA', '-', parameters('location'))]",
@@ -60,6 +66,7 @@
     },
     {
       "name": "[variables('enableAADDataConnectorName')]",
+      "condition": "[parameters('enableAADDataConnector')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "scope": "/",

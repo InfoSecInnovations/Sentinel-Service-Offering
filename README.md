@@ -8,7 +8,11 @@ InfoSec Innovations does not bear responsibility for the consequences of using t
 
 ## Requirements
 
-If using the Azure Active Directory pack you will need the correct permission to deploy to the tenant scope, this may be disabled by default. To configure these options your account will need to have `Global Administrator` permissions.
+Due to current limitations with the Azure API, it's not officially possible to enable the Azure Active Directory Data Connector through an ARM template. There is a workaround requiring ownership of the Tenant root scope, however in many cases you will not be granted this level of permission, so you should just enable it from the Azure Portal web UI until it becomes available via ARM templates.
+
+However, if you really want to deploy the Data Connector programmatically, you will need to do the following:
+
+- Have `Global Administrator` permissions.
 
 - In the portal go to Azure Active Directory/Properties and enable _Access management for Azure resources_
 
@@ -75,7 +79,7 @@ Some items that work out of the box regardless of the configured Data Connectors
 ### Azure Active Directory (optional)
 
 - Azure Active Directory Content Hub Package
-  - Enable Azure Active Directory Data Connector by setting up a diagnostic setting that sends Azure Active Directory logs to the LAW
+  - (optional, see requirements section above) Enable Azure Active Directory Data Connector by setting up a diagnostic setting that sends Azure Active Directory logs to the LAW
 - Azure AD Audit, Activity and Sign-in logs Workbook (standalone)
 - Enable User and Entity Behaviour Analytics (UEBA) logs in the LAW
 - User And Entity Behavior Analytics Workbook (standalone)
