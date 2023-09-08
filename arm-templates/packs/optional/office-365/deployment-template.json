@@ -52,7 +52,9 @@
     "microsoft365ContentPackageName": "[concat('microsoft365ContentPackage', '-', parameters('location'))]",
     "office365DataConnectorName": "[concat('office365DataConnector', '-', parameters('location'))]",
     "office365WorkbookName": "[concat('office365Workbook', '-', parameters('location'))]",
-    "exchangeWorkbookName": "[concat('exchangeWorkbook', '-', parameters('location'))]"
+    "exchangeWorkbookName": "[concat('exchangeWorkbook', '-', parameters('location'))]",
+    "accessedFilesSharedByTemporaryExternalUserName": "[concat('accessedFilesSharedByTemporaryExternalUser', '-', parameters('location'))]",
+    "forestBlizzardCredHarvestingName": "[concat('forestBlizzardCredHarvesting', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -168,6 +170,40 @@
           },
           "displayName": {
             "value": "Exchange Online"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('accessedFilesSharedByTemporaryExternalUserName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/accessed-files-shared-by-temporary-external-user.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+        {
+      "name": "[variables('forestBlizzardCredHarvestingName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/forest-blizzard-cred-harvesting.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
           }
         }
       }

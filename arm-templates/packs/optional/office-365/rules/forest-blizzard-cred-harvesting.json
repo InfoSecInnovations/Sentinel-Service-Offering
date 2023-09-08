@@ -1,0 +1,94 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "04384937-e927-4595-8f3c-89ff58ed231f",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "2.0.1",
+    "solutionId": "azuresentinel.azure-sentinel-solution-office365"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        },
+        "description": "Surfaces potential Forest Blizzard group Office365 credential harvesting attempts within OfficeActivity Logon events.\nReferences: https://www.microsoft.com/security/blog/2020/09/10/strontium-detecting-new-patters-credential-harvesting/.",
+        "displayName": "Possible Forest Blizzard attempted credential harvesting - Sept 2020",
+        "enabled": true,
+        "query": "let IPs = dynamic ([\"199.249.230.\",\"185.220.101.\",\"23.129.64.\",\"109.70.100.\",\"185.220.102.\"]);\nOfficeActivity\n| where RecordType in (\"AzureActiveDirectoryAccountLogon\", \"AzureActiveDirectoryStsLogon\") \n| where Operation != 'UserLoggedIn'\n| extend UserAgent = iff(parse_json(ExtendedProperties)[0].Name =~ \"UserAgent\", extractjson(\"$[0].Value\", ExtendedProperties, typeof(string)),\"\")\n| mv-expand parse_json(ExtendedProperties)\n| where ExtendedProperties.Name =~ \"RequestType\"\n| extend RequestType = ExtendedProperties.Value\n| where ClientIP has_any (IPs)\n| summarize authAttempts=dcount(TimeGenerated), firstAttempt=min(TimeGenerated), lastAttempt=max(TimeGenerated), uniqueIPs=dcount(ClientIP), uniqueAccounts=dcount(UserId), attemptedAccounts=make_set(UserId) by UserAgent\n| where authAttempts > 2500\n| extend timestamp = firstAttempt\n| sort by uniqueAccounts\n",
+        "queryFrequency": "P7D",
+        "queryPeriod": "P14D",
+        "severity": "Low",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "Office365",
+            "dataTypes": [
+              "OfficeActivity"
+            ]
+          }
+        ],
+        "tactics": [
+          "CredentialAccess"
+        ],
+        "techniques": [
+          "T1110"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Microsoft 365 Analytics Rule 12",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "version": "[variables('ruleVersion')]",
+        "kind": "AnalyticsRule",
+        "source": {
+          "kind": "Solution",
+          "name": "Microsoft 365",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}
