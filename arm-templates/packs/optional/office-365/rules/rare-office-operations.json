@@ -97,6 +97,7 @@
         "description": "Microsoft 365 Analytics Rule 9",
         "parentId": "[variables('ruleResourceId')]",
         "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
         "version": "[variables('ruleVersion')]",
         "source": {
           "kind": "Solution",
