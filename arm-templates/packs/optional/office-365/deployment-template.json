@@ -56,7 +56,13 @@
     "accessedFilesSharedByTemporaryExternalUserName": "[concat('accessedFilesSharedByTemporaryExternalUser', '-', parameters('location'))]",
     "forestBlizzardCredHarvestingName": "[concat('forestBlizzardCredHarvesting', '-', parameters('location'))]",
     "mailRedirectViaExoName": "[concat('mailRedirectViaExo', '-', parameters('location'))]",
-    "maliciousInboxRuleName": "[concat('maliciousInboxRule', '-', parameters('location'))]"
+    "maliciousInboxRuleName": "[concat('maliciousInboxRule', '-', parameters('location'))]",
+    "officeMailForwardingRuleName": "[concat('officeMailForwardingRule', '-', parameters('location'))]",
+    "officePolicyTamperingName": "[concat('officePolicyTampering', '-', parameters('location'))]",
+    "officeUploadedExecutablesName": "[concat('officeUploadedExecutables', '-', parameters('location'))]",
+    "rareOfficeOperationsName": "[concat('rareOfficeOperations', '-', parameters('location'))]",
+    "sharepointDownloadsByNewIpName": "[concat('sharepointDownloadsByNewIp', '-', parameters('location'))]",
+    "sharepointDownloadsByNewUserAgentName": "[concat('sharepointDownloadsByNewUserAgent', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -235,6 +241,108 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/malicious-inbox-rule.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('officeMailForwardingRuleName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/office-mail-forwarding.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('officePolicyTamperingName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/office-policy-tampering.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('officeUploadedExecutablesName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/office-uploaded-executables.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('rareOfficeOperationsName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/rare-office-operations.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('sharepointDownloadsByNewIpName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/sharepoint-downloads-by-new-ip.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('sharepointDownloadsByNewUserAgentName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/sharepoint-downloads-by-new-user-agent.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+"contentVersion": "1.0.0.0",
+"parameters": {
+	"workspaceName": {
+	  "type": "string"
+	},
+	"ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+},
+"variables": {
+    "contentId": "4b11568b-3f5f-4ba1-80c8-7f1dc8390eb7",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "2.0.1",
+    "solutionId": "azuresentinel.azure-sentinel-solution-office365"
+},
+  "resources": [
+    {
+"type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+"name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+"apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "alertRuleTemplateName": "[variables('contentId')]",
+	"incidentConfiguration": {
+		"createIncident": true,
+		"groupingConfiguration": {
+			"enabled": false,
+			"reopenClosedIncident": false,
+			"lookbackDuration": "PT5H",
+			"matchingMethod": "AllEntities",
+			"groupByEntities": [],
+			"groupByAlertDetails": [],
+			"groupByCustomDetails": []
+		}
+	},
+        "description": "Identifies when the volume of documents uploaded to or downloaded from Sharepoint by new IP addresses\nexceeds a threshold (default is 50).",
+        "displayName": "SharePointFileOperation via previously unseen IPs",
+        "enabled": true,
+        "query": "let threshold = 50;\nlet szSharePointFileOperation = \"SharePointFileOperation\";\nlet szOperations = dynamic([\"FileDownloaded\", \"FileUploaded\"]);\nlet starttime = 14d;\nlet endtime = 1d;\nlet historicalActivity =\nOfficeActivity\n| where TimeGenerated between(ago(starttime)..ago(endtime))\n| where RecordType =~ szSharePointFileOperation\n| where Operation in~ (szOperations)\n| summarize historicalCount = count() by ClientIP, RecordType, Operation;\nlet recentActivity = OfficeActivity\n| where TimeGenerated > ago(endtime)\n| where RecordType =~ szSharePointFileOperation\n| where Operation in~ (szOperations)\n| summarize min(Start_Time), max(Start_Time), recentCount = count() by ClientIP, RecordType, Operation;\nlet RareIP = recentActivity | join kind= leftanti ( historicalActivity ) on ClientIP, RecordType, Operation\n// More than 50 downloads/uploads from a new IP\n| where recentCount > threshold;\nOfficeActivity\n| where TimeGenerated >= ago(endtime)\n| where RecordType =~ szSharePointFileOperation\n| where Operation in~ (szOperations)\n| join kind= inner (RareIP) on ClientIP, RecordType, Operation\n| where Start_Time between(min_Start_Time .. max_Start_Time)\n| summarize StartTimeUtc = min(min_Start_Time), EndTimeUtc = max(max_Start_Time) by RecordType, Operation, UserType, UserId, ClientIP, OfficeWorkload, Site_Url, OfficeObjectId, UserAgent, IPSeenCount = recentCount\n| extend timestamp = StartTimeUtc, AccountCustomEntity = UserId, IPCustomEntity = ClientIP, URLCustomEntity = Site_Url\n| order by IPSeenCount desc, ClientIP asc, Operation asc, UserId asc\n",
+        "queryFrequency": "P1D",
+        "queryPeriod": "P14D",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "Office365",
+            "dataTypes": [
+              "OfficeActivity"
+            ]
+          }
+        ],
+        "tactics": [
+          "Exfiltration"
+        ],
+        "techniques": [
+          "T1030"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "columnName": "AccountCustomEntity",
+                "identifier": "FullName"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "IPCustomEntity",
+                "identifier": "Address"
+              }
+            ],
+            "entityType": "IP"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "URLCustomEntity",
+                "identifier": "Url"
+              }
+            ],
+            "entityType": "URL"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Microsoft 365 Analytics Rule 10",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "version": "[variables('ruleVersion')]",
+        "kind": "AnalyticsRule",
+        "source": {
+          "kind": "Solution",
+          "name": "Microsoft 365",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}
