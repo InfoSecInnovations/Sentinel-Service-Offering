@@ -62,7 +62,8 @@
     "officeUploadedExecutablesName": "[concat('officeUploadedExecutables', '-', parameters('location'))]",
     "rareOfficeOperationsName": "[concat('rareOfficeOperations', '-', parameters('location'))]",
     "sharepointDownloadsByNewIpName": "[concat('sharepointDownloadsByNewIp', '-', parameters('location'))]",
-    "sharepointDownloadsByNewUserAgentName": "[concat('sharepointDownloadsByNewUserAgent', '-', parameters('location'))]"
+    "sharepointDownloadsByNewUserAgentName": "[concat('sharepointDownloadsByNewUserAgent', '-', parameters('location'))]",
+    "exchangeAuditlogDisabledName": "[concat('exchangeAuditlogDisabled', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -343,6 +344,23 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/sharepoint-downloads-by-new-user-agent.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('exchangeAuditlogDisabledName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/exchange-auditlog-disabled.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

@@ -1,44 +1,44 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-"contentVersion": "1.0.0.0",
-"parameters": {
-	"workspaceName": {
-	  "type": "string"
-	},
-	"ruleId": {
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
       "type": "string",
       "defaultValue": "[newGuid()]",
       "metadata": {
         "description": "The unique guid for this Analytics Rule"
       }
     }
-},
-"variables": {
+  },
+  "variables": {
     "contentId": "194dd92e-d6e7-4249-85a5-273350a7f5ce",
     "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
     "ruleVersion": "2.0.1",
     "solutionId": "azuresentinel.azure-sentinel-solution-office365"
-},
+  },
   "resources": [
     {
-"type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
-"name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
-"apiVersion": "2022-11-01-preview",
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
       "kind": "Scheduled",
       "properties": {
         "alertRuleTemplateName": "[variables('contentId')]",
-	"incidentConfiguration": {
-		"createIncident": true,
-		"groupingConfiguration": {
-			"enabled": false,
-			"reopenClosedIncident": false,
-			"lookbackDuration": "PT5H",
-			"matchingMethod": "AllEntities",
-			"groupByEntities": [],
-			"groupByAlertDetails": [],
-			"groupByCustomDetails": []
-		}
-	},
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        },
         "description": "Identifies when the exchange audit logging has been disabled which may be an adversary attempt\nto evade detection or avoid other defenses.",
         "displayName": "Exchange AuditLog disabled",
         "enabled": true,
