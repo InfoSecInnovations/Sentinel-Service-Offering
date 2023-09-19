@@ -39,7 +39,7 @@
       "dependsOn": [],
       "kind": "shared",
       "tags": {
-        "hidden-title": "[variables('workbookDisplayName')]"
+        "hidden-title": "[parameters('displayName')]"
       },
       "properties": {
         "displayName": "[variables('workbookDisplayName')]",
