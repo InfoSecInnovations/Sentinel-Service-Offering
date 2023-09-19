@@ -61,6 +61,48 @@
         },
         "description": "This workbooks shows workspace and table retention periods, basic logs, and search & restore tables. It also allows you to update table retention periods, plans, and delete search or restore tables."
       }
+    },
+    {
+      "name": "ArchivingBasicLogsRetention",
+      "type": "Microsoft.SecurityInsights/contentpackages",
+      "apiVersion": "2023-04-01-preview",
+      "properties": {
+        "contentId": "ArchivingBasicLogsRetention",
+        "contentKind": "Standalone",
+        "contentSchemaVersion": "3.0.0",
+        "contentProductId": "ArchivingBasicLogsRetention-sa-rlxtga7bef6dm",
+        "version": "1.2.1",
+        "displayName": "Archiving, Basic Logs, and Retention",
+        "description": "This workbooks shows workspace and table retention periods, basic logs, and search & restore tables. It also allows you to update table retention periods, plans, and delete search or restore tables.",
+        "source": {
+          "kind": "Community",
+          "name": "Standalone"
+        },
+        "author": {
+          "name": "seanstark-ms"
+        },
+        "support": {
+          "tier": "Community",
+          "name": "Community",
+          "link": "https://github.com/Azure/Azure-Sentinel/issues"
+        },
+        "dependencies": {
+          "operator": "AND",
+          "criteria": [
+            {
+              "contentId": "ArchivingBasicLogsRetention",
+              "kind": "Workbook"
+            }
+          ]
+        },
+        "categories": {
+          "domains": [
+            "Platform",
+            "IT Operations"
+          ]
+        },
+        "icon": "ArchivingBasicLogsRetention.svg"
+      }
     }
   ],
   "outputs": {
