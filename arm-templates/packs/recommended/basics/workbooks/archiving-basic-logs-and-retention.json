@@ -64,7 +64,7 @@
     },
     {
       "name": "ArchivingBasicLogsRetention",
-      "type": "Microsoft.SecurityInsights/contentpackages",
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
       "apiVersion": "2023-04-01-preview",
       "properties": {
         "contentId": "ArchivingBasicLogsRetention",
