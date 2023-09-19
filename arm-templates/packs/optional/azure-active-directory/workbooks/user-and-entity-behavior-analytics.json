@@ -26,7 +26,8 @@
   "variables": {
     "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]",
     "workbookDisplayName": "[concat(parameters('displayName'), ' - ', parameters('workspaceName'))]",
-    "workbookResourceId": "[resourceId('Microsoft.Insights/workbooks', parameters('workbookId'))]"
+    "workbookResourceId": "[resourceId('Microsoft.Insights/workbooks', parameters('workbookId'))]",
+    "contentId": "UserEntityBehaviorAnalyticsWorkbook"
   },
   "resources": [
     {
@@ -42,6 +43,46 @@
         "version": "1.0",
         "sourceId": "[variables('workspaceResourceId')]",
         "category": "sentinel"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('Workbook-', last(split(variables('workbookResourceId'),'/'))))]",
+      "properties": {
+        "parentId": "[variables('workbookResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "Workbook",
+        "version": "1.2.0",
+        "source": {
+          "kind": "Community",
+          "name": "Standalone"
+        },
+        "author": {
+          "name": "Microsoft Corporation"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com"
+        },
+        "dependencies": {
+          "criteria": [
+            {
+              "contentId": "BehaviorAnalytics",
+              "kind": "DataType"
+            }
+          ],
+          "operator": "AND"
+        },
+        "previewImages": [
+          "UserEntityBehaviorAnalyticsWhite1.png"
+        ],
+        "previewImagesDark": [
+          "UserEntityBehaviorAnalyticsBlack1.png"
+        ],
+        "icon": "Azure_Sentinel.svg"
       }
     }
   ],
