@@ -28,7 +28,7 @@
     "workbookDisplayName": "[concat(parameters('displayName'), ' - ', parameters('workspaceName'))]",
     "contentId": "ArchivingBasicLogsRetention",
     "workbookResourceId": "[resourceId('Microsoft.Insights/workbooks', parameters('workbookId'))]",
-    "workbookVersion": "1.2.0"
+    "workbookVersion": "1.2.1"
   },
   "resources": [
     {
