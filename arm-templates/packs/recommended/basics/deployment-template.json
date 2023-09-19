@@ -37,7 +37,8 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('azureSentinel'), 'Solutions/SOC%20Handbook/Package/mainTemplate.json')]",
+          //"uri": "[uri(variables('azureSentinel'), 'Solutions/SOC%20Handbook/Package/mainTemplate.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/content-hub/soc-handbook.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

@@ -1,0 +1,337 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "author": "Community",
+    "comments": "Solution template for SOC Handbook"
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "minLength": 1,
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Not used, but needed to pass arm-ttk test `Location-Should-Not-Be-Hardcoded`.  We instead use the `workspace-location` which is derived from the LA workspace"
+      }
+    },
+    "workspace-location": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "[concat('Region to deploy solution resources -- separate from location selection',parameters('location'))]"
+      }
+    },
+    "workspace": {
+      "defaultValue": "",
+      "type": "string",
+      "metadata": {
+        "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
+      }
+    },
+    "workbook1-name": {
+      "type": "string",
+      "defaultValue": "Analytics Efficiency",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook2-name": {
+      "type": "string",
+      "defaultValue": "AnomaliesVisulization",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook3-name": {
+      "type": "string",
+      "defaultValue": "AnomalyData",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook4-name": {
+      "type": "string",
+      "defaultValue": "Attack Surface Reduction Dashboard",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook5-name": {
+      "type": "string",
+      "defaultValue": "Microsoft Sentinel Cost",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook6-name": {
+      "type": "string",
+      "defaultValue": "Security Alerts",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook7-name": {
+      "type": "string",
+      "defaultValue": "Incident overview",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook8-name": {
+      "type": "string",
+      "defaultValue": "IntSights IOC Workbook",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook9-name": {
+      "type": "string",
+      "defaultValue": "Investigation Insights",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook10-name": {
+      "type": "string",
+      "defaultValue": "MITRE ATT&CK Workbook",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook11-name": {
+      "type": "string",
+      "defaultValue": "Security Operations Efficiency",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook12-name": {
+      "type": "string",
+      "defaultValue": "Security Status",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    },
+    "workbook13-name": {
+      "type": "string",
+      "defaultValue": "Microsoft Sentinel Central",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name for the workbook"
+      }
+    }
+  },
+  "variables": {
+    "_solutionName": "SOC Handbook",
+    "_solutionVersion": "3.0.1",
+    "solutionId": "microsoftsentinelcommunity.azure-sentinel-solution-sochandbook",
+    "_solutionId": "[variables('solutionId')]",
+    "workbookVersion1": "1.2.0",
+    "workbookContentId1": "AnalyticsEfficiencyWorkbook",
+    "workbookId1": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId1'))]",
+    "workbookTemplateSpecName1": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId1'))),variables('workbookVersion1')))]",
+    "_workbookContentId1": "[variables('workbookContentId1')]",
+    "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
+    "_workbookcontentProductId1": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId1'),'-', variables('workbookVersion1'))))]",
+    "workbookVersion2": "1.0.0",
+    "workbookContentId2": "AnomaliesVisualizationWorkbook",
+    "workbookId2": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId2'))]",
+    "workbookTemplateSpecName2": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId2'))),variables('workbookVersion2')))]",
+    "_workbookContentId2": "[variables('workbookContentId2')]",
+    "_workbookcontentProductId2": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId2'),'-', variables('workbookVersion2'))))]",
+    "workbookVersion3": "1.0.0",
+    "workbookContentId3": "AnomalyDataWorkbook",
+    "workbookId3": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId3'))]",
+    "workbookTemplateSpecName3": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId3'))),variables('workbookVersion3')))]",
+    "_workbookContentId3": "[variables('workbookContentId3')]",
+    "_workbookcontentProductId3": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId3'),'-', variables('workbookVersion3'))))]",
+    "workbookVersion4": "1.0.0",
+    "workbookContentId4": "AttackSurfaceReduction",
+    "workbookId4": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId4'))]",
+    "workbookTemplateSpecName4": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId4'))),variables('workbookVersion4')))]",
+    "_workbookContentId4": "[variables('workbookContentId4')]",
+    "_workbookcontentProductId4": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId4'),'-', variables('workbookVersion4'))))]",
+    "workbookVersion5": "1.5.1",
+    "workbookContentId5": "AzureSentinelCost",
+    "workbookId5": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId5'))]",
+    "workbookTemplateSpecName5": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId5'))),variables('workbookVersion5')))]",
+    "_workbookContentId5": "[variables('workbookContentId5')]",
+    "_workbookcontentProductId5": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId5'),'-', variables('workbookVersion5'))))]",
+    "workbookVersion6": "1.1.0",
+    "workbookContentId6": "AzureSentinelSecurityAlertsWorkbook",
+    "workbookId6": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId6'))]",
+    "workbookTemplateSpecName6": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId6'))),variables('workbookVersion6')))]",
+    "_workbookContentId6": "[variables('workbookContentId6')]",
+    "_workbookcontentProductId6": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId6'),'-', variables('workbookVersion6'))))]",
+    "workbookVersion7": "2.1.0",
+    "workbookContentId7": "IncidentOverview",
+    "workbookId7": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId7'))]",
+    "workbookTemplateSpecName7": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId7'))),variables('workbookVersion7')))]",
+    "_workbookContentId7": "[variables('workbookContentId7')]",
+    "_workbookcontentProductId7": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId7'),'-', variables('workbookVersion7'))))]",
+    "workbookVersion8": "2.0.0",
+    "workbookContentId8": "IntsightsIOCWorkbook",
+    "workbookId8": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId8'))]",
+    "workbookTemplateSpecName8": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId8'))),variables('workbookVersion8')))]",
+    "_workbookContentId8": "[variables('workbookContentId8')]",
+    "_workbookcontentProductId8": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId8'),'-', variables('workbookVersion8'))))]",
+    "workbookVersion9": "1.4.0",
+    "workbookContentId9": "InvestigationInsightsWorkbook",
+    "workbookId9": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId9'))]",
+    "workbookTemplateSpecName9": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId9'))),variables('workbookVersion9')))]",
+    "_workbookContentId9": "[variables('workbookContentId9')]",
+    "_workbookcontentProductId9": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId9'),'-', variables('workbookVersion9'))))]",
+    "workbookVersion10": "1.0.1",
+    "workbookContentId10": "MITREATTACKWorkbook",
+    "workbookId10": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId10'))]",
+    "workbookTemplateSpecName10": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId10'))),variables('workbookVersion10')))]",
+    "_workbookContentId10": "[variables('workbookContentId10')]",
+    "_workbookcontentProductId10": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId10'),'-', variables('workbookVersion10'))))]",
+    "workbookVersion11": "1.5.0",
+    "workbookContentId11": "SecurityOperationsEfficiency",
+    "workbookId11": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId11'))]",
+    "workbookTemplateSpecName11": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId11'))),variables('workbookVersion11')))]",
+    "_workbookContentId11": "[variables('workbookContentId11')]",
+    "_workbookcontentProductId11": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId11'),'-', variables('workbookVersion11'))))]",
+    "workbookVersion12": "1.3.0",
+    "workbookContentId12": "SecurityStatusWorkbook",
+    "workbookId12": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId12'))]",
+    "workbookTemplateSpecName12": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId12'))),variables('workbookVersion12')))]",
+    "_workbookContentId12": "[variables('workbookContentId12')]",
+    "_workbookcontentProductId12": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId12'),'-', variables('workbookVersion12'))))]",
+    "workbookVersion13": "2.1.1",
+    "workbookContentId13": "SentinelCentral",
+    "workbookId13": "[resourceId('Microsoft.Insights/workbooks', variables('workbookContentId13'))]",
+    "workbookTemplateSpecName13": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspace'),'-wb-',uniquestring(variables('_workbookContentId13'))),variables('workbookVersion13')))]",
+    "_workbookContentId13": "[variables('workbookContentId13')]",
+    "_workbookcontentProductId13": "[concat(take(variables('_solutionId'),50),'-','wb','-', uniqueString(concat(variables('_solutionId'),'-','Workbook','-',variables('_workbookContentId13'),'-', variables('workbookVersion13'))))]",
+    "_solutioncontentProductId": "[concat(take(variables('_solutionId'),50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
+      "apiVersion": "2023-04-01-preview",
+      "location": "[parameters('workspace-location')]",
+      "properties": {
+        "version": "3.0.1",
+        "kind": "Solution",
+        "contentSchemaVersion": "3.0.0",
+        "displayName": "SOC Handbook",
+        "publisherDisplayName": "Community",
+        "descriptionHtml": "<p><strong>Note:</strong> <em>There may be <a href=\"https://aka.ms/sentinelsolutionsknownissues\">known issues</a> pertaining to this Solution, please refer to them before installing.</em></p>\n<p>The SOC Handbook solution for Microsoft Sentinel provides a collection of resources that enable and empower SOC Analysts to get better visibility and understanding of point-in-time security posture of organizational resources.</p>\n<p>All content packaged in this solution is built and supported by the Microsoft Sentinel community. For any support, please create an <a href=\"https://github.com/Azure/Azure-Sentinel/issues\">issue</a> on the Microsoft Sentinel GitHub repository.</p>\n<p><strong>Workbooks:</strong> 13</p>\n<p><a href=\"https://aka.ms/azuresentinel\">Learn more about Microsoft Sentinel</a> | <a href=\"https://aka.ms/azuresentinelsolutionsdoc\">Learn more about Solutions</a></p>\n",
+        "contentKind": "Solution",
+        "contentProductId": "[variables('_solutioncontentProductId')]",
+        "id": "[variables('_solutioncontentProductId')]",
+        "icon": "<img src=\"https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Logos/Azure_Sentinel.svg\"width=\"75px\"height=\"75px\">",
+        "contentId": "[variables('_solutionId')]",
+        "parentId": "[variables('_solutionId')]",
+        "source": {
+          "kind": "Solution",
+          "name": "SOC Handbook",
+          "sourceId": "[variables('_solutionId')]"
+        },
+        "author": {
+          "name": "Community"
+        },
+        "support": {
+          "name": "Community",
+          "tier": "Community",
+          "link": "https://github.com/Azure/Azure-Sentinel/issues"
+        },
+        "dependencies": {
+          "operator": "AND",
+          "criteria": [
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId1')]",
+              "version": "[variables('workbookVersion1')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId2')]",
+              "version": "[variables('workbookVersion2')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId3')]",
+              "version": "[variables('workbookVersion3')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId4')]",
+              "version": "[variables('workbookVersion4')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId5')]",
+              "version": "[variables('workbookVersion5')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId6')]",
+              "version": "[variables('workbookVersion6')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId7')]",
+              "version": "[variables('workbookVersion7')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId8')]",
+              "version": "[variables('workbookVersion8')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId9')]",
+              "version": "[variables('workbookVersion9')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId10')]",
+              "version": "[variables('workbookVersion10')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId11')]",
+              "version": "[variables('workbookVersion11')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId12')]",
+              "version": "[variables('workbookVersion12')]"
+            },
+            {
+              "kind": "Workbook",
+              "contentId": "[variables('_workbookContentId13')]",
+              "version": "[variables('workbookVersion13')]"
+            }
+          ]
+        },
+        "firstPublishDate": "2022-11-30",
+        "providers": [
+          "Community"
+        ],
+        "categories": {
+          "domains": [
+            "Security - Others"
+          ]
+        }
+      },
+      "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]"
+    }
+  ],
+  "outputs": {}
+}
