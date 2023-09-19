@@ -63,7 +63,7 @@
       }
     },
     {
-      "name": "ArchivingBasicLogsRetention",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', variables('contentId'))]",
       "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
       "apiVersion": "2023-04-01-preview",
       "properties": {
