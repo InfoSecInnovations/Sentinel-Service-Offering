@@ -30,7 +30,7 @@
     "contentId": "IncidentOverview",
     "workbookResourceId": "[resourceId('Microsoft.Insights/workbooks', parameters('workbookId'))]",
     "workbookVersion": "2.1.0",
-    "solutionId": "<solution-id-value>"
+    "solutionId": "microsoftsentinelcommunity.azure-sentinel-solution-sochandbook"
   },
   "resources": [
     {

@@ -45,6 +45,21 @@
         "sourceId": "[variables('workspaceResourceId')]",
         "category": "sentinel"
       }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('Workbook-', last(split(variables('workbookResourceId'),'/'))))]",
+      "properties": {
+        "parentId": "[resourceId('Microsoft.Insights/workbooks', parameters('workbookId'))]",
+        "contentId": "[variables('contentId')]",
+        "kind": "Workbook",
+        "version": "[variables('workbookVersion')]",
+        "source": {
+          "kind": "Community",
+          "name": "Standalone"
+        }
+      }
     }
   ],
   "outputs": {
