@@ -65,6 +65,16 @@
           "name": "Windows Security Events",
           "sourceId": "[variables('solutionId')]"
         },
+                "author": {
+          "name": "Microsoft",
+          "email": "support@microsoft.com"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        },
         "dependencies": {
           "operator": "AND",
           "criteria": [

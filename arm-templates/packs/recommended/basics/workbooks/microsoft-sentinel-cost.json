@@ -65,6 +65,14 @@
           "name": "SOC Handbook",
           "sourceId": "[variables('solutionId')]"
         },
+        "author": {
+          "name": "Community"
+        },
+        "support": {
+          "tier": "Community",
+          "name": "Community",
+          "link": "https://github.com/Azure/Azure-Sentinel/issues"
+        },
         "dependencies": {
           "operator": "AND",
           "criteria": [

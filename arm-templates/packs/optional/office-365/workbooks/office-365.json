@@ -58,6 +58,16 @@
         "description": "@{workbookKey=Office365Workbook; logoFileName=office365_logo.svg; description=Gain insights into Office 365 by tracing and analyzing all operations and activities. You can drill down into your SharePoint, OneDrive, and Exchange.\nThis workbook lets you find usage trends across users, files, folders, and mailboxes, making it easier to identify anomalies in your network.; dataTypesDependencies=System.Object[]; dataConnectorsDependencies=System.Object[]; previewImagesFileNames=System.Object[]; version=2.0.1; title=Office 365; templateRelativePath=Office365.json; subtitle=; provider=Microsoft}.description",
         "parentId": "[variables('workbookResourceId')]",
         "contentId": "[variables('contentId')]",
+        "author": {
+          "name": "Microsoft",
+          "email": "support@microsoft.com"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        },
         "kind": "Workbook",
         "version": "[variables('workbookVersion')]",
         "source": {

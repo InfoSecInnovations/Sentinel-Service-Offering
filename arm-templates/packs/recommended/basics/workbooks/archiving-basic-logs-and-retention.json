@@ -29,7 +29,7 @@
     "contentId": "ArchivingBasicLogsRetention",
     "workbookResourceId": "[resourceId('Microsoft.Insights/workbooks', parameters('workbookId'))]",
     "workbookVersion": "1.2.1",
-        "workbookProductId": "[concat(take(variables('contentId'),50),'-','wb','-', uniqueString(concat(variables('contentId'),'-','Workbook','-',variables('contentId'),'-', variables('workbookVersion'))))]",
+    "workbookProductId": "[concat(take(variables('contentId'),50),'-','wb','-', uniqueString(concat(variables('contentId'),'-','Workbook','-',variables('contentId'),'-', variables('workbookVersion'))))]",
     "packageProductId": "[concat(take(variables('contentId'),50),'-','sa','-', uniqueString(concat(variables('contentId'),'-','Standalone','-',variables('contentId'),'-', variables('workbookVersion'))))]"
   },
   "resources": [

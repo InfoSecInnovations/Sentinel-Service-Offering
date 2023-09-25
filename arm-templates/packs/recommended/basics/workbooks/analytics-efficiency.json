@@ -58,6 +58,14 @@
         "contentId": "[variables('contentId')]",
         "kind": "Workbook",
         "version": "[variables('workbookVersion')]",
+        "author": {
+          "name": "Community"
+        },
+        "support": {
+          "tier": "Community",
+          "name": "Community",
+          "link": "https://github.com/Azure/Azure-Sentinel/issues"
+        },
         "source": {
           "kind": "Solution",
           "name": "SOC Handbook",
