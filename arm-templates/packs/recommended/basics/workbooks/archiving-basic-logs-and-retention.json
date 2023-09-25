@@ -59,6 +59,21 @@
           "kind": "Community",
           "name": "Standalone"
         },
+        "previewImages": [
+          "ArchivingBasicLogsRetentionWhite1.png"
+        ],
+        "previewImagesDark": [
+          "ArchivingBasicLogsRetentionBlack1.png"
+        ],
+        "icon": "ArchivingBasicLogsRetention.svg",
+        "author": {
+          "name": "seanstark-ms"
+        },
+        "support": {
+          "tier": "Community",
+          "name": "Community",
+          "link": "https://github.com/Azure/Azure-Sentinel/issues"
+        },
         "description": "This workbooks shows workspace and table retention periods, basic logs, and search & restore tables. It also allows you to update table retention periods, plans, and delete search or restore tables."
       }
     },
