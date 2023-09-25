@@ -108,6 +108,10 @@
       "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat(concat(parameters('workspaceName'),'-wb-',uniquestring(variables('contentId'))),variables('workbookVersion')))]",
       "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
       "apiVersion": "2023-07-01-preview",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName')), 'Microsoft.SecurityInsights/contentPackages', variables('contentId'))]"
+      ],
       "properties": {
         "packageKind": "Standalone",
         "packageId": "ArchivingBasicLogsRetention",
