@@ -65,7 +65,7 @@
           "name": "Windows Security Events",
           "sourceId": "[variables('solutionId')]"
         },
-                "author": {
+        "author": {
           "name": "Microsoft",
           "email": "support@microsoft.com"
         },
