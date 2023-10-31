@@ -107,6 +107,18 @@ Some items that work out of the box regardless of the configured Data Connectors
   - Workbooks
     - Exchange Online Workbook
     - Office 365 Workbook
+  - Analytics Rules
+    - Accessed files shared by temporary external user
+    - Malicious Inbox Rule
+    - Rare and potentially high-risk Office operations
+    - Possible Forest Blizzard attempted credential harvesting - Sept 2020
+    - Exchange AuditLog disabled
+    - Multiple users email forwarded to same destination
+    - New executable via Office FileUploaded Operation
+    - Office policy tampering
+    - SharePointFileOperation via devices with previously unseen user agents
+    - Mail redirect via ExO transport rule
+    - SharePointFileOperation via previously unseen IPs
 
 ### Azure Active Directory (optional)
 

@@ -22,7 +22,7 @@
     },
     "dcrName": {
       "type": "string",
-      "defaultValue": "DCR-AMA-Logs-Security-Events"
+      "defaultValue": "DCR-ISI-AMASecurityEventLogs"
     }
   },
   "variables": {
