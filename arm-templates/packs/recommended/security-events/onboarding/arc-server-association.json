@@ -5,19 +5,19 @@
     "arcServer": {
       "type": "string",
       "metadata": {
-        "description": "List of endpoints to associate data collection rules with"
+        "description": "Arc Server to associate data collection rule with"
       }
     },
     "dataCollectionRuleId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the data collection rule that will be associated with the VMs deployed."
+        "description": "The resource ID of the data collection rule that will be associated with the Arc Server."
       }
     },
     "dataCollectionRuleName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the data collection rule associated with the VMs deployed"
+        "description": "Name of the data collection rule associated with the Arc Server"
       }
     },
     "location": {
@@ -39,6 +39,18 @@
       "properties": {
         "description": "Association of data collection rule. Deleting this association will break the data collection for this virtual machine.",
         "dataCollectionRuleId": "[parameters('dataCollectionRuleId')]"
+      }
+    },
+    {
+      "type": "Microsoft.HybridCompute/machines/extensions",
+      "apiVersion": "2021-12-10-preview",
+      "name": "[format('{0}/AzureMonitorWindowsAgent', parameters('arcServer'))]",
+      "location": "[parameters('location')]",
+      "scope": "[concat('Microsoft.HybridCompute/machines/', parameters('arcServer'))]",
+      "properties": {
+        "publisher": "Microsoft.Azure.Monitor",
+        "type": "AzureMonitorWindowsAgent",
+        "autoUpgradeMinorVersion": true
       }
     }
   ],
