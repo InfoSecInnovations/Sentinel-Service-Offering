@@ -6,9 +6,13 @@ We have made use of https://github.com/OTRF/Blacksmith and https://github.com/OT
 
 InfoSec Innovations does not bear responsibility for the consequences of using this repository without our oversight, the files have mostly been made public for our own convenience, but you are free to use them without any expectation of support should any issues arise (unless you are one of our clients).
 
+## Terminology and abbreviations
+
+- LAW - Log Analytics Workspace
+
 ## Requirements
 
-TODO: requirements to be able to deploy resource group and subscription level templates?
+_TODO: requirements to be able to deploy resource group and subscription level templates?_
 
 Due to current limitations with the Azure API, it's not officially possible to enable the Azure Active Directory Data Connector through an ARM template. There is a workaround requiring ownership of the Tenant root scope, however in many cases you will not be granted this level of permission, so you should just enable it from the Azure Portal web UI until it becomes available via ARM templates.
 
@@ -35,13 +39,17 @@ Just click the button!
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Fisi-main.json)
 
+The LAW name must be unique, if you wish to install multiple instances of this template you should make sure to set different names each time.
+
+We do not recommend attempting to instantiate it multiple times within the same Resource Group.
+
 ### Manually enabling Azure Active Directory Data Connector
 
 See [Requirements](#requirements) above for information about this issue.
 
 If you need the AAD Data Connector without having Tenant root scope Owner permissions, after installing the template using the button above: 
 - Go to Microsoft Sentinel in the Azure Portal.
-- Select the Log Analytics Workspace created by the template. If you didn't set a custom name during deployment it will be called `LAW-ISI-Default-xxxxxxxxxxxxx`.
+- Select the Log Analytics Workspace created by the template. If you didn't set a custom name during deployment it will be called `LAW-ISI-SentinelServiceOffering`.
 - Go to the Data Connectors area.
 - If you enabled Azure Active Directory in the deployment template, you should have a Data Connector available there called `Azure Active Directory`.
 - Select it and click _Open connector page_.
@@ -65,39 +73,52 @@ The main template will instantiate a Log Analytics Workspace (LAW) with Microsof
 Some items that work out of the box regardless of the configured Data Connectors.
 
 - SOC Handbook Content Hub Package
-  - Analytics Efficiency Workbook
-  - AnomaliesVisulization Workbook (sic)
-  - Incident overview Workbook
-  - Microsoft Sentinel Cost Workbook
-- Archiving, Basic Logs and Retention Workbook (standalone)
+  - Workbooks
+    - Analytics Efficiency Workbook
+    - AnomaliesVisulization Workbook (sic)
+    - Incident overview Workbook
+    - Microsoft Sentinel Cost Workbook
+- Standalone
+  - Workbooks
+    - Archiving, Basic Logs and Retention Workbook
 
 ### Azure Activity
 
 - Azure Activity Content Hub Package
-  - Enable Azure Activity Data Connector by setting up a diagnostic setting that sends activity logs to the LAW
-  - Azure Activity Workbook
+  - Data Connectors
+    - Enable Azure Activity Data Connector by setting up a diagnostic setting that sends activity logs to the LAW
+  - Workbooks
+    - Azure Activity Workbook
 
 ### Security Events
 
 - Windows Security Events Content Hub Package
-  - Enable Windows Security Events via AMA Data Connector by creating a Data Collection Rule (DCR) using the profile selected in the template
-  - (optional) add existing Arc Servers to the DCR after deploying it
-  - Event Analyzer Workbook
+  - Data Connectors
+    - Enable Windows Security Events via AMA Data Connector by creating a Data Collection Rule (DCR) using the profile selected in the template
+    - (optional) add existing Arc Servers to the DCR after deploying it
+  - Workbooks
+    - Event Analyzer Workbook
 
 ### Office365 (optional)
 
 - Microsoft 365 Content Hub Package
-  - Microsoft 365 Data Connector
-  - Exchange Online Workbook
-  - Office 365 Workbook
+  - Data Connectors
+    - Microsoft 365 Data Connector
+  - Workbooks
+    - Exchange Online Workbook
+    - Office 365 Workbook
 
 ### Azure Active Directory (optional)
 
 - Azure Active Directory Content Hub Package
-  - (optional, see [Requirements](#requirements) section above) Enable Azure Active Directory Data Connector by setting up a diagnostic setting that sends Azure Active Directory logs to the LAW
-- Azure AD Audit, Activity and Sign-in logs Workbook (standalone)
-- Enable User and Entity Behaviour Analytics (UEBA) logs in the LAW
-- User And Entity Behavior Analytics Workbook (standalone)
+  - Data Connectors
+    - (optional, see [Requirements](#requirements) section above) Enable Azure Active Directory Data Connector by setting up a diagnostic setting that sends Azure Active Directory logs to the LAW
+- Standalone
+  - Logging
+    - Enable User and Entity Behaviour Analytics (UEBA) logs in the LAW
+  - Workbooks
+    - Azure AD Audit, Activity and Sign-in logs Workbook
+    - User And Entity Behavior Analytics Workbook
 
 
 

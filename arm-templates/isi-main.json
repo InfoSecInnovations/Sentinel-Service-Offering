@@ -4,9 +4,9 @@
     "parameters": {
         "workspaceName": {
             "type": "string",
-            "defaultValue": "LAW-ISI-Default",
+            "defaultValue": "LAW-ISI-SentinelServiceOffering",
             "metadata": {
-                "description": "Name for the Log Analytics workspace used to aggregate data"
+                "description": "Name for the Log Analytics workspace used to aggregate data. You should make sure to use a name that doesn't already exist."
             }
         },
         "pricingTier": {
