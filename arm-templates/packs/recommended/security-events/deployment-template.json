@@ -126,9 +126,6 @@
           },
           "dataCollectionRuleName": {
             "value": "[reference(variables('enableAMALogsName'), '2022-09-01').outputs.dataCollectionRuleName.value]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
           }
         }
       }

@@ -19,13 +19,6 @@
       "metadata": {
         "description": "Name of the data collection rule associated with the VMs deployed"
       }
-    },
-    "location": {
-      "type": "string",
-      "metadata": {
-        "description": "Location for all resources."
-      },
-      "defaultValue": "[deployment().location]"
     }
   },
   "variables": {
@@ -33,7 +26,7 @@
   },
   "resources": [
     {
-      "name": "[concat('deploy', parameters('arcServers')[copyIndex('serverDCRCopy')].name, '-', parameters('dataCollectionRuleName'), '-', parameters('location'))]",
+      "name": "[concat('deploy', parameters('arcServers')[copyIndex('serverDCRCopy')].name, '-', parameters('dataCollectionRuleName'), '-', parameters('arcServers')[copyIndex('serverDCRCopy')].location)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "resourceGroup": "[parameters('arcServers')[copyIndex('serverDCRCopy')].resourceGroup]",
@@ -54,7 +47,7 @@
             "value": "[parameters('dataCollectionRuleName')]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[parameters('arcServers')[copyIndex('serverDCRCopy')].location]"
           }
         }
       },

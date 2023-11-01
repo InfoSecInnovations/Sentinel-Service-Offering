@@ -23,7 +23,7 @@
     "location": {
       "type": "string",
       "metadata": {
-        "description": "Location for all resources."
+        "description": "Location for all resources. Must be the same as the location of the Arc Server"
       },
       "defaultValue": "[resourceGroup().location]"
     }
@@ -46,7 +46,6 @@
       "apiVersion": "2021-12-10-preview",
       "name": "[format('{0}/AzureMonitorWindowsAgent', parameters('arcServer'))]",
       "location": "[parameters('location')]",
-      "scope": "[concat('Microsoft.HybridCompute/machines/', parameters('arcServer'))]",
       "properties": {
         "publisher": "Microsoft.Azure.Monitor",
         "type": "AzureMonitorWindowsAgent",
