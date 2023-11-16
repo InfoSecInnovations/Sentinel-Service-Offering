@@ -16,12 +16,17 @@
     "workspaceName": {
       "type": "string"
     },
-    "enableAADDataConnector": {
-        "type": "bool",
-        "defaultValue": false,
-        "metadata": {
-            "description": "Due to current limitations you need to have tenant root scope ownership to enable the Azure Active Directory Data Connector through an ARM template. In most cases we won't have this permission level, so we should enable it through the web UI until it becomes officially supported via ARM template. However, if you do have tenant root scope ownership, you can go ahead and enable this."
-        }
+    "permissionLevel": {
+      "type": "string",
+      "allowedValues": [
+        "ResourceGroup",
+        "Subscription",
+        "Tenant"
+      ],
+      "defaultValue": "Subscription",
+      "metadata": {
+        "description": "Please select the highest level item you have Contributor access to."
+      }
     }
   },
   "variables": {
@@ -66,7 +71,7 @@
     },
     {
       "name": "[variables('enableAADDataConnectorName')]",
-      "condition": "[parameters('enableAADDataConnector')]",
+      "condition": "[equals(parameters('permissionLevel'), 'Tenant')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "scope": "/",

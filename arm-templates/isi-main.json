@@ -118,13 +118,6 @@
                 "description": "You should enable this if you use Azure Active Directory to get the appropriate logs and workspaces."
             }
         },
-        "enableAADDataConnector": {
-            "type": "bool",
-            "defaultValue": false,
-            "metadata": {
-                "description": "Due to current limitations you need to have tenant root scope ownership to enable the Azure Active Directory Data Connector through an ARM template. In most cases we won't have this permission level, so we should enable it through the web UI until it becomes officially supported via ARM template. However, if you do have tenant root scope ownership, you can go ahead and enable this."
-            }
-        },
         "guidSeed": {
             "type": "string",
             "defaultValue": "[newGuid()]",
@@ -324,8 +317,8 @@
                     "guidSeed": {
                         "value": "[parameters('guidSeed')]"
                     },
-                    "enableAADDataConnector": {
-                        "value": "[parameters('enableAADDataConnector')]"
+                    "permissionLevel": {
+                        "value": "[parameters('permissionLevel')]"
                     }
                 }
             }
