@@ -5,6 +5,18 @@
     "workspaceName": {
       "type": "string"
     },
+    "permissionLevel": {
+      "type": "string",
+      "allowedValues": [
+        "ResourceGroup",
+        "Subscription",
+        "Tenant"
+      ],
+      "defaultValue": "Subscription",
+      "metadata": {
+        "description": "Please select the highest level item you have Contributor access to."
+      }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -56,6 +68,7 @@
     },
     {
       "name": "[variables('azureActivityDataConnectorName')]",
+      "condition": "[or(equals(parameters('permissionLevel'), 'Subscription'), equals(parameters('permissionLevel'), 'Tenant'))]",
       "type": "Microsoft.Resources/deployments",
       "location": "[parameters('location')]",
       "apiVersion": "2022-09-01",

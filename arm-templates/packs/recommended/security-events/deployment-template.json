@@ -12,6 +12,18 @@
     "workspaceId": {
       "type": "string"
     },
+    "permissionLevel": {
+      "type": "string",
+      "allowedValues": [
+        "ResourceGroup",
+        "Subscription",
+        "Tenant"
+      ],
+      "defaultValue": "Subscription",
+      "metadata": {
+        "description": "Please select the highest level item you have Contributor access to."
+      }
+    },
     "securityCollectionTier": {
       "type": "string",
       "metadata": {
@@ -103,7 +115,7 @@
     },
     {
       "name": "[variables('associateArcServersName')]",
-      "condition": "[greater(length(parameters('arcServers')), 0)]",
+      "condition": "[and(greater(length(parameters('arcServers')), 0), or(equals(parameters('permissionLevel'), 'Subscription'), equals(parameters('permissionLevel'), 'Tenant')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "dependsOn": [

@@ -2,6 +2,18 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "permissionLevel": {
+            "type": "string",
+            "allowedValues": [
+                "ResourceGroup",
+                "Subscription",
+                "Tenant"
+            ],
+            "defaultValue": "Subscription",
+            "metadata": {
+                "description": "Please select the highest level item you have Contributor access to."
+            }
+        },
         "workspaceName": {
             "type": "string",
             "defaultValue": "LAW-ISI-SentinelServiceOffering",
@@ -244,6 +256,9 @@
                     "workspaceId": {
                         "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceIdOutput.value]"
                     },
+                    "permissionLevel": {
+                        "value": "[parameters('permissionLevel')]"
+                    },
                     "location": {
                         "value": "[variables('location')]"
                     },
@@ -272,6 +287,9 @@
                 "parameters": {
                     "workspaceName": {
                         "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
+                    },
+                    "permissionLevel": {
+                        "value": "[parameters('permissionLevel')]"
                     },
                     "location": {
                         "value": "[variables('location')]"
