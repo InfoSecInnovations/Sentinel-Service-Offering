@@ -61,10 +61,10 @@
             "value": "[parameters('workspaceName')]"
           },
           "workbook1-name": {
-            "value": "Azure AD Audit logs"
+            "value": "Microsoft Entra ID Audit logs"
           },
           "workbook2-name": {
-            "value": "Azure AD Sign-in logs"
+            "value": "Microsoft Entra ID Sign-in logs"
           }
         }
       }
