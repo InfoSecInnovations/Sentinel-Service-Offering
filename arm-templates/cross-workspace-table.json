@@ -7,6 +7,9 @@
     },
     "sourceWorkspaceId": {
       "type": "string"
+    },
+    "table": {
+      "type": "string"
     }
   },
   "variables": {
@@ -17,12 +20,12 @@
     {
       "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
       "apiVersion": "2020-08-01",
-      "name": "[concat(variables('workspaceName'), '/Microsoft.OperationalInsights/', 'office365-', variables('sourceWorkspaceName'))]",
+      "name": "[concat(variables('workspaceName'), '/', parameters('table'), '-', variables('sourceWorkspaceName'))]",
       "properties": {
         "category": "cross-workspace-tables",
-        "displayName": "[concat('Office365 table from ', variables('sourceWorkspaceName'))]",
-        "functionAlias": "ws_Office365",
-        "query": "[concat('workspace(', parameters('sourceWorkspaceId'), ').Office365')]"
+        "displayName": "[concat(parameters('table'), ' table from ', variables('sourceWorkspaceName'))]",
+        "functionAlias": "[concat('xws_', parameters('table'))]",
+        "query": "[concat('workspace(\"', parameters('sourceWorkspaceId'), '\").', parameters('table'))]"
       }
     }
   ]
