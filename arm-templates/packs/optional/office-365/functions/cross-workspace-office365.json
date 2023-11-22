@@ -1,0 +1,29 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceId": {
+      "type": "string"
+    },
+    "sourceWorkspaceId": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "workspaceName": "[last(split(parameters('workspaceId'),'/'))]",
+    "sourceWorkspaceName": "[last(split(parameters('sourceWorkspaceId'),'/'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(variables('workspaceName'), '/Microsoft.OperationalInsights/', 'office365-', variables('sourceWorkspaceName'))]",
+      "properties": {
+        "category": "cross-workspace-tables",
+        "displayName": "[concat('Office365 table from ', variables('sourceWorkspaceName'))]",
+        "functionAlias": "ws_Office365",
+        "query": "[concat('workspace(', parameters('sourceWorkspaceId'), ').Office365')]"
+      }
+    }
+  ]
+}
