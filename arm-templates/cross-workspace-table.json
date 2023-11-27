@@ -10,6 +10,9 @@
     },
     "table": {
       "type": "string"
+    },
+    "functionAlias": {
+      "type": "string"
     }
   },
   "variables": {
@@ -24,7 +27,7 @@
       "properties": {
         "category": "cross-workspace-tables",
         "displayName": "[concat(parameters('table'), ' table from ', variables('sourceWorkspaceName'))]",
-        "functionAlias": "[concat('xws_', parameters('table'))]",
+        "functionAlias": "[parameters('functionAlias')]",
         "query": "[concat('workspace(\"', parameters('sourceWorkspaceId'), '\").', parameters('table'))]"
       }
     }
