@@ -49,45 +49,6 @@
           },
           "workspace": {
             "value": "[parameters('workspaceName')]"
-          },
-          "workbook1-name": {
-            "value": "Analytics Efficiency"
-          },
-          "workbook2-name": {
-            "value": "AnomaliesVisulization"
-          },
-          "workbook3-name": {
-            "value": "AnomalyData"
-          },
-          "workbook4-name": {
-            "value": "Attack Surface Reduction Dashboard"
-          },
-          "workbook5-name": {
-            "value": "Microsoft Sentinel Cost"
-          },
-          "workbook6-name": {
-            "value": "Security Alerts"
-          },
-          "workbook7-name": {
-            "value": "Incident overview"
-          },
-          "workbook8-name": {
-            "value": "IntSights IOC Workbook"
-          },
-          "workbook9-name": {
-            "value": "Investigation Insights"
-          },
-          "workbook10-name": {
-            "value": "MITRE ATT&CK Workbook"
-          },
-          "workbook11-name": {
-            "value": "Security Operations Efficiency"
-          },
-          "workbook12-name": {
-            "value": "Security Status"
-          },
-          "workbook13-name": {
-            "value": "Microsoft Sentinel Central"
           }
         }
       }
