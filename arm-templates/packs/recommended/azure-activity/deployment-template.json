@@ -59,9 +59,6 @@
           },
           "workspace": {
             "value": "[parameters('workspaceName')]"
-          },
-          "workbook1-name": {
-            "value": "Azure Activity"
           }
         }
       }

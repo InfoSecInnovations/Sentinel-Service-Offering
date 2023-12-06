@@ -28,7 +28,8 @@
         "category": "cross-workspace-tables",
         "displayName": "[concat(parameters('table'), ' table from ', variables('sourceWorkspaceName'))]",
         "functionAlias": "[parameters('functionAlias')]",
-        "query": "[concat('workspace(\"', parameters('sourceWorkspaceId'), '\").', parameters('table'))]"
+        "query": "[concat('workspace(\"', parameters('sourceWorkspaceId'), '\").', parameters('table'))]",
+        "etag": "*"
       }
     }
   ]

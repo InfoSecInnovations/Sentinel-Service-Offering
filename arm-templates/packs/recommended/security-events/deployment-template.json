@@ -77,12 +77,6 @@
           },
           "workspace": {
             "value": "[parameters('workspaceName')]"
-          },
-          "workbook1-name": {
-            "value": "Event Analyzer"
-          },
-          "workbook2-name": {
-            "value": "Identity & Access"
           }
         }
       }

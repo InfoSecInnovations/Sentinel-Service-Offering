@@ -85,15 +85,6 @@
           },
           "workspace": {
             "value": "[parameters('workspaceName')]"
-          },
-          "workbook1-name": {
-            "value": "SharePoint & OneDrive"
-          },
-          "workbook2-name": {
-            "value": "Office 365"
-          },
-          "workbook3-name": {
-            "value": "Exchange Online"
           }
         }
       }
