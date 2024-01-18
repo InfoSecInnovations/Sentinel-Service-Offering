@@ -1,0 +1,146 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "packages": {
+      "type": "array"
+    }
+  },
+  "variables": {
+    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
+    "azureActivityContentPackageName": "[concat('azureActivityContentPackage', '-', parameters('location'))]",
+    "AADContentPackageName": "[concat('AADContentPackage', '-', parameters('location'))]",
+    "microsoft365ContentPackageName": "[concat('microsoft365ContentPackage', '-', parameters('location'))]",
+    "socHandbookContentPackageName": "[concat('socHandbookContentPackage', '-', parameters('location'))]",
+    "windowsSecurityEventsContentPackageName": "[concat('windowsSecurityEventsContentPackage', '-', parameters('location'))]"
+  },
+  "resources": [
+    {
+      "name": "[variables('azureActivityContentPackageName')]",
+      "condition": "[contains(parameters('packages'), 'Azure Activity')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/Azure%20Activity/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('AADContentPackageName')]",
+      "condition": "[contains(parameters('packages'), 'Microsoft Entra ID')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/Microsoft%20Entra%20ID/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('microsoft365ContentPackageName')]",
+      "condition": "[contains(parameters('packages'), 'Microsoft 365')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/Microsoft%20365/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('socHandbookContentPackageName')]",
+      "condition": "[contains(parameters('packages'), 'SOC Handbook')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/SOC%20Handbook/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('windowsSecurityEventsContentPackageName')]",
+      "condition": "[contains(parameters('packages'), 'Windows Security Events')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/Windows%20Security%20Events/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    }
+  ]
+}

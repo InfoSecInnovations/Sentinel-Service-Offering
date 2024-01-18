@@ -1,0 +1,1168 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "# InfoSec Innovations Content Installation Wizard #\r\n\r\nWelcome! If you've made it this far, you successully installed our Wizard Workbook which will guide you through installing our Microsoft Sentinel recommended content.\r\n\r\nSelect the Log Analytics Workspace below which you are using with Microsoft Sentinel, it will probably be the same as the one containing this Workbook if you are following our standard installation procedure."
+      },
+      "name": "text - 7"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "1f0e851c-25c0-4447-9a8d-1f23ddab0dca",
+            "version": "KqlParameterItem/1.0",
+            "name": "DefaultWorkspace_Internal",
+            "type": 5,
+            "isHiddenWhenLocked": true,
+            "typeSettings": {
+              "resourceTypeFilter": {
+                "microsoft.operationalinsights/workspaces": true
+              },
+              "additionalResourceOptions": [
+                "value::1"
+              ],
+              "showDefault": false
+            },
+            "defaultValue": "value::1"
+          },
+          {
+            "id": "2f20667b-4615-44db-8272-3fe499daadbe",
+            "version": "KqlParameterItem/1.0",
+            "name": "Workspace",
+            "type": 5,
+            "query": "where type =~ \"microsoft.operationalinsights/workspaces\"\r\n| project value =id, label = name, selected = iff(id =~ '{DefaultWorkspace_Internal}', true, false)",
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "queryType": 1,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "value": "/subscriptions/3a0422c6-fe54-4f61-af19-722c03990dda/resourceGroups/RG-Workbook-Manual-Install/providers/Microsoft.OperationalInsights/workspaces/LAW-Workbook-Manual-Install"
+          },
+          {
+            "id": "e764a041-c00d-4a14-8c6b-b97b176aff68",
+            "version": "KqlParameterItem/1.0",
+            "name": "Office365DataConnector",
+            "type": 5,
+            "isRequired": true,
+            "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{Workspace}/providers/Microsoft.SecurityInsights/dataConnectors\",\"urlParams\":[{\"key\":\"api-version\",\"value\":\"2023-02-01\"}],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.value[?(@.kind==\\\"Office365\\\")]\",\"columns\":[]}}]}",
+            "isHiddenWhenLocked": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "queryType": 12,
+            "value": null
+          },
+          {
+            "id": "24c2d24a-23d6-4f51-a5d0-8125bf2a7376",
+            "version": "KqlParameterItem/1.0",
+            "name": "SecurityEventDCR",
+            "type": 1,
+            "isRequired": true,
+            "query": "where type has 'microsoft.insights/datacollectionrules' and properties.destinations.logAnalytics has \"{Workspace}\"",
+            "crossComponentResources": [
+              "value::selected"
+            ],
+            "isHiddenWhenLocked": true,
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources"
+          },
+          {
+            "id": "e3118729-fa96-4ed5-b059-848b4a9c658b",
+            "version": "KqlParameterItem/1.0",
+            "name": "AzureActivityLogCount",
+            "type": 1,
+            "isRequired": true,
+            "query": "let Count = toscalar(AzureActivity\r\n| where TimeGenerated > ago(7d)\r\n| summarize count());\r\nprint iff(Count == 0, \"0\", tostring(Count))",
+            "crossComponentResources": [
+              "{Workspace}"
+            ],
+            "isHiddenWhenLocked": true,
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces"
+          },
+          {
+            "id": "f81bd618-5eed-4d6f-bfee-2f26d0a7e0f7",
+            "version": "KqlParameterItem/1.0",
+            "name": "ResourceGroup",
+            "type": 5,
+            "isRequired": true,
+            "query": "{\"version\":\"1.0.0\",\"content\":\"[{\\\"value\\\": \\\"/subscriptions/{Workspace:subscriptionId}/resourceGroups/{Workspace:ResourceGroup}\\\", \\\"selected\\\": true}]\",\"transformers\":null}",
+            "isHiddenWhenLocked": true,
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "queryType": 8
+          },
+          {
+            "id": "1569d12b-423c-4113-b705-b9e10210b43e",
+            "version": "KqlParameterItem/1.0",
+            "name": "EntraIDLogCount",
+            "type": 1,
+            "isRequired": true,
+            "query": "let Count = toscalar(find in (SigninLogs, AuditLogs, AADNonInteractiveUserSignInLogs, AADServicePrincipalSignInLogs, AADManagedIdentitySignInLogs, AADProvisioningLogs, ADFSSignInLogs, AADUserRiskEvents, AADRiskyUsers, NetworkAccessTraffic, AADRiskyServicePrincipals, AADServicePrincipalRiskEvents) where TimeGenerated > ago(7d)\r\n| summarize count());\r\nprint iff(Count == 0, \"0\", tostring(Count))",
+            "crossComponentResources": [
+              "{Workspace}"
+            ],
+            "isHiddenWhenLocked": true,
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces"
+          },
+          {
+            "id": "25d2cb95-fb44-4f9c-a6ee-9ec24e5eaa7b",
+            "version": "KqlParameterItem/1.0",
+            "name": "ResourceGroupName",
+            "type": 1,
+            "isRequired": true,
+            "query": "{\"version\":\"1.0.0\",\"content\":\"\\\"{ResourceGroup:resourceGroup}\\\"\",\"transformers\":null}",
+            "isHiddenWhenLocked": true,
+            "queryType": 8
+          },
+          {
+            "id": "6a4f94c1-ec28-46c3-abe1-e2172b885870",
+            "version": "KqlParameterItem/1.0",
+            "name": "WorkspaceName",
+            "type": 1,
+            "isRequired": true,
+            "query": "{\"version\":\"1.0.0\",\"content\":\"\\\"{Workspace:name}\\\"\",\"transformers\":null}",
+            "isHiddenWhenLocked": true,
+            "queryType": 8
+          },
+          {
+            "id": "f2f9afde-14b8-4321-bdc2-f325cb261eb9",
+            "version": "KqlParameterItem/1.0",
+            "name": "Subscription",
+            "type": 6,
+            "isRequired": true,
+            "query": "{\"version\":\"1.0.0\",\"content\":\"[{\\\"value\\\": \\\"{ResourceGroup:subscriptionId}\\\", \\\"selected\\\": true}]\",\"transformers\":null}",
+            "isHiddenWhenLocked": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "queryType": 8
+          },
+          {
+            "id": "18548a0b-5b72-49dc-bd5a-80b46a3d2c41",
+            "version": "KqlParameterItem/1.0",
+            "name": "TenantId",
+            "type": 1,
+            "isRequired": true,
+            "query": "take 1\r\n| project tenantId",
+            "crossComponentResources": [
+              "{Subscription}"
+            ],
+            "isHiddenWhenLocked": true,
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources"
+          },
+          {
+            "id": "8e027b28-be59-486b-a9a9-912aaa2b3e36",
+            "version": "KqlParameterItem/1.0",
+            "name": "Location",
+            "type": 1,
+            "isRequired": true,
+            "query": "where type =~ \"Microsoft.OperationalInsights/workspaces\" and id == \"{Workspace}\"\r\n| project location",
+            "crossComponentResources": [
+              "{Subscription}"
+            ],
+            "isHiddenWhenLocked": true,
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources"
+          },
+          {
+            "id": "c96915a2-5e61-400f-97a9-7a53c174c8d9",
+            "version": "KqlParameterItem/1.0",
+            "name": "SubscriptionId",
+            "type": 1,
+            "isRequired": true,
+            "query": "{\"version\":\"1.0.0\",\"content\":\"\\\"{Subscription:subscriptionId}\\\"\",\"transformers\":null}",
+            "isHiddenWhenLocked": true,
+            "queryType": 8
+          }
+        ],
+        "style": "pills",
+        "queryType": 12
+      },
+      "name": "parameters - 0"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Select Content Packages ##\r\n\r\nSome organizations may not be using Microsoft 365 products or Entra ID, so we have made the content packages relating to those optional, however we strongly recommend you do enable them if using the relevant products."
+      },
+      "name": "text - 8"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "f0bd5b18-7e9a-4d03-b251-60013c6c6595",
+            "version": "KqlParameterItem/1.0",
+            "name": "EnableOffice365",
+            "label": "Enable M365 Content",
+            "type": 10,
+            "description": "If your organization uses Microsoft 365 you should enable this option to install related content.",
+            "isRequired": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "jsonData": "[\r\n    {\"value\": \"Yes\"},\r\n    {\"value\": \"No\", \"selected\": true}\r\n]",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": "Yes"
+          },
+          {
+            "id": "cb885f3f-44d7-401a-bde0-c728751e36a1",
+            "version": "KqlParameterItem/1.0",
+            "name": "EnableAAD",
+            "label": "Enable Entra ID Content",
+            "type": 10,
+            "description": "If your organization uses Entra ID you should enable this option to install related content",
+            "isRequired": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "jsonData": "[\r\n    {\"value\": \"Yes\"},\r\n    {\"value\": \"No\", \"selected\": true}\r\n]",
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": "Yes"
+          }
+        ],
+        "style": "above",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 6"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{Workspace}/providers/Microsoft.SecurityInsights/contentProductPackages\",\"urlParams\":[{\"key\":\"api-version\",\"value\":\"2023-11-01-preview\"}],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$..value[?(@.properties.installedVersion)]\",\"columns\":[{\"path\":\"$.properties.contentProductId\",\"columnid\":\"contentProductId\"},{\"path\":\"$.properties.displayName\",\"columnid\":\"name\"},{\"path\":\"$.properties.installedVersion\",\"columnid\":\"installedVersion\"}]}}]}",
+              "size": 0,
+              "queryType": 12,
+              "gridSettings": {
+                "rowLimit": 10000
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "_",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "all packages"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{Workspace}/providers/Microsoft.SecurityInsights/contentProductPackages\",\"urlParams\":[{\"key\":\"api-version\",\"value\":\"2023-11-01-preview\"}],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$..value[?(!@.properties.installedVersion)]\",\"columns\":[{\"path\":\"$.properties.contentProductId\",\"columnid\":\"contentProductId\"},{\"path\":\"$.properties.displayName\",\"columnid\":\"name\"}]}}]}",
+              "size": 0,
+              "queryType": 12,
+              "gridSettings": {
+                "rowLimit": 10000
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "_",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "non installed packages"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"1.0.0\",\"content\":\"[\\r\\n\\t{\\r\\n\\t\\t\\\"name\\\": \\\"Microsoft Entra ID\\\",\\r\\n\\t\\t\\\"pack\\\": \\\"azuread\\\"\\r\\n\\t},\\r\\n\\t{\\r\\n\\t\\t\\\"name\\\": \\\"Azure Activity\\\"\\r\\n\\t},\\r\\n\\t{\\r\\n\\t\\t\\\"name\\\": \\\"Microsoft 365\\\",\\r\\n\\t\\t\\\"pack\\\": \\\"office365\\\"\\r\\n\\t},\\r\\n\\t{\\r\\n\\t\\t\\\"name\\\": \\\"Windows Security Events\\\"\\r\\n\\t},\\r\\n\\t{\\r\\n\\t\\t\\\"name\\\": \\\"SOC Handbook\\\"\\r\\n\\t}\\r\\n]\",\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$[?(!@.pack || ('{EnableAAD}' == 'Yes' && @.pack == 'azuread') || ('{EnableOffice365}' == 'Yes' && @.pack == 'office365'))]\",\"columns\":[]}}]}",
+              "size": 0,
+              "queryType": 8
+            },
+            "conditionalVisibility": {
+              "parameterName": "_",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "required packages"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1706bcd0-90f1-4853-ad6f-7378608f30d8\",\"mergeType\":\"innerunique\",\"leftTable\":\"required packages\",\"rightTable\":\"all packages\",\"leftColumn\":\"name\",\"rightColumn\":\"name\"}],\"projectRename\":[{\"originalName\":\"[required packages].name\",\"mergedName\":\"name\",\"fromId\":\"1706bcd0-90f1-4853-ad6f-7378608f30d8\"},{\"originalName\":\"[required packages].contentProductId\"},{\"originalName\":\"[required packages].package\"},{\"originalName\":\"[all packages].contentProductId\"},{\"originalName\":\"[all packages].name\"},{\"originalName\":\"[required packages].pack\"},{\"originalName\":\"[all packages].installedVersion\"}]}",
+              "size": 3,
+              "title": "Already installed Content Hub packages",
+              "queryType": 7
+            },
+            "showPin": false,
+            "name": "query - 2"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1706bcd0-90f1-4853-ad6f-7378608f30fb\",\"mergeType\":\"innerunique\",\"leftTable\":\"required packages\",\"rightTable\":\"non installed packages\",\"leftColumn\":\"name\",\"rightColumn\":\"name\"}],\"projectRename\":[{\"originalName\":\"[required packages].name\",\"mergedName\":\"name\",\"fromId\":\"1706bcd0-90f1-4853-ad6f-7378608f30fb\"},{\"originalName\":\"[required packages].contentProductId\"},{\"originalName\":\"[required packages].pack\"},{\"originalName\":\"[required packages].package\"},{\"originalName\":\"[non installed packages].contentProductId\"},{\"originalName\":\"[non installed packages].name\"}]}",
+              "size": 3,
+              "title": "Required Content Hub packages not yet installed",
+              "exportMultipleValues": true,
+              "exportedParameters": [
+                {
+                  "fieldName": "name",
+                  "parameterName": "PackagesToInstall",
+                  "parameterType": 1,
+                  "quote": "\""
+                }
+              ],
+              "queryType": 7
+            },
+            "showPin": false,
+            "name": "packages needing install"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "5e55b171-8f0b-47bb-b83a-fcdb5e5d3d62",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "MissingPackages",
+                  "type": 2,
+                  "multiSelect": true,
+                  "quote": "\"",
+                  "delimiter": ",",
+                  "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"cc0f6ae1-7c1e-4e56-8c43-2fd4b18bb0ba\",\"mergeType\":\"table\",\"leftTable\":\"packages needing install\"}],\"projectRename\":[{\"originalName\":\"[packages needing install].name\",\"mergedName\":\"name\",\"fromId\":\"cc0f6ae1-7c1e-4e56-8c43-2fd4b18bb0ba\"}]}",
+                  "typeSettings": {
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "showDefault": false
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "defaultValue": "value::all",
+                  "queryType": 7
+                },
+                {
+                  "id": "bcad1116-cc92-4f8f-acc3-eca62f19a6bc",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "MissingPackagesCount",
+                  "type": 1,
+                  "query": "{\"version\":\"1.0.0\",\"content\":\"[{MissingPackages}]\",\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.length\",\"columns\":[]}}]}",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "queryType": 8
+                }
+              ],
+              "style": "pills",
+              "queryType": 7
+            },
+            "conditionalVisibility": {
+              "parameterName": "_",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "parameters - 6"
+          }
+        ]
+      },
+      "name": "installed packages"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "## Data Connector Status ##\r\n\r\nData Connectors are the most important element for your Sentinel instance, without them you won't have any logs to analyze!\r\n\r\nBelow you can see which Data Connectors should be installed based on your content selection and our recommendations. If they are already installed, you will see a graph showing the incoming log volume, if they are missing, configure your desired options and click the button to set them up."
+            },
+            "name": "text - 8"
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "title": "Security Events via AMA",
+              "items": [
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Enabled ##",
+                          "style": "success"
+                        },
+                        "name": "text - 1"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "let start = ago(7d);\r\nlet end = now();\r\nSecurityEvent\r\n| where TimeGenerated between(start..end)\r\n| make-series SecurityEvents = count() default=0 on TimeGenerated from start to end step 1d",
+                          "size": 1,
+                          "noDataMessage": "The Data Connector is configured but has not received any logs",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "timechart",
+                          "chartSettings": {
+                            "ySettings": {
+                              "min": 0
+                            }
+                          }
+                        },
+                        "name": "query - 0"
+                      },
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## How to configure AMA on your machines ##\r\n\r\nTODO:\r\n\r\n- links to appropriate documentation"
+                        },
+                        "name": "text - 2"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "where type =~ \"Microsoft.HybridCompute/machines\"",
+                          "size": 0,
+                          "queryType": 1,
+                          "resourceType": "microsoft.resourcegraph/resources",
+                          "crossComponentResources": [
+                            "value::selected"
+                          ]
+                        },
+                        "conditionalVisibility": {
+                          "parameterName": "_",
+                          "comparison": "isEqualTo",
+                          "value": "true"
+                        },
+                        "name": "all hybrid machines query"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{SecurityEventDCR}/associations\",\"urlParams\":[{\"key\":\"api-version\",\"value\":\"2022-06-01\"}],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.value\",\"columns\":[{\"path\":\"id\",\"columnid\":\"ArcServers\",\"columnType\":\"string\",\"substringRegexMatch\":\"(\\\\/subscriptions.*)(\\\\/providers.*|Providers.*)\",\"substringReplace\":\"$1\"}]}}]}",
+                          "size": 0,
+                          "title": "Machines already onboarded to DCR",
+                          "queryType": 12
+                        },
+                        "name": "machines added to dcr query"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"c6178f52-2789-42f1-803a-c04beb6750e2\",\"mergeType\":\"leftanti\",\"leftTable\":\"all hybrid machines query\",\"rightTable\":\"machines added to dcr query\",\"leftColumn\":\"id\",\"rightColumn\":\"ArcServers\"}],\"projectRename\":[{\"originalName\":\"[all hybrid machines query].id\",\"mergedName\":\"id\",\"fromId\":\"c6178f52-2789-42f1-803a-c04beb6750e2\"},{\"originalName\":\"[all hybrid machines query].name\",\"mergedName\":\"name\",\"fromId\":\"c6178f52-2789-42f1-803a-c04beb6750e2\"},{\"originalName\":\"[all hybrid machines query].location\",\"mergedName\":\"location\",\"fromId\":\"c6178f52-2789-42f1-803a-c04beb6750e2\"},{\"originalName\":\"[all hybrid machines query].resourceGroup\",\"mergedName\":\"resourceGroup\",\"fromId\":\"c6178f52-2789-42f1-803a-c04beb6750e2\"},{\"originalName\":\"[all hybrid machines query].extendedLocation\",\"mergedName\":\"extendedLocation\",\"fromId\":\"c6178f52-2789-42f1-803a-c04beb6750e2\"},{\"originalName\":\"[all hybrid machines query].type\"},{\"originalName\":\"[all hybrid machines query].tenantId\"},{\"originalName\":\"[all hybrid machines query].kind\"},{\"originalName\":\"[all hybrid machines query].subscriptionId\"},{\"originalName\":\"[all hybrid machines query].managedBy\"},{\"originalName\":\"[all hybrid machines query].sku\"},{\"originalName\":\"[all hybrid machines query].plan\"},{\"originalName\":\"[all hybrid machines query].properties\"},{\"originalName\":\"[all hybrid machines query].tags\"},{\"originalName\":\"[all hybrid machines query].identity\"},{\"originalName\":\"[all hybrid machines query].zones\"}]}",
+                          "size": 0,
+                          "title": "Machines not onboarded to DCR",
+                          "exportMultipleValues": true,
+                          "exportedParameters": [
+                            {
+                              "fieldName": "",
+                              "parameterName": "ArcServersToOnboard",
+                              "parameterType": 1,
+                              "delimiter": ",",
+                              "quote": ""
+                            }
+                          ],
+                          "queryType": 7
+                        },
+                        "showPin": false,
+                        "name": "not onboarded query"
+                      },
+                      {
+                        "type": 11,
+                        "content": {
+                          "version": "LinkItem/1.0",
+                          "style": "list",
+                          "links": [
+                            {
+                              "id": "c14cac37-807c-4935-9a2d-5f411802b5cb",
+                              "linkTarget": "ArmTemplate",
+                              "linkLabel": "Add selected machines to DCR",
+                              "style": "primary",
+                              "linkIsContextBlade": true,
+                              "templateRunContext": {
+                                "componentIdSource": "parameter",
+                                "componentId": "ResourceGroup",
+                                "templateUriSource": "static",
+                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/recommended/security-events/onboarding/arc-server-associations.json",
+                                "templateParameters": [
+                                  {
+                                    "name": "dataCollectionRuleId",
+                                    "source": "parameter",
+                                    "value": "SecurityEventDCR",
+                                    "kind": "stringValue"
+                                  },
+                                  {
+                                    "name": "arcServers",
+                                    "source": "static",
+                                    "value": "[{ArcServersToOnboard}]",
+                                    "kind": "arrayValue"
+                                  }
+                                ],
+                                "titleSource": "static",
+                                "title": "Add Arc Servers to Data Collection Rule",
+                                "descriptionSource": "static",
+                                "description": "The selected Arc Servers will be onboarded to the Data Collection Rule associated with the Security Events via AMA Data Connector.",
+                                "runLabelSource": "static",
+                                "runLabel": "Add Servers"
+                              }
+                            }
+                          ]
+                        },
+                        "name": "links - 6"
+                      }
+                    ]
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "SecurityEventDCR",
+                    "comparison": "isNotEqualTo"
+                  },
+                  "name": "security events enabled"
+                },
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Data Connector not installed ##",
+                          "style": "warning"
+                        },
+                        "name": "text - 0"
+                      },
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Install Security Events via AMA Data Connector ##\r\n\r\nSelect the desired logging volume below, and click the button to install the Data Connector using our ARM template.\r\n\r\nUnlike the our other Data Connectors, this only requires Resource Group Contributor access, however you will require higher permission levels to be able to onboard Arc Servers to the Data Collection Rule (DCR) associated with this Workspace."
+                        },
+                        "name": "text - 3"
+                      },
+                      {
+                        "type": 9,
+                        "content": {
+                          "version": "KqlParameterItem/1.0",
+                          "parameters": [
+                            {
+                              "id": "53a67726-675b-41af-92a8-5560193833e6",
+                              "version": "KqlParameterItem/1.0",
+                              "name": "SecurityEventLoggingLevel",
+                              "label": "Security Events Logging Level",
+                              "type": 2,
+                              "isRequired": true,
+                              "typeSettings": {
+                                "additionalResourceOptions": [],
+                                "showDefault": false
+                              },
+                              "jsonData": "[\r\n    {\"value\": \"Minimum\"},\r\n    {\"value\": \"Common\", \"selected\": true},\r\n    {\"value\": \"All\"}\r\n]",
+                              "timeContext": {
+                                "durationMs": 86400000
+                              }
+                            }
+                          ],
+                          "style": "pills",
+                          "queryType": 8
+                        },
+                        "name": "parameters - 2"
+                      },
+                      {
+                        "type": 11,
+                        "content": {
+                          "version": "LinkItem/1.0",
+                          "style": "paragraph",
+                          "links": [
+                            {
+                              "id": "d487b21b-49e1-4f91-aa1e-014ed7fa873f",
+                              "linkTarget": "ArmTemplate",
+                              "linkLabel": "Install Security Events via AMA Data Connector",
+                              "style": "primary",
+                              "templateRunContext": {
+                                "componentIdSource": "parameter",
+                                "componentId": "ResourceGroup",
+                                "templateUriSource": "static",
+                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/recommended/security-events/data-connectors/enable-ama-logs.json",
+                                "templateParameters": [
+                                  {
+                                    "name": "workspaceName",
+                                    "source": "static",
+                                    "value": "{Workspace:name}",
+                                    "kind": "stringValue"
+                                  },
+                                  {
+                                    "name": "workspaceId",
+                                    "source": "static",
+                                    "value": "{Workspace:customerId}",
+                                    "kind": "stringValue"
+                                  },
+                                  {
+                                    "name": "loggingLevel",
+                                    "source": "parameter",
+                                    "value": "SecurityEventLoggingLevel",
+                                    "kind": "stringValue"
+                                  }
+                                ],
+                                "titleSource": "static",
+                                "descriptionSource": "static",
+                                "runLabelSource": "static"
+                              }
+                            }
+                          ]
+                        },
+                        "name": "links - 1"
+                      }
+                    ]
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "SecurityEventDCR",
+                    "comparison": "isEqualTo"
+                  },
+                  "name": "security events disabled"
+                }
+              ]
+            },
+            "customWidth": "50",
+            "name": "security events",
+            "styleSettings": {
+              "margin": "8px",
+              "showBorder": true
+            }
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "title": "Azure Activity",
+              "items": [
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Enabled ##",
+                          "style": "success"
+                        },
+                        "name": "text - 0"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "let start = ago(7d);\r\nlet end = now();\r\nAzureActivity\r\n| where TimeGenerated between(start..end)\r\n| make-series AzureActivity = count() default=0 on TimeGenerated from start to end step 1d",
+                          "size": 1,
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "timechart"
+                        },
+                        "name": "query - 1"
+                      }
+                    ]
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "AzureActivityLogCount",
+                    "comparison": "isNotEqualTo",
+                    "value": "0"
+                  },
+                  "name": "azure activity"
+                },
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Azure Activity logging not configured or no logs received yet ##",
+                          "style": "warning"
+                        },
+                        "name": "text - 0"
+                      },
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Enable Azure Activity Logs ##\r\n\r\nThis ARM template will send Azure Activity Logs to the selected Log Analytics Workspace. When any logs have been received the Data Connector will show as enabled.\r\n\r\nYou need to have Subscription Owner permissions to perform this operation, if this is not the case, contact an administrator to either be granted the appropriate permissions or to complete this step themself."
+                        },
+                        "name": "text - 1"
+                      },
+                      {
+                        "type": 11,
+                        "content": {
+                          "version": "LinkItem/1.0",
+                          "style": "list",
+                          "links": [
+                            {
+                              "id": "35ed10f6-9332-4598-b2dc-0a5c6408d1c7",
+                              "linkTarget": "ArmTemplate",
+                              "linkLabel": "Enable Azure Activity Logs",
+                              "style": "primary",
+                              "linkIsContextBlade": true,
+                              "templateRunContext": {
+                                "componentIdSource": "parameter",
+                                "componentId": "ResourceGroup",
+                                "templateUriSource": "static",
+                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/recommended/azure-activity/data-connectors/enable-azure-activity-logs.json",
+                                "templateParameters": [
+                                  {
+                                    "name": "resourceGroupName",
+                                    "source": "parameter",
+                                    "value": "ResourceGroupName",
+                                    "kind": "stringValue"
+                                  },
+                                  {
+                                    "name": "workspaceName",
+                                    "source": "parameter",
+                                    "value": "WorkspaceName",
+                                    "kind": "stringValue"
+                                  }
+                                ],
+                                "titleSource": "static",
+                                "title": "Enable Azure Activity Logs",
+                                "descriptionSource": "static",
+                                "description": "This will configure Azure Activity Logs to be sent to the selected Log Analytics Workspace.",
+                                "runLabelSource": "static",
+                                "runLabel": "Enable Logs"
+                              }
+                            }
+                          ]
+                        },
+                        "name": "links - 2"
+                      }
+                    ]
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "AzureActivityLogCount",
+                    "comparison": "isEqualTo",
+                    "value": "0"
+                  },
+                  "name": "azure activity not enabled"
+                }
+              ]
+            },
+            "customWidth": "50",
+            "name": "azure activity",
+            "styleSettings": {
+              "margin": "8px",
+              "showBorder": true
+            }
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "title": "Microsoft 365",
+              "items": [
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Enabled ##",
+                          "style": "success"
+                        },
+                        "name": "text - 3"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "let start = ago(7d);\r\nlet end = now();\r\nOfficeActivity\r\n| where TimeGenerated between(start..end) and (OfficeWorkload == \"SharePoint\" or OfficeWorkload == \"OneDrive\")\r\n| make-series OfficeActivity = count() default=0 on TimeGenerated from start to end step 1d",
+                          "size": 1,
+                          "noDataMessage": "The Data Connector is configured but has not received any logs.",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "visualization": "timechart"
+                        },
+                        "name": "query - 1"
+                      }
+                    ]
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "Office365DataConnector",
+                    "comparison": "isNotEqualTo"
+                  },
+                  "name": "office365 enabled"
+                },
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Data Connector not installed ##",
+                          "style": "warning"
+                        },
+                        "name": "text - 0"
+                      },
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Install Microsoft 365 Data Connector ##\r\n\r\nSelect the desired components to monitor below and click the button to install the Data Connector using our ARM template.\r\n\r\nIt's recommended you enable all of the components unless you have specific reasons not to.\r\n\r\nOur template requires Global Administrator or Security Administrator permissions on the workspace's tenant to install, if this is not the case, contact an administrator to either be granted the appropriate permissions or to complete this step themself."
+                        },
+                        "name": "text - 1"
+                      },
+                      {
+                        "type": 9,
+                        "content": {
+                          "version": "KqlParameterItem/1.0",
+                          "parameters": [
+                            {
+                              "id": "0d8ca19c-4299-49cd-9902-83cf81d2156a",
+                              "version": "KqlParameterItem/1.0",
+                              "name": "ExchangeState",
+                              "label": "Exchange",
+                              "type": 10,
+                              "isRequired": true,
+                              "typeSettings": {
+                                "additionalResourceOptions": [],
+                                "showDefault": false
+                              },
+                              "jsonData": "[\r\n    {\"value\": \"enabled\", \"label\": \"Enabled\", \"selected\": true},\r\n    {\"value\": \"disabled\", \"label\": \"Disabled\"}\r\n]",
+                              "timeContext": {
+                                "durationMs": 86400000
+                              }
+                            },
+                            {
+                              "version": "KqlParameterItem/1.0",
+                              "name": "TeamsState",
+                              "label": "Teams",
+                              "type": 10,
+                              "isRequired": true,
+                              "typeSettings": {
+                                "additionalResourceOptions": [],
+                                "showDefault": false
+                              },
+                              "jsonData": "[\r\n    {\"value\": \"enabled\", \"label\": \"Enabled\", \"selected\": true},\r\n    {\"value\": \"disabled\", \"label\": \"Disabled\"}\r\n]",
+                              "timeContext": {
+                                "durationMs": 86400000
+                              },
+                              "id": "4f37f761-3942-4456-a37f-db1a43129cbe"
+                            },
+                            {
+                              "version": "KqlParameterItem/1.0",
+                              "name": "SharepointState",
+                              "label": "Sharepoint",
+                              "type": 10,
+                              "isRequired": true,
+                              "typeSettings": {
+                                "additionalResourceOptions": [],
+                                "showDefault": false
+                              },
+                              "jsonData": "[\r\n    {\"value\": \"enabled\", \"label\": \"Enabled\", \"selected\": true},\r\n    {\"value\": \"disabled\", \"label\": \"Disabled\"}\r\n]",
+                              "timeContext": {
+                                "durationMs": 86400000
+                              },
+                              "id": "0dfbe80c-5b71-435a-a50f-7c0cab39c329"
+                            }
+                          ],
+                          "style": "above",
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces"
+                        },
+                        "name": "parameters - 2"
+                      },
+                      {
+                        "type": 11,
+                        "content": {
+                          "version": "LinkItem/1.0",
+                          "style": "list",
+                          "links": [
+                            {
+                              "id": "194a66c8-072e-44f7-a4cd-9835483a3b9b",
+                              "linkTarget": "ArmTemplate",
+                              "linkLabel": "Install Microsoft 365 Data Connector",
+                              "style": "primary",
+                              "linkIsContextBlade": true,
+                              "templateRunContext": {
+                                "componentIdSource": "parameter",
+                                "componentId": "ResourceGroup",
+                                "templateUriSource": "static",
+                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/microsoft-sentinel/linkedtemplates/data-connectors/office365.json",
+                                "templateParameters": [
+                                  {
+                                    "name": "workspaceName",
+                                    "source": "parameter",
+                                    "value": "WorkspaceName",
+                                    "kind": "stringValue"
+                                  },
+                                  {
+                                    "name": "exchangeState",
+                                    "source": "parameter",
+                                    "value": "ExchangeState",
+                                    "kind": "stringValue"
+                                  },
+                                  {
+                                    "name": "sharePointState",
+                                    "source": "parameter",
+                                    "value": "SharepointState",
+                                    "kind": "stringValue"
+                                  },
+                                  {
+                                    "name": "teamsState",
+                                    "source": "parameter",
+                                    "value": "TeamsState",
+                                    "kind": "stringValue"
+                                  },
+                                  {
+                                    "name": "tenantId",
+                                    "source": "parameter",
+                                    "value": "TenantId",
+                                    "kind": "stringValue"
+                                  },
+                                  {
+                                    "name": "location",
+                                    "source": "parameter",
+                                    "value": "Location",
+                                    "kind": "stringValue"
+                                  }
+                                ],
+                                "titleSource": "static",
+                                "title": "Install Microsoft 365 Data Connector",
+                                "descriptionSource": "static",
+                                "description": "This enables the Microsoft 365 Data Connector for the selected components.",
+                                "runLabelSource": "static",
+                                "runLabel": "Install"
+                              }
+                            }
+                          ]
+                        },
+                        "name": "links - 3"
+                      }
+                    ]
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "Office365DataConnector",
+                    "comparison": "isEqualTo"
+                  },
+                  "name": "office 365 not enabled"
+                }
+              ]
+            },
+            "customWidth": "50",
+            "conditionalVisibility": {
+              "parameterName": "EnableOffice365",
+              "comparison": "isEqualTo",
+              "value": "Yes"
+            },
+            "name": "office365",
+            "styleSettings": {
+              "margin": "8px",
+              "showBorder": true
+            }
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "title": "Entra ID",
+              "items": [
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Entra ID logging not configured or no logs received yet ##",
+                          "style": "warning"
+                        },
+                        "name": "text - 9"
+                      },
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Enable Entra ID Logs ##\r\n\r\nThis ARM template will send Entra ID Logs to the selected Log Analytics Workspace. When any logs have been received the Data Connector will show as enabled.\r\n\r\nAt the time of writing enabling this Data Connector via an ARM template is not officially possible. It is straightforward to enable in the Sentinel web UI, however if you really want to set it up from here you will need to follow the instructions here: https://github.com/InfoSecInnovations/Sentinel-Service-Offering?tab=readme-ov-file#requirements before clicking the button."
+                        },
+                        "name": "text - 1"
+                      },
+                      {
+                        "type": 11,
+                        "content": {
+                          "version": "LinkItem/1.0",
+                          "style": "list",
+                          "links": [
+                            {
+                              "id": "f096e433-63a2-4a55-81cf-6c2b2291e1ae",
+                              "linkTarget": "ArmAction",
+                              "linkLabel": "Enable Entra ID Logs",
+                              "style": "primary",
+                              "linkIsContextBlade": true,
+                              "templateRunContext": {
+                                "componentIdSource": "parameter",
+                                "componentId": "ResourceGroup",
+                                "templateUriSource": "static",
+                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/optional/azure-active-directory/data-connectors/azure-active-directory.json",
+                                "templateParameters": [
+                                  {
+                                    "name": "workspaceName",
+                                    "source": "parameter",
+                                    "value": "WorkspaceName",
+                                    "kind": "stringValue"
+                                  },
+                                  {
+                                    "name": "subscriptionId",
+                                    "source": "parameter",
+                                    "value": "SubscriptionId",
+                                    "kind": "stringValue"
+                                  },
+                                  {
+                                    "name": "resourceGroupName",
+                                    "source": "parameter",
+                                    "value": "ResourceGroupName",
+                                    "kind": "stringValue"
+                                  }
+                                ],
+                                "titleSource": "static",
+                                "title": "Enable Entra ID Logs",
+                                "descriptionSource": "static",
+                                "description": "This will enable Entra ID Logs to be sent to the selected Log Analytics Workspace.",
+                                "runLabelSource": "static",
+                                "runLabel": "Enable Logs"
+                              },
+                              "armActionContext": {
+                                "path": "/providers/Microsoft.Resources/deployments/enableAADDataConnector-{Location}",
+                                "headers": [],
+                                "params": [
+                                  {
+                                    "key": "api-version",
+                                    "value": "2021-04-01"
+                                  }
+                                ],
+                                "body": "{\r\n  \"location\": \"{Location}\",\r\n  \"properties\": {\r\n    \"templateLink\": {\r\n      \"uri\": \"https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/optional/azure-active-directory/data-connectors/azure-active-directory.json\"\r\n    },\r\n    \"parameters\": {\r\n      \"workspaceName\": {\"value\": \"{WorkspaceName}\"},\r\n      \"resourceGroupName\": {\"value\": \"{ResourceGroupName}\"},\r\n      \"subscriptionId\": {\"value\": \"{SubscriptionId}\"}\r\n    },\r\n    \"mode\": \"Incremental\"\r\n  }\r\n}",
+                                "httpMethod": "PUT",
+                                "title": "Enable Entra ID Logs",
+                                "description": "This ARM template will configure Entra ID Logs to be sent to the selected Log Analytics Workspace.",
+                                "runLabel": "Enable Logs"
+                              }
+                            }
+                          ]
+                        },
+                        "name": "links - 2"
+                      }
+                    ]
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "EntraIDLogCount",
+                    "comparison": "isEqualTo",
+                    "value": "0"
+                  },
+                  "name": "azure ad disabled"
+                },
+                {
+                  "type": 12,
+                  "content": {
+                    "version": "NotebookGroup/1.0",
+                    "groupType": "editable",
+                    "items": [
+                      {
+                        "type": 1,
+                        "content": {
+                          "json": "## Enabled ##",
+                          "style": "success"
+                        },
+                        "name": "text - 1"
+                      },
+                      {
+                        "type": 3,
+                        "content": {
+                          "version": "KqlItem/1.0",
+                          "query": "let start = ago(7d);\r\nlet end = now();\r\nSigninLogs\r\n| where TimeGenerated between(start..end)\r\n| extend IsSignIn = true\r\n| union (AuditLogs\r\n| where TimeGenerated between(start..end)\r\n| extend IsAudit = true)\r\n| union (AADNonInteractiveUserSignInLogs\r\n| where TimeGenerated between(start..end)\r\n| extend IsAADNonInteractiveUserSignIn = true)\r\n| union (AADServicePrincipalSignInLogs\r\n| where TimeGenerated between(start..end)\r\n| extend IsAADServicePrincipalSignIn = true)\r\n| union (AADManagedIdentitySignInLogs\r\n| where TimeGenerated between(start..end)\r\n| extend IsAADManagedIdentitySignIn = true)\r\n| union (AADProvisioningLogs\r\n| where TimeGenerated between(start..end)\r\n| extend IsAADProvisioning = true)\r\n| union (ADFSSignInLogs\r\n| where TimeGenerated between(start..end)\r\n| extend IsADFSSignIn = true)\r\n| union (AADUserRiskEvents\r\n| where TimeGenerated between(start..end)\r\n| extend IsAADUserRiskEvents = true)\r\n| union (AADRiskyUsers\r\n| where TimeGenerated between(start..end)\r\n| extend IsAADRiskyUsers = true)\r\n| union (NetworkAccessTraffic\r\n| where TimeGenerated between(start..end)\r\n| extend IsNetworkAccessTraffic = true)\r\n| union (AADRiskyServicePrincipals\r\n| where TimeGenerated between(start..end)\r\n| extend IsAADRiskyServicePrincipals = true)\r\n| union (AADServicePrincipalRiskEvents\r\n| where TimeGenerated between(start..end)\r\n| extend IsAADServicePrincipalRiskEvents = true)\r\n| make-series SigninLogs = countif(IsSignIn) default=0, \r\nAuditLogs = countif(IsAudit) default=0, \r\nAADNonInteractiveUserSignInLogs = countif(IsAADNonInteractiveUserSignIn) default=0, \r\nAADServicePrincipalSignInLogs = countif(IsAADServicePrincipalSignIn) default=0,\r\nAADManagedIdentitySignInLogs = countif(IsAADManagedIdentitySignIn) default=0,\r\nAADProvisioningLogs = countif(IsAADProvisioning) default=0,\r\nADFSSignInLogs = countif(IsADFSSignIn) default=0,\r\nAADUserRiskEvents = countif(IsAADUserRiskEvents) default=0,\r\nAADRiskyUsers = countif(IsAADRiskyUsers) default=0,\r\nNetworkAccessTraffic = countif(IsNetworkAccessTraffic) default=0,\r\nAADRiskyServicePrincipals = countif(IsAADRiskyServicePrincipals) default=0,\r\nAADServicePrincipalRiskEvents = countif(IsAADServicePrincipalRiskEvents) default=0\r\non TimeGenerated from start to end step 1d",
+                          "size": 1,
+                          "queryType": 0,
+                          "resourceType": "microsoft.operationalinsights/workspaces",
+                          "crossComponentResources": [
+                            "{Workspace}"
+                          ],
+                          "visualization": "timechart"
+                        },
+                        "name": "query - 0"
+                      }
+                    ]
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "EntraIDLogCount",
+                    "comparison": "isNotEqualTo",
+                    "value": "0"
+                  },
+                  "name": "group - 10"
+                }
+              ]
+            },
+            "customWidth": "50",
+            "conditionalVisibility": {
+              "parameterName": "EnableAAD",
+              "comparison": "isEqualTo",
+              "value": "Yes"
+            },
+            "name": "azure ad",
+            "styleSettings": {
+              "margin": "8px",
+              "showBorder": true
+            }
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "MissingPackagesCount",
+        "comparison": "isEqualTo",
+        "value": "0"
+      },
+      "name": "data connectors"
+    }
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

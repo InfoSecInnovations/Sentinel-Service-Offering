@@ -4,7 +4,7 @@
   "parameters": {
     "exchangeState": {
       "type": "string",
-      "defaultValue": "disabled",
+      "defaultValue": "enabled",
       "allowedValues": [
         "disabled",
         "enabled"
@@ -12,7 +12,7 @@
     },
     "sharepointState": {
       "type": "string",
-      "defaultValue": "disabled",
+      "defaultValue": "enabled",
       "allowedValues": [
         "disabled",
         "enabled"
@@ -20,7 +20,7 @@
     },
     "teamsState": {
       "type": "string",
-      "defaultValue": "disabled",
+      "defaultValue": "enabled",
       "allowedValues": [
         "disabled",
         "enabled"
