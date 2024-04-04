@@ -55,7 +55,8 @@
     "windowsSecurityEventsContentPackageName": "[concat('windowsSecurityEventsContentPackage', '-', parameters('location'))]",
     "enableAMALogsName": "[concat('enableAMALogs', '-', parameters('location'))]",
     "associateArcServersName": "[concat('associateArcServers', '-', parameters('location'))]",
-    "eventAnalyzerWorkbookName": "[concat('eventAnalyzerWorkbook', '-', parameters('location'))]"
+    "eventAnalyzerWorkbookName": "[concat('eventAnalyzerWorkbook', '-', parameters('location'))]",
+    "anomalousRDPName": "[concat('anomalousRDPLoginDetections', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -155,9 +156,23 @@
           },
           "workbookId": {
             "value": "[guid(parameters('guidSeed'), 'event analyzer workbook')]"
-          },
-          "displayName": {
-            "value": "Event Analyzer"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('anomalousRDPName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/anomalous-rdp-login-detections.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
           }
         }
       }

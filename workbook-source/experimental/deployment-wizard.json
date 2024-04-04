@@ -272,25 +272,7 @@
               "comparison": "isEqualTo",
               "value": "true"
             },
-            "name": "all packages"
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{Workspace}/providers/Microsoft.SecurityInsights/contentProductPackages\",\"urlParams\":[{\"key\":\"api-version\",\"value\":\"2023-11-01-preview\"}],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$..value[?(!@.properties.installedVersion)]\",\"columns\":[{\"path\":\"$.properties.contentProductId\",\"columnid\":\"contentProductId\"},{\"path\":\"$.properties.displayName\",\"columnid\":\"name\"}]}}]}",
-              "size": 0,
-              "queryType": 12,
-              "gridSettings": {
-                "rowLimit": 10000
-              }
-            },
-            "conditionalVisibility": {
-              "parameterName": "_",
-              "comparison": "isEqualTo",
-              "value": "true"
-            },
-            "name": "non installed packages"
+            "name": "installed packages"
           },
           {
             "type": 3,
@@ -311,7 +293,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1706bcd0-90f1-4853-ad6f-7378608f30d8\",\"mergeType\":\"innerunique\",\"leftTable\":\"required packages\",\"rightTable\":\"all packages\",\"leftColumn\":\"name\",\"rightColumn\":\"name\"}],\"projectRename\":[{\"originalName\":\"[required packages].name\",\"mergedName\":\"name\",\"fromId\":\"1706bcd0-90f1-4853-ad6f-7378608f30d8\"},{\"originalName\":\"[required packages].contentProductId\"},{\"originalName\":\"[required packages].package\"},{\"originalName\":\"[all packages].contentProductId\"},{\"originalName\":\"[all packages].name\"},{\"originalName\":\"[required packages].pack\"},{\"originalName\":\"[all packages].installedVersion\"}]}",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1706bcd0-90f1-4853-ad6f-7378608f30d8\",\"mergeType\":\"innerunique\",\"leftTable\":\"required packages\",\"rightTable\":\"installed packages\",\"leftColumn\":\"name\",\"rightColumn\":\"name\"}],\"projectRename\":[{\"originalName\":\"[required packages].name\",\"mergedName\":\"name\",\"fromId\":\"1706bcd0-90f1-4853-ad6f-7378608f30d8\"},{\"originalName\":\"[required packages].contentProductId\"},{\"originalName\":\"[required packages].package\"},{\"originalName\":\"[all packages].contentProductId\"},{\"originalName\":\"[all packages].name\"},{\"originalName\":\"[required packages].pack\"},{\"originalName\":\"[all packages].installedVersion\"},{\"originalName\":\"[installed packages].contentProductId\"},{\"originalName\":\"[installed packages].name\"},{\"originalName\":\"[installed packages].installedVersion\"}]}",
               "size": 3,
               "title": "Already installed Content Hub packages",
               "queryType": 7
@@ -323,9 +305,11 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1706bcd0-90f1-4853-ad6f-7378608f30fb\",\"mergeType\":\"innerunique\",\"leftTable\":\"required packages\",\"rightTable\":\"non installed packages\",\"leftColumn\":\"name\",\"rightColumn\":\"name\"}],\"projectRename\":[{\"originalName\":\"[required packages].name\",\"mergedName\":\"name\",\"fromId\":\"1706bcd0-90f1-4853-ad6f-7378608f30fb\"},{\"originalName\":\"[required packages].contentProductId\"},{\"originalName\":\"[required packages].pack\"},{\"originalName\":\"[required packages].package\"},{\"originalName\":\"[non installed packages].contentProductId\"},{\"originalName\":\"[non installed packages].name\"}]}",
+              "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"1706bcd0-90f1-4853-ad6f-7378608f30fb\",\"mergeType\":\"leftanti\",\"leftTable\":\"required packages\",\"rightTable\":\"installed packages\",\"leftColumn\":\"name\",\"rightColumn\":\"name\"}],\"projectRename\":[{\"originalName\":\"[required packages].name\",\"mergedName\":\"name\",\"fromId\":\"1706bcd0-90f1-4853-ad6f-7378608f30fb\"},{\"originalName\":\"[required packages].contentProductId\"},{\"originalName\":\"[required packages].pack\"},{\"originalName\":\"[required packages].package\"},{\"originalName\":\"[non installed packages].contentProductId\"},{\"originalName\":\"[non installed packages].name\"}]}",
               "size": 3,
-              "title": "Required Content Hub packages not yet installed",
+              "title": "{$rowCount} Required Content Hub packages not yet installed",
+              "noDataMessage": "All required Content Hub packages have been installed",
+              "noDataMessageStyle": 3,
               "exportMultipleValues": true,
               "exportedParameters": [
                 {
@@ -379,7 +363,7 @@
                 }
               ],
               "style": "pills",
-              "queryType": 7
+              "queryType": 8
             },
             "conditionalVisibility": {
               "parameterName": "_",
@@ -387,8 +371,101 @@
               "value": "true"
             },
             "name": "parameters - 6"
+          },
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "8c1e5a50-92a7-4baf-a50a-20f1ca06f702",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "SelectedPackagesCount",
+                  "type": 1,
+                  "query": "{\"version\":\"1.0.0\",\"content\":\"[{PackagesToInstall}]\",\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.length\",\"columns\":[]}}]}",
+                  "queryType": 8
+                }
+              ],
+              "style": "pills",
+              "queryType": 8
+            },
+            "conditionalVisibility": {
+              "parameterName": "_",
+              "comparison": "isEqualTo",
+              "value": "true"
+            },
+            "name": "parameters - 6 - Copy"
+          },
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "list",
+              "links": [
+                {
+                  "id": "11d3e50b-2420-4579-8ffa-2b31d4336f26",
+                  "linkTarget": "ArmTemplate",
+                  "linkLabel": "Install Missing Content Hub Packages",
+                  "style": "primary",
+                  "linkIsContextBlade": true,
+                  "templateRunContext": {
+                    "componentIdSource": "parameter",
+                    "componentId": "ResourceGroup",
+                    "templateUriSource": "static",
+                    "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/content-hub-installer.json",
+                    "templateParameters": [
+                      {
+                        "name": "workspaceName",
+                        "source": "parameter",
+                        "value": "WorkspaceName",
+                        "kind": "stringValue"
+                      },
+                      {
+                        "name": "location",
+                        "source": "parameter",
+                        "value": "Location",
+                        "kind": "stringValue"
+                      },
+                      {
+                        "name": "packages",
+                        "source": "parameter",
+                        "value": "PackagesToInstall",
+                        "kind": "arrayValue"
+                      }
+                    ],
+                    "titleSource": "static",
+                    "descriptionSource": "static",
+                    "runLabelSource": "static"
+                  }
+                }
+              ]
+            },
+            "conditionalVisibility": {
+              "parameterName": "SelectedPackagesCount",
+              "comparison": "isNotEqualTo"
+            },
+            "name": "links - 6"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "### Please select missing Content Hub packages above to install them. ###",
+              "style": "warning"
+            },
+            "conditionalVisibilities": [
+              {
+                "parameterName": "SelectedPackagesCount",
+                "comparison": "isEqualTo"
+              },
+              {
+                "parameterName": "MissingPackagesCount",
+                "comparison": "isNotEqualTo"
+              }
+            ],
+            "name": "text - 7"
           }
-        ]
+        ],
+        "exportParameters": true
       },
       "name": "installed packages"
     },
@@ -475,7 +552,7 @@
                         "content": {
                           "version": "KqlItem/1.0",
                           "query": "{\"version\":\"ARMEndpoint/1.0\",\"data\":null,\"headers\":[],\"method\":\"GET\",\"path\":\"{SecurityEventDCR}/associations\",\"urlParams\":[{\"key\":\"api-version\",\"value\":\"2022-06-01\"}],\"batchDisabled\":false,\"transformers\":[{\"type\":\"jsonpath\",\"settings\":{\"tablePath\":\"$.value\",\"columns\":[{\"path\":\"id\",\"columnid\":\"ArcServers\",\"columnType\":\"string\",\"substringRegexMatch\":\"(\\\\/subscriptions.*)(\\\\/providers.*|Providers.*)\",\"substringReplace\":\"$1\"}]}}]}",
-                          "size": 0,
+                          "size": 3,
                           "title": "Machines already onboarded to DCR",
                           "queryType": 12
                         },
@@ -486,7 +563,7 @@
                         "content": {
                           "version": "KqlItem/1.0",
                           "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"c6178f52-2789-42f1-803a-c04beb6750e2\",\"mergeType\":\"leftanti\",\"leftTable\":\"all hybrid machines query\",\"rightTable\":\"machines added to dcr query\",\"leftColumn\":\"id\",\"rightColumn\":\"ArcServers\"}],\"projectRename\":[{\"originalName\":\"[all hybrid machines query].id\",\"mergedName\":\"id\",\"fromId\":\"c6178f52-2789-42f1-803a-c04beb6750e2\"},{\"originalName\":\"[all hybrid machines query].name\",\"mergedName\":\"name\",\"fromId\":\"c6178f52-2789-42f1-803a-c04beb6750e2\"},{\"originalName\":\"[all hybrid machines query].location\",\"mergedName\":\"location\",\"fromId\":\"c6178f52-2789-42f1-803a-c04beb6750e2\"},{\"originalName\":\"[all hybrid machines query].resourceGroup\",\"mergedName\":\"resourceGroup\",\"fromId\":\"c6178f52-2789-42f1-803a-c04beb6750e2\"},{\"originalName\":\"[all hybrid machines query].extendedLocation\",\"mergedName\":\"extendedLocation\",\"fromId\":\"c6178f52-2789-42f1-803a-c04beb6750e2\"},{\"originalName\":\"[all hybrid machines query].type\"},{\"originalName\":\"[all hybrid machines query].tenantId\"},{\"originalName\":\"[all hybrid machines query].kind\"},{\"originalName\":\"[all hybrid machines query].subscriptionId\"},{\"originalName\":\"[all hybrid machines query].managedBy\"},{\"originalName\":\"[all hybrid machines query].sku\"},{\"originalName\":\"[all hybrid machines query].plan\"},{\"originalName\":\"[all hybrid machines query].properties\"},{\"originalName\":\"[all hybrid machines query].tags\"},{\"originalName\":\"[all hybrid machines query].identity\"},{\"originalName\":\"[all hybrid machines query].zones\"}]}",
-                          "size": 0,
+                          "size": 3,
                           "title": "Machines not onboarded to DCR",
                           "exportMultipleValues": true,
                           "exportedParameters": [
@@ -1158,7 +1235,7 @@
       "conditionalVisibility": {
         "parameterName": "MissingPackagesCount",
         "comparison": "isEqualTo",
-        "value": "0"
+        "value": ""
       },
       "name": "data connectors"
     }
