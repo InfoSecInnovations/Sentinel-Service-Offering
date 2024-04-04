@@ -37,7 +37,9 @@
     "enableAADDataConnectorName": "[concat('enableAADDataConnector', '-', parameters('location'))]",
     "enableUEBAName": "[concat('enableUEBA', '-', parameters('location'))]",
     "AADAuditActivitySignInWorkbookName": "[concat('AADAuditActivitySignInWorkbook', '-', parameters('location'))]",
-    "UEBAWorkbookName": "[concat('UEBAWorkbook', '-', parameters('location'))]"
+    "UEBAWorkbookName": "[concat('UEBAWorkbook', '-', parameters('location'))]",
+    "accountCreatedDelShortTimeframeName": "[concat('accountCreatedDelShortTimeframe', '-', parameters('location'))]",
+    "adminPromoAppPermGrantName": "[concat('adminPromoAppPermGrant', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -125,9 +127,6 @@
           },
           "workbookId": {
             "value": "[guid(parameters('guidSeed'), 'azure AD audit, activity and sign-in logs workbook')]"
-          },
-          "displayName": {
-            "value": "Azure AD Audit, Activity and Sign-in logs"
           }
         }
       }
@@ -151,9 +150,40 @@
           },
           "workbookId": {
             "value": "[guid(parameters('guidSeed'), 'user and entity behaviour analytics workbook')]"
-          },
-          "displayName": {
-            "value": "User And Entity Behavior Analytics"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('accountCreatedDelShortTimeframeName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/account-created-and-deleted-in-short-timeframe.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('adminPromoAppPermGrantName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/admin-promotion-after-role-management-application-permission-grant.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
           }
         }
       }
