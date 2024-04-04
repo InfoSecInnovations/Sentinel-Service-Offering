@@ -39,7 +39,10 @@
     "AADAuditActivitySignInWorkbookName": "[concat('AADAuditActivitySignInWorkbook', '-', parameters('location'))]",
     "UEBAWorkbookName": "[concat('UEBAWorkbook', '-', parameters('location'))]",
     "accountCreatedDelShortTimeframeName": "[concat('accountCreatedDelShortTimeframe', '-', parameters('location'))]",
-    "adminPromoAppPermGrantName": "[concat('adminPromoAppPermGrant', '-', parameters('location'))]"
+    "adminPromoAppPermGrantName": "[concat('adminPromoAppPermGrant', '-', parameters('location'))]",
+    "anomalousSigninLocationAccountAppName": "[concat('anomalousSigninLocationAccountApp', '-', parameters('location'))]",
+    "signInDisabledAccountsName": "[concat('signInDisabledAccounts', '-', parameters('location'))]",
+    "authenticationMethodsChangeForPrivilegedAccountName": "[concat('authenticationMethodsChangeForPrivilegedAccount', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -179,6 +182,57 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/admin-promotion-after-role-management-application-permission-grant.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('anomalousSigninLocationAccountAppName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/anomalous-signin-location-by-user-account-and-authenticating-application.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('signInDisabledAccountsName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/attempts-to-sign-in-to-disabled-accounts.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('authenticationMethodsChangeForPrivilegedAccountName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/authentication-methods-change-for-privileged-account.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
