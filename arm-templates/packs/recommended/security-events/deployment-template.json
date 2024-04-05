@@ -53,6 +53,7 @@
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
     "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
     "windowsSecurityEventsContentPackageName": "[concat('windowsSecurityEventsContentPackage', '-', parameters('location'))]",
+    "attackerToolsThreatProtectionContentPackageName": "[concat('attackerToolsThreatProtectionContentPackage', '-', parameters('location'))]",
     "enableAMALogsName": "[concat('enableAMALogs', '-', parameters('location'))]",
     "associateArcServersName": "[concat('associateArcServers', '-', parameters('location'))]",
     "eventAnalyzerWorkbookName": "[concat('eventAnalyzerWorkbook', '-', parameters('location'))]",
@@ -69,6 +70,29 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('azureSentinel'), 'Solutions/Windows%20Security%20Events/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('attackerToolsThreatProtectionContentPackageName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/Attacker%20Tools%20Threat%20Protection%20Essentials/Package/mainTemplate.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

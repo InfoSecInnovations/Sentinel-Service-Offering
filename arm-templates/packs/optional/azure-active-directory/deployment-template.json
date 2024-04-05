@@ -34,6 +34,7 @@
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
     "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
     "AADContentPackageName": "[concat('AADContentPackage', '-', parameters('location'))]",
+    "cloudIdThreatProtectionEssentialsPackageName": "[concat('cloudIdThreatProtectionEssentialsPackage', '-', parameters('location'))]",
     "enableAADDataConnectorName": "[concat('enableAADDataConnector', '-', parameters('location'))]",
     "enableUEBAName": "[concat('enableUEBA', '-', parameters('location'))]",
     "AADAuditActivitySignInWorkbookName": "[concat('AADAuditActivitySignInWorkbook', '-', parameters('location'))]",
@@ -53,7 +54,8 @@
     "distributedPasswordCrackingAttemptsInAzureAdName": "[concat('distributedPasswordCrackingAttemptsInAzureAd', '-', parameters('location'))]",
     "explicitMfaDenyName": "[concat('explicitMfaDeny', '-', parameters('location'))]",
     "externalGuestInvitationFollowedByAzureAdPowershellSigninName": "[concat('externalGuestInvitationFollowedByAzureAdPowershellSignin', '-', parameters('location'))]",
-    "firstAccessCredentialAddedToApplicationOrServicePrincipalWhereNoCredentialWasPresentName": "[concat('firstAccessCredentialAddedToApplicationOrServicePrincipalWhereNoCredentialWasPresent', '-', parameters('location'))]"
+    "firstAccessCredentialAddedToApplicationOrServicePrincipalWhereNoCredentialWasPresentName": "[concat('firstAccessCredentialAddedToApplicationOrServicePrincipalWhereNoCredentialWasPresent', '-', parameters('location'))]",
+    "full_access_as_appGrantedToApplicationName": "[concat('full_access_as_appGrantedToApplication', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -64,6 +66,29 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('azureSentinel'), 'Solutions/Microsoft%20Entra%20ID/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('cloudIdThreatProtectionEssentialsPackageName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/Cloud%20Identity%20Threat%20Protection%20Essentials/Package/mainTemplate.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -431,6 +456,23 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/first-access-credential-added-to-application-or-service-principal-where-no-credential-was-present.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('full_access_as_appGrantedToApplicationName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/full_access_as_app-granted-to-application.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

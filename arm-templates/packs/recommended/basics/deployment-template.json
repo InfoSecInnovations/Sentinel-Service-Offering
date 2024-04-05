@@ -22,6 +22,8 @@
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
     "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
     "socHandbookContentPackageName": "[concat('socHandbookContentPackage', '-', parameters('location'))]",
+    "apacheLog4jVulnDetectionPackageName": "[concat('apacheLog4jVulnDetectionPackage', '-', parameters('location'))]",
+    "securityThreatEssentialPackageName": "[concat('securityThreatEssentialPackage', '-', parameters('location'))]",
     "analyticsEfficiencyWorkbookName": "[concat('analyticsEfficiencyWorkbook', '-', parameters('location'))]",
     "anomaliesVisualizationWorkbookName": "[concat('anomaliesVisualizationWorkbook', '-', parameters('location'))]",
     "archivingBasicLogsRetentionWorkbookName": "[concat('archivingBasicLogsRetentionWorkbook', '-', parameters('location'))]",
@@ -39,6 +41,52 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('azureSentinel'), 'Solutions/SOC%20Handbook/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('apacheLog4jVulnDetectionPackageName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/Apache%20Log4j%20Vulnerability%20Detection/Package/mainTemplate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace-location": {
+            "value": "[parameters('location')]"
+          },
+          "workspace": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('securityThreatEssentialPackageName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('azureSentinel'), 'Solutions/SecurityThreatEssentialSolution/Package/mainTemplate.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
