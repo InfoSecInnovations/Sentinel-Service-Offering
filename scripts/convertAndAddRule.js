@@ -8,11 +8,11 @@ import addRuleReference from './lib/addRuleReference.js'
 // Inside the resource of type "Microsoft.OperationalInsights/workspaces/providers/contentTemplates" that contains the rule, copy paste the whole contents of the "mainTemplate" property into a file, then use this script as follows
 // node convertAndAddRule.js mainTemplate linkedTemplate solutionId contentId ruleVersion
 // mainTemplate: path to parent template
-// linkedTempate: 
+// linkedTempate: path to linked template
 // solutionId: you can find this towards the top of the main template in the variables section
 // contentId: inside the template there will be some numbered variables something like analyticRulecontentId5, you will find the value in the main variables section also
 // ruleVersion: under the same number you used above you'll find a variable for the version of the rule template
-// the script will copy the modified template to clipboard so you can double check the results before use if so desired
+// the script directly modifies the files so you don't have to do anything else!
 
 const mainTemplate = process.argv[2]
 const linkedTemplate = process.argv[3]

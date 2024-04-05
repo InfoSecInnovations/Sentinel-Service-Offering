@@ -42,7 +42,11 @@
     "adminPromoAppPermGrantName": "[concat('adminPromoAppPermGrant', '-', parameters('location'))]",
     "anomalousSigninLocationAccountAppName": "[concat('anomalousSigninLocationAccountApp', '-', parameters('location'))]",
     "signInDisabledAccountsName": "[concat('signInDisabledAccounts', '-', parameters('location'))]",
-    "authenticationMethodsChangeForPrivilegedAccountName": "[concat('authenticationMethodsChangeForPrivilegedAccount', '-', parameters('location'))]"
+    "authenticationMethodsChangeForPrivilegedAccountName": "[concat('authenticationMethodsChangeForPrivilegedAccount', '-', parameters('location'))]",
+    "azureAdRoleManagementPermissionGrantName": "[concat('azureAdRoleManagementPermissionGrant', '-', parameters('location'))]",
+    "azurePortalSignInFromAnotherTenantName": "[concat('azurePortalSignInFromAnotherTenant', '-', parameters('location'))]",
+    "bruteForceAttackAgainstACloudPcName": "[concat('bruteForceAttackAgainstACloudPc', '-', parameters('location'))]",
+    "bruteForceAttackAgainstAzurePortalName": "[concat('bruteForceAttackAgainstAzurePortal', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -233,6 +237,74 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/authentication-methods-change-for-privileged-account.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('azureAdRoleManagementPermissionGrantName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/azure-ad-role-management-permission-grant.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('azurePortalSignInFromAnotherTenantName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/azure-portal-sign-in-from-another-tenant.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('bruteForceAttackAgainstACloudPcName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/brute-force-attack-against-a-cloud-pc.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('bruteForceAttackAgainstAzurePortalName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/brute-force-attack-against-azure-portal.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

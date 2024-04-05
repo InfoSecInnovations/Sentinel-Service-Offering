@@ -1,0 +1,137 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "28b42356-45af-40a6-a0b4-a554cdfd5d8a",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "2.1.4",
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivedirectory"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "Detects Azure Portal brute force attacks by monitoring for multiple authentication failures and a successful login within a 20-minute window. Default settings: 10 failures, 25 deviations.\nRef: https://docs.microsoft.com/azure/active-directory/reports-monitoring/reference-sign-ins-error-codes.",
+        "displayName": "Brute force attack against Azure Portal",
+        "enabled": true,
+        "query": "// Set threshold value for deviation\nlet threshold = 25;\n// Set the time range for the query\nlet timeRange = 24h;\n// Set the authentication window duration\nlet authenticationWindow = 20m;\n// Define a reusable function 'aadFunc' that takes a table name as input\nlet aadFunc = (tableName: string) {\n  // Query the specified table\n  table(tableName)\n  // Filter data within the last 24 hours\n  | where TimeGenerated > ago(1d)\n  // Filter records related to \"Azure Portal\" applications\n  | where AppDisplayName has \"Azure Portal\"\n  // Extract and transform some fields\n  | extend\n      DeviceDetail = todynamic(DeviceDetail),\n      LocationDetails = todynamic(LocationDetails)\n  | extend\n      OS = tostring(DeviceDetail.operatingSystem),\n      Browser = tostring(DeviceDetail.browser),\n      State = tostring(LocationDetails.state),\n      City = tostring(LocationDetails.city),\n      Region = tostring(LocationDetails.countryOrRegion)\n  // Categorize records as Success or Failure based on ResultType\n  | extend FailureOrSuccess = iff(ResultType in (\"0\", \"50125\", \"50140\", \"70043\", \"70044\"), \"Success\", \"Failure\")\n  // Sort and identify sessions\n  | sort by UserPrincipalName asc, TimeGenerated asc\n  | extend SessionStartedUtc = row_window_session(TimeGenerated, timeRange, authenticationWindow, UserPrincipalName != prev(UserPrincipalName) or prev(FailureOrSuccess) == \"Success\")\n  // Summarize data\n  | summarize FailureOrSuccessCount = count() by  FailureOrSuccess, UserId, UserDisplayName, AppDisplayName, IPAddress, Browser, OS, State, City, Region, Type, CorrelationId, bin(TimeGenerated, authenticationWindow), ResultType, UserPrincipalName, SessionStartedUtc\n  | summarize FailureCountBeforeSuccess = sumif(FailureOrSuccessCount, FailureOrSuccess == \"Failure\"), StartTime = min(TimeGenerated), EndTime = max(TimeGenerated), makelist(FailureOrSuccess), IPAddress = make_set(IPAddress, 15), make_set(Browser, 15), make_set(City, 15), make_set(State, 15), make_set(Region, 15), make_set(ResultType, 15) by SessionStartedUtc, UserPrincipalName, CorrelationId, AppDisplayName, UserId, Type\n  // Filter records where \"Success\" occurs in the middle of a session\n  | where array_index_of(list_FailureOrSuccess, \"Success\") != 0\n  | where array_index_of(list_FailureOrSuccess, \"Success\") == array_length(list_FailureOrSuccess) - 1\n  // Remove unnecessary columns from the output\n  | project-away SessionStartedUtc, list_FailureOrSuccess\n  // Join with another table and calculate deviation\n  | join kind=inner (\n      table(tableName)\n      | where TimeGenerated > ago(7d)\n      | where AppDisplayName has \"Azure Portal\"\n      | extend FailureOrSuccess = iff(ResultType in (\"0\", \"50125\", \"50140\", \"70043\", \"70044\"), \"Success\", \"Failure\")\n      | summarize avgFailures = avg(todouble(FailureOrSuccess == \"Failure\")) by UserPrincipalName\n  ) on UserPrincipalName\n  | extend Deviation = abs(FailureCountBeforeSuccess - avgFailures) / avgFailures\n  // Filter records based on deviation and failure count criteria\n  | where Deviation > threshold and FailureCountBeforeSuccess >= 10\n  // Expand the IPAddress array\n  | mv-expand IPAddress\n  | extend IPAddress = tostring(IPAddress)\n  | extend timestamp = StartTime\n};\n// Call 'aadFunc' with different table names and union the results\nlet aadSignin = aadFunc(\"SigninLogs\");\nlet aadNonInt = aadFunc(\"AADNonInteractiveUserSignInLogs\");\nunion isfuzzy=true aadSignin, aadNonInt\n// Additional transformation - Split UserPrincipalName\n| extend Name = tostring(split(UserPrincipalName,'@',0)[0]), UPNSuffix = tostring(split(UserPrincipalName,'@',1)[0])\n",
+        "queryFrequency": "P1D",
+        "queryPeriod": "P7D",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "SigninLogs"
+            ]
+          },
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "AADNonInteractiveUserSignInLogs"
+            ]
+          }
+        ],
+        "tactics": [
+          "CredentialAccess"
+        ],
+        "techniques": [
+          "T1110"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "columnName": "UserPrincipalName",
+                "identifier": "FullName"
+              },
+              {
+                "columnName": "Name",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "UPNSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "UserId",
+                "identifier": "AadUserId"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "IPAddress",
+                "identifier": "Address"
+              }
+            ],
+            "entityType": "IP"
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Microsoft Entra ID Analytics Rule 52",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Microsoft Entra ID",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}
