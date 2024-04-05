@@ -1,0 +1,156 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "a22740ec-fc1e-4c91-8de6-c29c6450ad00",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.6",
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivedirectory"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "User explicitly denies MFA push, indicating that login was not expected and the account's password may be compromised.",
+        "displayName": "Explicit MFA Deny",
+        "enabled": true,
+        "query": "let aadFunc = (tableName: string) {\n    table(tableName)\n    | where ResultType == 500121\n    | where Status has \"MFA Denied; user declined the authentication\" or Status has \"MFA denied; Phone App Reported Fraud\"\n    | extend Type = Type, PublicIP = IPAddress\n    | extend\n        Name = tostring(split(UserPrincipalName, '@', 0)[0]),\n        UPNSuffix = tostring(split(UserPrincipalName, '@', 1)[0])\n};\nlet aadSignin = aadFunc(\"SigninLogs\");\nlet dvcInfo = DeviceInfo\n    | extend SensorHealthState = column_ifexists(\"SensorHealthState\", \"\")\n    | where OnboardingStatus == \"Onboarded\" and SensorHealthState == \"Active\"\n    | project PublicIP, AadDeviceId;\nlet aadNonInt = aadFunc(\"AADNonInteractiveUserSignInLogs\");\nunion isfuzzy=true aadSignin, aadNonInt\n| join kind=leftouter dvcInfo on PublicIP\n",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "PT1H",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "SigninLogs"
+            ]
+          },
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "AADNonInteractiveUserSignInLogs"
+            ]
+          },
+          {
+            "connectorId": "MicrosoftThreatProtection",
+            "dataTypes": [
+              "DeviceInfo"
+            ]
+          }
+        ],
+        "tactics": [
+          "CredentialAccess"
+        ],
+        "techniques": [
+          "T1110"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "columnName": "UserPrincipalName",
+                "identifier": "FullName"
+              },
+              {
+                "columnName": "Name",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "UPNSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "PublicIP",
+                "identifier": "Address"
+              }
+            ],
+            "entityType": "IP"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "ResourceId",
+                "identifier": "ResourceId"
+              }
+            ],
+            "entityType": "AzureResource"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "AppDisplayName",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "AppId",
+                "identifier": "AppId"
+              }
+            ],
+            "entityType": "CloudApplication"
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Microsoft Entra ID Analytics Rule 24",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Microsoft Entra ID",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "218f60de-c269-457a-b882-9966632b9dc6",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.4",
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivedirectory"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "Identifies when changes to multiple users permissions are changed at once. Investigate immediately if not a planned change. This setting could enable an attacker access to Azure subscriptions in your environment.\nRef : https://docs.microsoft.com/azure/active-directory/fundamentals/security-operations-privileged-identity-management",
+        "displayName": "Bulk Changes to Privileged Account Permissions",
+        "enabled": true,
+        "query": "let AdminRecords = AuditLogs\n| where Category =~ \"RoleManagement\"\n| where ActivityDisplayName has_any (\"Add eligible member to role\", \"Add member to role\")\n| mv-apply TargetResource = TargetResources on \n  (\n      where TargetResource.type =~ \"User\"\n      | extend Target = tostring(TargetResource.userPrincipalName),\n               props = TargetResource.modifiedProperties\n  )\n| mv-apply Property = props on \n  (\n      where Property.displayName =~ \"Role.DisplayName\"\n      | extend RoleName = trim('\"',tostring(Property.newValue))\n  )\n| where RoleName contains \"Admin\";\nAdminRecords\n| summarize dcount(Target) by bin(TimeGenerated, 1h)\n| where dcount_Target > 9\n| join kind=rightsemi  (\n  AdminRecords\n  | extend TimeWindow = bin(TimeGenerated, 1h)\n) on $left.TimeGenerated == $right.TimeWindow\n| extend InitiatedByUser = iff(isnotempty(InitiatedBy.user.userPrincipalName), tostring(InitiatedBy.user.userPrincipalName), \"\")\n| extend TargetName = tostring(split(Target,'@',0)[0]), TargetUPNSuffix = tostring(split(Target,'@',1)[0]),\n         InitiatedByUserName = tostring(split(InitiatedByUser,'@',0)[0]), InitiatedByUserUPNSuffix = tostring(split(InitiatedByUser,'@',1)[0])\n",
+        "queryFrequency": "PT2H",
+        "queryPeriod": "PT2H",
+        "severity": "High",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "AuditLogs"
+            ]
+          }
+        ],
+        "tactics": [
+          "PrivilegeEscalation"
+        ],
+        "subTechniques": [
+          "T1078.004"
+        ],
+        "techniques": [
+          "T1078"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "columnName": "TargetName",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "TargetUPNSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatedByUserName",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "InitiatedByUserUPNSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          }
+        ],
+        "customDetails": {
+          "InitiatedByUser": "InitiatedByUser",
+          "TargetUser": "Target"
+        },
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Microsoft Entra ID Analytics Rule 13",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Microsoft Entra ID",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}

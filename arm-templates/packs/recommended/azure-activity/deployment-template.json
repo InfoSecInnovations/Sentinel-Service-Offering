@@ -37,7 +37,8 @@
     "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
     "azureActivityContentPackageName": "[concat('azureActivityContentPackage', '-', parameters('location'))]",
     "azureActivityDataConnectorName": "[concat('azureActivityDataConnector', '-', parameters('location'))]",
-    "azureActivityWorkbookName": "[concat('azureActivityWorkbook', '-', parameters('location'))]"
+    "azureActivityWorkbookName": "[concat('azureActivityWorkbook', '-', parameters('location'))]",
+    "creationOfExpensiveComputesInAzureName": "[concat('creationOfExpensiveComputesInAzure', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -108,6 +109,23 @@
           },
           "displayName": {
             "value": "Azure Activity"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('creationOfExpensiveComputesInAzureName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/azure-activity/rules/creation-of-expensive-computes-in-azure.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
           }
         }
       }

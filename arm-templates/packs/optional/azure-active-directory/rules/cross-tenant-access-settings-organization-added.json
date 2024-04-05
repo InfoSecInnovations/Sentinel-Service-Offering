@@ -1,0 +1,127 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "757e6a79-6d23-4ae6-9845-4dac170656b5",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.2",
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivedirectory"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "Organizations are added in the Cross-tenant Access Settings to control communication inbound or outbound for users and applications. This detection notifies when an Organization is added other than the list that is supposed to exist from the Microsoft Entra ID Cross-tenant Access Settings.",
+        "displayName": "Cross-tenant Access Settings Organization Added",
+        "enabled": true,
+        "query": "// Tenants IDs can be found by navigating to Azure Active Directory then from menu on the left, select External Identities, then from menu on the left, select Cross-tenant access settings and from the list shown of Tenants\nlet ExpectedTenantIDs = dynamic([]);\nAuditLogs\n| where OperationName has \"Add a partner to cross-tenant access setting\"\n| extend InitiatedByActionUserInformation = iff(isnotempty(InitiatedBy.user.userPrincipalName), InitiatedBy.user.userPrincipalName, InitiatedBy.app.displayName)\n| extend InitiatedByIPAdress = InitiatedBy.user.ipAddress\n| mv-apply TargetResource = TargetResources on\n  (\n      where TargetResource.type =~ \"Policy\"\n      | extend Properties = TargetResource.modifiedProperties\n  )\n| mv-apply Property = Properties on\n  (\n      where Property.displayName =~ \"tenantId\"\n      | extend ExtTenantIDAdded = trim('\"',tostring(Property.newValue))\n  )\n| where ExtTenantIDAdded !in (ExpectedTenantIDs)\n| extend Name = tostring(split(InitiatedByActionUserInformation,'@',0)[0]), UPNSuffix = tostring(split(InitiatedByActionUserInformation,'@',1)[0])\n",
+        "queryFrequency": "P2D",
+        "queryPeriod": "P2D",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "AuditLogs"
+            ]
+          }
+        ],
+        "tactics": [
+          "InitialAccess",
+          "Persistence",
+          "Discovery"
+        ],
+        "subTechniques": [
+          "T1078.004",
+          "T1136.003",
+          "T1087.004"
+        ],
+        "techniques": [
+          "T1078",
+          "T1136",
+          "T1087"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "columnName": "Name",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "UPNSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatedByIPAdress",
+                "identifier": "Address"
+              }
+            ],
+            "entityType": "IP"
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Microsoft Entra ID Analytics Rule 16",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Microsoft Entra ID",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}

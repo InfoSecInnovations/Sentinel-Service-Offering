@@ -1,0 +1,131 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "9736e5f1-7b6e-4bfb-a708-e53ff1d182c3",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "2.0.3",
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivity"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "Identifies the creation of large size or expensive VMs (with GPUs or with a large number of virtual CPUs) in Azure.\nAn adversary may create new or update existing virtual machines to evade defenses or use them for cryptomining purposes.\nFor Windows/Linux Vm Sizes, see https://docs.microsoft.com/azure/virtual-machines/windows/sizes \nAzure VM Naming Conventions, see https://docs.microsoft.com/azure/virtual-machines/vm-naming-conventions",
+        "displayName": "Creation of expensive computes in Azure",
+        "enabled": true,
+        "query": "let tokens = dynamic([\"416\",\"208\",\"192\",\"128\",\"120\",\"96\",\"80\",\"72\",\"64\",\"48\",\"44\",\"40\",\"nc12\",\"nc24\",\"nv24\"]);\nlet operationList = dynamic([\"microsoft.compute/virtualmachines/write\", \"microsoft.resources/deployments/write\"]);\nAzureActivity\n| where OperationNameValue in~ (operationList)\n| where ActivityStatusValue startswith \"Accept\"\n| where Properties has 'vmSize'\n| extend parsed_property= parse_json(tostring((parse_json(Properties).responseBody))).properties\n| extend vmSize = tostring((parsed_property.hardwareProfile).vmSize)\n| mv-apply token=tokens to typeof(string) on (where vmSize contains token)\n| extend ComputerName = tostring((parsed_property.osProfile).computerName)\n| project TimeGenerated, OperationNameValue, ActivityStatusValue, Caller, CallerIpAddress, ComputerName, vmSize\n| extend Name = tostring(split(Caller,'@',0)[0]), UPNSuffix = tostring(split(Caller,'@',1)[0])\n",
+        "queryFrequency": "P1D",
+        "queryPeriod": "P1D",
+        "severity": "Low",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 1,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "dataTypes": [
+              "AzureActivity"
+            ],
+            "connectorId": "AzureActivity"
+          }
+        ],
+        "tactics": [
+          "DefenseEvasion"
+        ],
+        "techniques": [
+          "T1578"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "identifier": "FullName",
+                "columnName": "Caller"
+              },
+              {
+                "identifier": "Name",
+                "columnName": "Name"
+              },
+              {
+                "identifier": "UPNSuffix",
+                "columnName": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "identifier": "HostName",
+                "columnName": "ComputerName"
+              }
+            ],
+            "entityType": "Host"
+          },
+          {
+            "fieldMappings": [
+              {
+                "identifier": "Address",
+                "columnName": "CallerIpAddress"
+              }
+            ],
+            "entityType": "IP"
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Azure Activity Analytics Rule 5",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Azure Activity",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}

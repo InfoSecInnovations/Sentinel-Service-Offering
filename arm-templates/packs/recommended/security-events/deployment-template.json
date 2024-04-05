@@ -56,7 +56,9 @@
     "enableAMALogsName": "[concat('enableAMALogs', '-', parameters('location'))]",
     "associateArcServersName": "[concat('associateArcServers', '-', parameters('location'))]",
     "eventAnalyzerWorkbookName": "[concat('eventAnalyzerWorkbook', '-', parameters('location'))]",
-    "anomalousRDPName": "[concat('anomalousRDPLoginDetections', '-', parameters('location'))]"
+    "anomalousRDPName": "[concat('anomalousRDPLoginDetections', '-', parameters('location'))]",
+    "credentialDumpingToolsFileArtifactsName": "[concat('credentialDumpingToolsFileArtifacts', '-', parameters('location'))]",
+    "credentialDumpingToolsServiceInstallationName": "[concat('credentialDumpingToolsServiceInstallation', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -168,6 +170,40 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/anomalous-rdp-login-detections.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('credentialDumpingToolsFileArtifactsName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/credential-dumping-tools-file-artifacts.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('credentialDumpingToolsServiceInstallationName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/credential-dumping-tools-service-installation.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
