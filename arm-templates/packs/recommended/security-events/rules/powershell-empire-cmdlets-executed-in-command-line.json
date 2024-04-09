@@ -1,0 +1,261 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "ef88eb96-861c-43a0-ab16-f3835a97c928",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.3.1",
+    "solutionId": "azuresentinel.azure-sentinel-solution-attackertools"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "This query identifies use of PowerShell Empire's cmdlets within the command line data of the PowerShell process, indicating potential use of the post-exploitation tool.",
+        "displayName": "Powershell Empire Cmdlets Executed in Command Line",
+        "enabled": true,
+        "query": "let regexEmpire = tostring(toscalar(externaldata(cmdlets:string)[@\"https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Sample%20Data/Feeds/EmpireCommandString.txt\"] with (format=\"txt\")));\n(union isfuzzy=true\n (SecurityEvent\n| where EventID == 4688\n//consider filtering on filename if perf issues occur\n//where FileName in~ (\"powershell.exe\",\"powershell_ise.exe\",\"pwsh.exe\")\n| where not(ParentProcessName has_any ('gc_worker.exe', 'gc_service.exe'))\n| where CommandLine has \"-encodedCommand\"\n| parse kind=regex flags=i CommandLine with * \"-EncodedCommand \" encodedCommand\n| extend encodedCommand = iff(encodedCommand has \" \", tostring(split(encodedCommand, \" \")[0]), encodedCommand)\n// Note: currently the base64_decode_tostring function is limited to supporting UTF8\n| extend decodedCommand = translate('\\0','', base64_decode_tostring(substring(encodedCommand, 0, strlen(encodedCommand) -  (strlen(encodedCommand) %8)))), encodedCommand, CommandLine , strlen(encodedCommand)\n| extend EfectiveCommand = iff(isnotempty(encodedCommand), decodedCommand, CommandLine)\n| where EfectiveCommand matches regex regexEmpire\n| project timestamp = TimeGenerated, Computer, SubjectUserName, SubjectDomainName, FileName = Process, EfectiveCommand, decodedCommand, encodedCommand, CommandLine, ParentProcessName\n| extend HostName = split(Computer, '.', 0)[0], DnsDomain = strcat_array(array_slice(split(Computer, '.'), 1, -1), '.')\n),\n(WindowsEvent\n| where EventID == 4688\n| where EventData has_any (\"-encodedCommand\", \"powershell.exe\",\"powershell_ise.exe\",\"pwsh.exe\")\n| where not(EventData has_any ('gc_worker.exe', 'gc_service.exe'))\n//consider filtering on filename if perf issues occur\n//extend NewProcessName = tostring(EventData.NewProcessName)\n//extend Process=tostring(split(NewProcessName, '\\\\')[-1])\n//FileName = Process\n//where FileName in~ (\"powershell.exe\",\"powershell_ise.exe\",\"pwsh.exe\")\n| extend ParentProcessName = tostring(EventData.ParentProcessName)\n| where not(ParentProcessName has_any ('gc_worker.exe', 'gc_service.exe'))\n| extend CommandLine = tostring(EventData.CommandLine)\n| where CommandLine has \"-encodedCommand\"\n| parse kind=regex flags=i CommandLine with * \"-EncodedCommand \" encodedCommand\n| extend encodedCommand = iff(encodedCommand has \" \", tostring(split(encodedCommand, \" \")[0]), encodedCommand)\n// Note: currently the base64_decode_tostring function is limited to supporting UTF8\n| extend decodedCommand = translate('\\0','', base64_decode_tostring(substring(encodedCommand, 0, strlen(encodedCommand) -  (strlen(encodedCommand) %8)))), encodedCommand, CommandLine , strlen(encodedCommand)\n| extend EfectiveCommand = iff(isnotempty(encodedCommand), decodedCommand, CommandLine)\n| where EfectiveCommand matches regex regexEmpire\n| extend SubjectUserName = tostring(EventData.SubjectUserName)\n| extend SubjectDomainName = tostring(EventData.SubjectDomainName)\n| extend NewProcessName = tostring(EventData.NewProcessName)\n| extend Process=tostring(split(NewProcessName, '\\\\')[-1])\n| project timestamp = TimeGenerated, Computer, SubjectUserName, SubjectDomainName, FileName = Process, EfectiveCommand, decodedCommand, encodedCommand, CommandLine, ParentProcessName\n| extend HostName = split(Computer, '.', 0)[0], DnsDomain = strcat_array(array_slice(split(Computer, '.'), 1, -1), '.')\n))\n",
+        "queryFrequency": "PT12H",
+        "queryPeriod": "PT12H",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "dataTypes": [
+              "SecurityEvent"
+            ],
+            "connectorId": "SecurityEvents"
+          },
+          {
+            "dataTypes": [
+              "SecurityEvent"
+            ],
+            "connectorId": "WindowsSecurityEvents"
+          },
+          {
+            "dataTypes": [
+              "SecurityEvents"
+            ],
+            "connectorId": "WindowsSecurityEvents"
+          },
+          {
+            "dataTypes": [
+              "WindowsEvent"
+            ],
+            "connectorId": "WindowsForwardedEvents"
+          }
+        ],
+        "tactics": [
+          "Collection",
+          "CommandAndControl",
+          "CredentialAccess",
+          "DefenseEvasion",
+          "Discovery",
+          "Execution",
+          "Exfiltration",
+          "LateralMovement",
+          "Persistence",
+          "PrivilegeEscalation"
+        ],
+        "subTechniques": [
+          "T1548.002",
+          "T1134.002",
+          "T1134.005",
+          "T1087.001",
+          "T1087.002",
+          "T1557.001",
+          "T1071.001",
+          "T1547.001",
+          "T1547.005",
+          "T1547.009",
+          "T1059.001",
+          "T1059.003",
+          "T1136.001",
+          "T1136.002",
+          "T1543.003",
+          "T1555.003",
+          "T1484.001",
+          "T1114.001",
+          "T1573.002",
+          "T1546.008",
+          "T1567.001",
+          "T1567.002",
+          "T1574.001",
+          "T1574.004",
+          "T1574.007",
+          "T1574.008",
+          "T1574.009",
+          "T1070.006",
+          "T1056.001",
+          "T1056.004",
+          "T1003.001",
+          "T1021.003",
+          "T1021.004",
+          "T1053.005",
+          "T1518.001",
+          "T1558.002",
+          "T1558.003",
+          "T1569.002",
+          "T1127.001",
+          "T1552.001",
+          "T1552.004",
+          "T1550.002",
+          "T1102.002"
+        ],
+        "techniques": [
+          "T1548",
+          "T1134",
+          "T1134",
+          "T1134",
+          "T1087",
+          "T1087",
+          "T1557",
+          "T1071",
+          "T1560",
+          "T1547",
+          "T1547",
+          "T1547",
+          "T1217",
+          "T1115",
+          "T1059",
+          "T1059",
+          "T1059",
+          "T1136",
+          "T1136",
+          "T1543",
+          "T1555",
+          "T1484",
+          "T1482",
+          "T1114",
+          "T1573",
+          "T1546",
+          "T1041",
+          "T1567",
+          "T1567",
+          "T1068",
+          "T1210",
+          "T1083",
+          "T1615",
+          "T1574",
+          "T1574",
+          "T1574",
+          "T1574",
+          "T1574",
+          "T1070",
+          "T1105",
+          "T1056",
+          "T1056",
+          "T1106",
+          "T1046",
+          "T1135",
+          "T1040",
+          "T1027",
+          "T1003",
+          "T1057",
+          "T1055",
+          "T1021",
+          "T1021",
+          "T1053",
+          "T1113",
+          "T1518",
+          "T1558",
+          "T1558",
+          "T1082",
+          "T1016",
+          "T1049",
+          "T1569",
+          "T1127",
+          "T1552",
+          "T1552",
+          "T1550",
+          "T1125",
+          "T1102",
+          "T1047"
+        ],
+        "entityMappings": [
+          {
+            "entityType": "Account",
+            "fieldMappings": [
+              {
+                "columnName": "SubjectUserName",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "SubjectDomainName",
+                "identifier": "NTDomain"
+              }
+            ]
+          },
+          {
+            "entityType": "Host",
+            "fieldMappings": [
+              {
+                "columnName": "HostName",
+                "identifier": "HostName"
+              },
+              {
+                "columnName": "DnsDomain",
+                "identifier": "DnsDomain"
+              }
+            ]
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Attacker Tools Threat Protection Essentials Analytics Rule 4",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Attacker Tools Threat Protection Essentials",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "tier": "Microsoft",
+          "link": "https://support.microsoft.com"
+        }
+      }
+    }
+  ]
+}

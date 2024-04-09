@@ -1,0 +1,109 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "199978c5-cd6d-4194-b505-8ef5800739df",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.1",
+    "solutionId": "azuresentinel.azure-sentinel-solution-securitythreatessentialsol"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "This query detects when newly created Global admin removes multiple existing global admins which can be an attempt by adversaries to lock down organization and retain sole access. \n Investigate reasoning and intention of multiple membership removal by new Global admins and take necessary actions accordingly.",
+        "displayName": "Threat Essentials - Multiple admin membership removals from newly created admin.",
+        "enabled": true,
+        "query": "let lookback = 7d; \nlet timeframe = 1h; \nlet GlobalAdminsRemoved = AuditLogs \n| where TimeGenerated > ago(timeframe) \n| where Category =~ \"RoleManagement\" \n| where AADOperationType in~ (\"Unassign\", \"RemoveEligibleRole\") \n| where ActivityDisplayName has_any (\"Remove member from role\", \"Remove eligible member from role\") \n| mv-expand TargetResources \n| mv-expand TargetResources.modifiedProperties \n| extend displayName_ = tostring(TargetResources_modifiedProperties.displayName) \n| where displayName_ =~ \"Role.DisplayName\" \n| extend RoleName = tostring(parse_json(tostring(TargetResources_modifiedProperties.oldValue))) \n| where RoleName =~ \"Global Administrator\" // Add other Privileged role if applicable \n| extend InitiatingApp = tostring(parse_json(tostring(InitiatedBy.app)).displayName) \n| extend Initiator = iif(isnotempty(InitiatingApp), InitiatingApp, tostring(parse_json(tostring(InitiatedBy.user)).userPrincipalName)) \n| where Initiator != \"MS-PIM\"  // Filtering PIM events \n| extend Target = tostring(TargetResources.userPrincipalName) \n| summarize RemovedGlobalAdminTime = max(TimeGenerated), TargetAdmins = make_set(Target) by OperationName,  RoleName, Initiator, Result; \nlet GlobalAdminsAdded = AuditLogs \n| where TimeGenerated > ago(lookback) \n| where Category =~ \"RoleManagement\" \n| where AADOperationType in~ (\"Assign\", \"AssignEligibleRole\") \n| where ActivityDisplayName has_any (\"Add eligible member to role\", \"Add member to role\") and Result =~ \"success\" \n| mv-expand TargetResources \n| mv-expand TargetResources.modifiedProperties \n| extend displayName_ = tostring(TargetResources_modifiedProperties.displayName) \n| where displayName_ =~ \"Role.DisplayName\" \n| extend RoleName = tostring(parse_json(tostring(TargetResources_modifiedProperties.newValue))) \n| where RoleName =~ \"Global Administrator\" // Add other Privileged role if applicable \n| extend InitiatingApp = tostring(parse_json(tostring(InitiatedBy.app)).displayName) \n| extend Initiator = iif(isnotempty(InitiatingApp), InitiatingApp, tostring(parse_json(tostring(InitiatedBy.user)).userPrincipalName)) \n| where Initiator != \"MS-PIM\"  // Filtering PIM events \n| extend Target = tostring(TargetResources.userPrincipalName) \n| summarize AddedGlobalAdminTime = max(TimeGenerated) by OperationName,  RoleName, Target, Initiator, Result; \nGlobalAdminsAdded \n| join kind= inner GlobalAdminsRemoved on $left.Target == $right.Initiator \n| where AddedGlobalAdminTime < RemovedGlobalAdminTime \n| extend NoofAdminsRemoved = array_length(TargetAdmins) \n| where NoofAdminsRemoved > 1\n| project AddedGlobalAdminTime, Initiator, Target, RemovedGlobalAdminTime, TargetAdmins, NoofAdminsRemoved\n| extend Name=split(Target, \"@\")[0], UPNSuffix=split(Target, \"@\")[1]\n",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "P7D",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "dataTypes": [
+              "AuditLogs"
+            ],
+            "connectorId": "AzureActiveDirectory"
+          }
+        ],
+        "tactics": [
+          "Impact"
+        ],
+        "techniques": [
+          "T1531"
+        ],
+        "entityMappings": [
+          {
+            "entityType": "Account",
+            "fieldMappings": [
+              {
+                "identifier": "Name",
+                "columnName": "Name"
+              },
+              {
+                "identifier": "UPNSuffix",
+                "columnName": "UPNSuffix"
+              }
+            ]
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "SecurityThreatEssentialSolution Analytics Rule 2",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "SecurityThreatEssentialSolution",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "tier": "Microsoft",
+          "link": "https://support.microsoft.com"
+        }
+      }
+    }
+  ]
+}

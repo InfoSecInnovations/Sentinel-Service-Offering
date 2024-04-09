@@ -1,0 +1,135 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "16daa67c-b137-48dc-8eb7-76598a44791a",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.4",
+    "solutionId": "azuresentinel.azure-sentinel-solution-securitythreatessentialsol"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "Threat actors may attempt to phish users in order to hijack a users sign-in session, and skip the authentication process even if the user had enabled multifactor authentication (MFA) by stealing and replaying stolen credentials and session cookies.\nThis detection looks for successful Microsoft Entra ID sign ins that had a high risk profile, indicating it had suspicious characteristics such as an unusual location, ISP, user agent, or use of anonymizer services.\nIt then looks for a network connection to the IP address that made the sign in immediately before the sign in, that may indicate a user connecting to a phishing site at that IP address and having their authentication session hijacked.\nRef: https://www.microsoft.com/security/blog/2022/07/12/from-cookie-theft-to-bec-attackers-use-aitm-phishing-sites-as-entry-point-to-further-financial-fraud/",
+        "displayName": "Possible AiTM Phishing Attempt Against Microsoft Entra ID",
+        "enabled": true,
+        "query": "let time_threshold = 10m;\nlet RiskySignins = materialize (SigninLogs\n| where TimeGenerated > ago(1d)\n| where ResultType == 0\n| where RiskLevelDuringSignIn =~ \"high\" or RiskLevelAggregated =~ \"high\"\n| extend SignInTime = TimeGenerated, Name=split(UserPrincipalName, \"@\")[0], UPNSuffix=split(UserPrincipalName, \"@\")[1]);\nlet ips = todynamic(toscalar(RiskySignins | summarize make_list(IPAddress)));\nRiskySignins\n| join kind=inner (_Im_WebSession(starttime=ago(1d), ipaddr_has_any_prefix=ips, eventresult=\"Success\", pack=True))\non $left.IPAddress == $right.DstIpAddr\n| where EventStartTime < TimeGenerated\n| extend TimeDelta = TimeGenerated - EventStartTime\n| where TimeDelta <= time_threshold\n| extend NetworkEventStartTime = EventStartTime, NetworkEventEndTime = EventEndTime\n| extend SrcUsername = column_ifexists(\"SrcUsername\", \"Unknown\")\n| project-reorder SignInTime, UserPrincipalName, IPAddress, AppDisplayName, ClientAppUsed, DeviceDetail, LocationDetails, NetworkLocationDetails, RiskEventTypes, UserAgent, NetworkEventStartTime, NetworkEventEndTime, SrcIpAddr, DstIpAddr, DstPortNumber, Dvc, DvcHostname, SrcBytes, NetworkProtocol, SrcUsername\n",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "P1D",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "dataTypes": [
+              "SigninLogs"
+            ],
+            "connectorId": "AzureActiveDirectory"
+          },
+          {
+            "dataTypes": [
+              "CommonSecurityLog (Zscaler)"
+            ],
+            "connectorId": "Zscaler"
+          }
+        ],
+        "tactics": [
+          "InitialAccess",
+          "DefenseEvasion",
+          "CredentialAccess"
+        ],
+        "subTechniques": [
+          "T1078.004"
+        ],
+        "techniques": [
+          "T1078",
+          "T1557",
+          "T1111"
+        ],
+        "entityMappings": [
+          {
+            "entityType": "Account",
+            "fieldMappings": [
+              {
+                "identifier": "Name",
+                "columnName": "Name"
+              },
+              {
+                "identifier": "UPNSuffix",
+                "columnName": "UPNSuffix"
+              }
+            ]
+          },
+          {
+            "entityType": "IP",
+            "fieldMappings": [
+              {
+                "identifier": "Address",
+                "columnName": "IPAddress"
+              }
+            ]
+          }
+        ],
+        "alertDetailsOverride": {
+          "alertDescriptionFormat": "Threat actors may attempt to phish users in order to hijack a users sign-in session, and skip the authentication process even if the user had enabled multifactor authentication (MFA) by stealing and replaying stolen credentials and session cookies.\nThis detection looks for successful Microsoft Entra ID sign ins (in this case from {{UserPrincipalName}}) that had a high risk profile, indicating it had suspicious characteristics such as an unusual location, ISP, user agent, or use of anonymizer services.\nIt then looks for a network connection to the IP address (in this case {{IPAddress}}) that made the sign in immediately before the sign in, that may indicate a user connecting to a phishing site at that IP address and having their authentication session hijacked.\nRef: https://www.microsoft.com/security/blog/2022/07/12/from-cookie-theft-to-bec-attackers-use-aitm-phishing-sites-as-entry-point-to-further-financial-fraud/\n",
+          "alertDisplayNameFormat": "Possible AiTM Phishing Attempt Against {{UserPrincipalName}} From {{IPAddress}}"
+        },
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "SecurityThreatEssentialSolution Analytics Rule 7",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "SecurityThreatEssentialSolution",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "tier": "Microsoft",
+          "link": "https://support.microsoft.com"
+        }
+      }
+    }
+  ]
+}

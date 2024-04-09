@@ -1,0 +1,152 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "6852d9da-8015-4b95-8ecf-d9572ee0395d",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.3",
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivedirectory"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "This alert will detect creation of an SPN, permissions granted, credentials created, activity and deletion of the SPN in a time frame (default 10 minutes)",
+        "displayName": "Suspicious Service Principal creation activity",
+        "enabled": true,
+        "query": "let queryfrequency = 1h;\nlet wait_for_deletion = 10m;\nlet account_created =\n  AuditLogs \n  | where ActivityDisplayName == \"Add service principal\"\n  | where Result == \"success\"\n  | extend AppID = tostring(AdditionalDetails[1].value)\n  | extend creationTime = ActivityDateTime\n  | extend CreatorUserPrincipalName = tostring(parse_json(tostring(InitiatedBy.user)).userPrincipalName)\n  | extend CreatorIPAddress = tostring(parse_json(tostring(InitiatedBy.user)).ipAddress);\nlet account_activity =\n  AADServicePrincipalSignInLogs\n  | extend Activities = pack(\"ActivityTime\", TimeGenerated ,\"IpAddress\", IPAddress, \"ResourceDisplayName\", ResourceDisplayName)\n  | extend AppID = AppId\n  | summarize make_list(Activities) by AppID;\nlet account_deleted =\n  AuditLogs \n  | where OperationName == \"Remove service principal\"\n  | where Result == \"success\"\n  | extend AppID = tostring(AdditionalDetails[1].value)\n  | extend deletionTime = ActivityDateTime\n  | extend DeleterUserPrincipalName = tostring(parse_json(tostring(InitiatedBy.user)).userPrincipalName)\n  | extend DeleterIPAddress = tostring(parse_json(tostring(InitiatedBy.user)).ipAddress);\nlet account_credentials =\n  AuditLogs\n  | where OperationName has_all (\"Update application\", \"Certificates and secrets management\")\n  | where Result == \"success\"\n  | extend AppID = tostring(AdditionalDetails[1].value)\n  | extend credentialCreationTime = ActivityDateTime;\nlet roles_assigned =\n  AuditLogs\n  | where ActivityDisplayName == \"Add app role assignment to service principal\"\n  | extend AppID = tostring(TargetResources[1].displayName)\n  | extend AssignedRole =  iff(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].displayName)==\"AppRole.Value\", tostring(parse_json(tostring(parse_json(tostring(TargetResources[0].modifiedProperties))[1].newValue))),\"\")\n  | extend AssignedRoles = pack(\"Role\", AssignedRole)\n  | summarize make_list(AssignedRoles) by AppID;\naccount_created\n| where TimeGenerated between (ago(wait_for_deletion+queryfrequency)..ago(wait_for_deletion))\n| join kind= inner (account_activity) on AppID\n| join kind= inner (account_deleted) on AppID\n| join kind= inner (account_credentials) on AppID\n| join kind= inner (roles_assigned) on AppID\n| where deletionTime - creationTime between (time(0s)..wait_for_deletion)\n| extend AliveTime = deletionTime - creationTime\n| project AADTenantId, AppID, creationTime, deletionTime, CreatorUserPrincipalName, DeleterUserPrincipalName, CreatorIPAddress, DeleterIPAddress, list_Activities, list_AssignedRoles, AliveTime\n| extend CreatorName = tostring(split(CreatorUserPrincipalName, \"@\")[0]), CreatorUPNSuffix = tostring(split(CreatorUserPrincipalName, \"@\")[1])\n| extend DeleterName = tostring(split(DeleterUserPrincipalName, \"@\")[0]), DeleterSuffix = tostring(split(DeleterUserPrincipalName, \"@\")[1])\n",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "PT70M",
+        "severity": "Low",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "AuditLogs",
+              "AADServicePrincipalSignInLogs"
+            ]
+          }
+        ],
+        "tactics": [
+          "CredentialAccess",
+          "PrivilegeEscalation",
+          "InitialAccess"
+        ],
+        "techniques": [
+          "T1078",
+          "T1528"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "columnName": "CreatorUserPrincipalName",
+                "identifier": "FullName"
+              },
+              {
+                "columnName": "CreatorName",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "CreatorUPNSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "DeleterUserPrincipalName",
+                "identifier": "FullName"
+              },
+              {
+                "columnName": "DeleterName",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "DeleterSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "CreatorIPAddress",
+                "identifier": "Address"
+              }
+            ],
+            "entityType": "IP"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "DeleterIPAddress",
+                "identifier": "Address"
+              }
+            ],
+            "entityType": "IP"
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Microsoft Entra ID Analytics Rule 57",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Microsoft Entra ID",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}

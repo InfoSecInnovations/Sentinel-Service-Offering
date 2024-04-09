@@ -38,7 +38,10 @@
     "azureActivityContentPackageName": "[concat('azureActivityContentPackage', '-', parameters('location'))]",
     "azureActivityDataConnectorName": "[concat('azureActivityDataConnector', '-', parameters('location'))]",
     "azureActivityWorkbookName": "[concat('azureActivityWorkbook', '-', parameters('location'))]",
-    "creationOfExpensiveComputesInAzureName": "[concat('creationOfExpensiveComputesInAzure', '-', parameters('location'))]"
+    "creationOfExpensiveComputesInAzureName": "[concat('creationOfExpensiveComputesInAzure', '-', parameters('location'))]",
+    "suspiciousGrantingOfPermissionsToAnAccountName": "[concat('suspiciousGrantingOfPermissionsToAnAccount', '-', parameters('location'))]",
+    "suspiciousNumberOfResourceCreationOrDeploymentActivitiesName": "[concat('suspiciousNumberOfResourceCreationOrDeploymentActivities', '-', parameters('location'))]",
+    "threatEssentialsMassCloudResourceDeletionsTimeSeriesAnomalyName": "[concat('threatEssentialsMassCloudResourceDeletionsTimeSeriesAnomaly', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -121,6 +124,57 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/azure-activity/rules/creation-of-expensive-computes-in-azure.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('suspiciousGrantingOfPermissionsToAnAccountName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/azure-activity/rules/suspicious-granting-of-permissions-to-an-account.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('suspiciousNumberOfResourceCreationOrDeploymentActivitiesName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/azure-activity/rules/suspicious-number-of-resource-creation-or-deployment-activities.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('threatEssentialsMassCloudResourceDeletionsTimeSeriesAnomalyName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/azure-activity/rules/threat-essentials-mass-cloud-resource-deletions-time-series-anomaly.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

@@ -1,0 +1,119 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "500c103a-0319-4d56-8e99-3cec8d860757",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "2.1.3",
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivedirectory"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "Identifies IPs with failed attempts to sign in to one or more disabled accounts using the IP through which successful signins from other accounts have happened.\nThis could indicate an attacker who obtained credentials for a list of accounts and is attempting to login with those accounts, some of which may have already been disabled.\nReferences: https://docs.microsoft.com/azure/active-directory/reports-monitoring/reference-sign-ins-error-codes\n50057 - User account is disabled. The account has been disabled by an administrator.\nThis query has also been updated to include UEBA logs IdentityInfo and BehaviorAnalytics for contextual information around the results.",
+        "displayName": "Sign-ins from IPs that attempt sign-ins to disabled accounts",
+        "enabled": true,
+        "query": "let aadFunc = (tableName: string) {\nlet failed_signins = table(tableName)\n| where ResultType == \"50057\"\n| where ResultDescription == \"User account is disabled. The account has been disabled by an administrator.\";\nlet disabled_users = failed_signins | summarize by UserPrincipalName;\ntable(tableName)\n  | where ResultType == 0\n  | where isnotempty(UserPrincipalName)\n  | where UserPrincipalName !in (disabled_users)\n| summarize\n        successfulAccountsTargettedCount = dcount(UserPrincipalName),\n        successfulAccountSigninSet = make_set(UserPrincipalName, 100),\n        successfulApplicationSet = make_set(AppDisplayName, 100)\n    by IPAddress, Type\n    // Assume IPs associated with sign-ins from 100+ distinct user accounts are safe\n    | where successfulAccountsTargettedCount < 50\n    | where isnotempty(successfulAccountsTargettedCount)\n  | join kind=inner (failed_signins\n| summarize\n    StartTime = min(TimeGenerated),\n    EndTime = max(TimeGenerated),\n    totalDisabledAccountLoginAttempts = count(),\n    disabledAccountsTargettedCount = dcount(UserPrincipalName),\n    applicationsTargeted = dcount(AppDisplayName),\n    disabledAccountSet = make_set(UserPrincipalName, 100),\n    disabledApplicationSet = make_set(AppDisplayName, 100)\nby IPAddress, Type\n| order by totalDisabledAccountLoginAttempts desc) on IPAddress\n| project StartTime, EndTime, IPAddress, totalDisabledAccountLoginAttempts, disabledAccountsTargettedCount, disabledAccountSet, disabledApplicationSet, successfulApplicationSet, successfulAccountsTargettedCount, successfulAccountSigninSet, Type\n| order by totalDisabledAccountLoginAttempts};\nlet aadSignin = aadFunc(\"SigninLogs\");\nlet aadNonInt = aadFunc(\"AADNonInteractiveUserSignInLogs\");\nunion isfuzzy=true aadSignin, aadNonInt\n| join kind=leftouter (\n    BehaviorAnalytics\n    | where ActivityType in (\"FailedLogOn\", \"LogOn\")\n    | where EventSource =~ \"Azure AD\"\n    | project UsersInsights, DevicesInsights, ActivityInsights, InvestigationPriority, SourceIPAddress, UserPrincipalName\n    | project-rename IPAddress = SourceIPAddress\n    | summarize\n        Users = make_set(UserPrincipalName, 100),\n        UsersInsights = make_set(UsersInsights, 100),\n        DevicesInsights = make_set(DevicesInsights, 100),\n        IPInvestigationPriority = sum(InvestigationPriority)\n    by IPAddress\n) on IPAddress\n| extend SFRatio = toreal(toreal(disabledAccountsTargettedCount)/toreal(successfulAccountsTargettedCount))\n| where SFRatio >= 0.5\n| sort by IPInvestigationPriority desc\n",
+        "queryFrequency": "P1D",
+        "queryPeriod": "P1D",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "SigninLogs"
+            ]
+          },
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "AADNonInteractiveUserSignInLogs"
+            ]
+          },
+          {
+            "connectorId": "BehaviorAnalytics",
+            "dataTypes": [
+              "BehaviorAnalytics"
+            ]
+          }
+        ],
+        "tactics": [
+          "InitialAccess",
+          "Persistence"
+        ],
+        "techniques": [
+          "T1078",
+          "T1098"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "columnName": "IPAddress",
+                "identifier": "Address"
+              }
+            ],
+            "entityType": "IP"
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Microsoft Entra ID Analytics Rule 51",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Microsoft Entra ID",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}

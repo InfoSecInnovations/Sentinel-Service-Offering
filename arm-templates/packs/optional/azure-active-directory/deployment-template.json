@@ -62,7 +62,22 @@
     "newAccessCredentialAddedToApplicationOrServicePrincipalName": "[concat('newAccessCredentialAddedToApplicationOrServicePrincipal', '-', parameters('location'))]",
     "newExternalUserGrantedAdminRoleName": "[concat('newExternalUserGrantedAdminRole', '-', parameters('location'))]",
     "newOnmicrosoftDomainAddedToTenantName": "[concat('newOnmicrosoftDomainAddedToTenant', '-', parameters('location'))]",
-    "newUserAssignedToPrivilegedRoleName": "[concat('newUserAssignedToPrivilegedRole', '-', parameters('location'))]"
+    "newUserAssignedToPrivilegedRoleName": "[concat('newUserAssignedToPrivilegedRole', '-', parameters('location'))]",
+    "possibleAitmPhishingAttemptAgainstMicrosoftEntraIdName": "[concat('possibleAitmPhishingAttemptAgainstMicrosoftEntraId', '-', parameters('location'))]",
+    "privilegedAccountsSignInFailureSpikesName": "[concat('privilegedAccountsSignInFailureSpikes', '-', parameters('location'))]",
+    "rareApplicationConsentName": "[concat('rareApplicationConsent', '-', parameters('location'))]",
+    "signInsFromIpsThatAttemptSignInsToDisabledAccountsName": "[concat('signInsFromIpsThatAttemptSignInsToDisabledAccounts', '-', parameters('location'))]",
+    "successfulLogonFromIpAndFailureFromADifferentIpName": "[concat('successfulLogonFromIpAndFailureFromADifferentIp', '-', parameters('location'))]",
+    "suspiciousEntraIdJoinedDeviceUpdateName": "[concat('suspiciousEntraIdJoinedDeviceUpdate', '-', parameters('location'))]",
+    "suspiciousApplicationConsentForOfflineAccessName": "[concat('suspiciousApplicationConsentForOfflineAccess', '-', parameters('location'))]",
+    "suspiciousApplicationConsentSimilarToO365AttackToolkitName": "[concat('suspiciousApplicationConsentSimilarToO365AttackToolkit', '-', parameters('location'))]",
+    "suspiciousApplicationConsentSimilarToPwnauthName": "[concat('suspiciousApplicationConsentSimilarToPwnauth', '-', parameters('location'))]",
+    "suspiciousServicePrincipalCreationActivityName": "[concat('suspiciousServicePrincipalCreationActivity', '-', parameters('location'))]",
+    "suspiciousSignInFollowedByMfaModificationName": "[concat('suspiciousSignInFollowedByMfaModification', '-', parameters('location'))]",
+    "threatEssentialsMultipleAdminMembershipRemovalsFromNewlyCreatedAdminName": "[concat('threatEssentialsMultipleAdminMembershipRemovalsFromNewlyCreatedAdmin', '-', parameters('location'))]",
+    "threatEssentialsNrtUserAddedToMicrosoftEntraIdPrivilegedGroupsName": "[concat('threatEssentialsNrtUserAddedToMicrosoftEntraIdPrivilegedGroups', '-', parameters('location'))]",
+    "threatEssentialsUserAssignedPrivilegedRoleName": "[concat('threatEssentialsUserAssignedPrivilegedRole', '-', parameters('location'))]",
+    "userAddedToMicrosoftEntraIdPrivilegedGroupsName": "[concat('userAddedToMicrosoftEntraIdPrivilegedGroups', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -599,6 +614,261 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/new-user-assigned-to-privileged-role.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('possibleAitmPhishingAttemptAgainstMicrosoftEntraIdName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/possible-aitm-phishing-attempt-against-microsoft-entra-id.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('privilegedAccountsSignInFailureSpikesName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/privileged-accounts-sign-in-failure-spikes.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('rareApplicationConsentName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/rare-application-consent.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('signInsFromIpsThatAttemptSignInsToDisabledAccountsName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/sign-ins-from-ips-that-attempt-sign-ins-to-disabled-accounts.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('successfulLogonFromIpAndFailureFromADifferentIpName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/successful-logon-from-ip-and-failure-from-a-different-ip.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('suspiciousEntraIdJoinedDeviceUpdateName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-entra-id-joined-device-update.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('suspiciousApplicationConsentForOfflineAccessName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-application-consent-for-offline-access.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('suspiciousApplicationConsentSimilarToO365AttackToolkitName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-application-consent-similar-to-o365-attack-toolkit.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('suspiciousApplicationConsentSimilarToPwnauthName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-application-consent-similar-to-pwnauth.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('suspiciousServicePrincipalCreationActivityName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-service-principal-creation-activity.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('suspiciousSignInFollowedByMfaModificationName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-sign-in-followed-by-mfa-modification.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('threatEssentialsMultipleAdminMembershipRemovalsFromNewlyCreatedAdminName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/threat-essentials-multiple-admin-membership-removals-from-newly-created-admin.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('threatEssentialsNrtUserAddedToMicrosoftEntraIdPrivilegedGroupsName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/threat-essentials-nrt-user-added-to-microsoft-entra-id-privileged-groups.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('threatEssentialsUserAssignedPrivilegedRoleName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/threat-essentials-user-assigned-privileged-role.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('userAddedToMicrosoftEntraIdPrivilegedGroupsName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/user-added-to-microsoft-entra-id-privileged-groups.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

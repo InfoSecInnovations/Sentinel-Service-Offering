@@ -31,7 +31,9 @@
     "microsoftSentinelCostWorkbookName": "[concat('microsoftSentinelCostWorkbook', '-', parameters('location'))]",
     "securityAlertsWorkbookName": "[concat('securityAlertsWorkbook', '-', parameters('location'))]",
     "advancedMultiAttackDetectName": "[concat('advancedMultiAttackDetect', '-', parameters('location'))]",
-    "log4jVulnerabilityExploitAkaLog4shellIpIocName": "[concat('log4jVulnerabilityExploitAkaLog4shellIpIoc', '-', parameters('location'))]"
+    "log4jVulnerabilityExploitAkaLog4shellIpIocName": "[concat('log4jVulnerabilityExploitAkaLog4shellIpIoc', '-', parameters('location'))]",
+    "userAgentSearchForLog4jExploitationAttemptName": "[concat('userAgentSearchForLog4jExploitationAttempt', '-', parameters('location'))]",
+    "vulnerableMachinesRelatedToLog4jCve202144228Name": "[concat('vulnerableMachinesRelatedToLog4jCve202144228', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -266,6 +268,40 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/rules/log4j-vulnerability-exploit-aka-log4shell-ip-ioc.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('userAgentSearchForLog4jExploitationAttemptName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/rules/user-agent-search-for-log4j-exploitation-attempt.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('vulnerableMachinesRelatedToLog4jCve202144228Name')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/rules/vulnerable-machines-related-to-log4j-cve-2021-44228.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

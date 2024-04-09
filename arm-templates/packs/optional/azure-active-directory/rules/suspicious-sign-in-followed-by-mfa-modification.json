@@ -1,0 +1,185 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "aec77100-25c5-4254-a20a-8027ed92c46c",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.1",
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivedirectory"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "This query looks uses Microsoft Sentinel's UEBA features to look for suspicious logons followed by modifications to MFA settings by that user.",
+        "displayName": "Suspicious Sign In Followed by MFA Modification",
+        "enabled": true,
+        "query": "let PriorityScore = 9;\nBehaviorAnalytics\n| where ActionType == \"Sign-in\"\n| where InvestigationPriority > PriorityScore\n| extend UserPrincipalName = tolower(UserPrincipalName)\n| extend LogOnTime = TimeGenerated\n| join kind=inner (AuditLogs\n| where Category =~ \"UserManagement\" \n| where OperationName in~ (\"Admin registered security info\", \"Admin updated security info\", \"Admin deleted security info\", \"User registered security info\", \"User changed default security info\", \"User deleted security info\",\"User registered all required security info\",\"User started security info registration\") \n| extend InitiatorUPN = tolower(tostring(InitiatedBy.user.userPrincipalName))\n| extend InitiatorID = tostring(InitiatedBy.user.id)\n| extend FromIP = tostring(InitiatedBy.user.ipAddress) \n| extend TargetUPN = tolower(tostring(TargetResources[0].userPrincipalName))\n| extend TargetId = tostring(TargetResources[0].id)\n| extend MFAModTime = TimeGenerated\n| where isnotempty(InitiatorUPN)) on $left.UserPrincipalName == $right.InitiatorUPN\n| where MFAModTime between((LogOnTime-30m)..(LogOnTime+1h))\n| extend InitiatorName = tostring(split(InitiatorUPN, \"@\")[0]), InitiatorUPNSuffix = tostring(split(InitiatorUPN, \"@\")[1]), TargetName = tostring(split(TargetUPN, \"@\")[0]), TargetUPNSuffix = tostring(split(TargetUPN, \"@\")[1])\n",
+        "queryFrequency": "P1D",
+        "queryPeriod": "P1D",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "AuditLogs"
+            ]
+          },
+          {
+            "connectorId": "BehaviorAnalytics",
+            "dataTypes": [
+              "BehaviorAnalytics"
+            ]
+          }
+        ],
+        "tactics": [
+          "InitialAccess",
+          "DefenseEvasion"
+        ],
+        "subTechniques": [
+          "T1078.004",
+          "T1556.006"
+        ],
+        "techniques": [
+          "T1078",
+          "T1556"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatorUPN",
+                "identifier": "FullName"
+              },
+              {
+                "columnName": "InitiatorName",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "InitiatorUPNSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatorID",
+                "identifier": "AadUserId"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "TargetUPN",
+                "identifier": "FullName"
+              },
+              {
+                "columnName": "TargetName",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "TargetUPNSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "TargetId",
+                "identifier": "AadUserId"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "FromIP",
+                "identifier": "Address"
+              }
+            ],
+            "entityType": "IP"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "SourceIPAddress",
+                "identifier": "Address"
+              }
+            ],
+            "entityType": "IP"
+          }
+        ],
+        "eventGroupingSettings": {
+          "aggregationKind": "AlertPerResult"
+        },
+        "alertDetailsOverride": {
+          "alertDescriptionFormat": "This query looks uses Microsoft Sentinel's UEBA features to look for suspicious logons followed by modifications to MFA settings by that user.\nIn this case {{InitiatorUPN}} logged in followed by a modification to MFA settings for {{TargetUPN}}.\nThe sign in was from {{SourceIPAddress}}.\n",
+          "alertDisplayNameFormat": "Suspicious Sign In by {{InitiatorUPN}} Followed by MFA Modification to {{TargetUPN}}"
+        },
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Microsoft Entra ID Analytics Rule 58",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Microsoft Entra ID",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}

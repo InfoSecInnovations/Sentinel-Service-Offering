@@ -1,0 +1,139 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "56f3f35c-3aca-4437-a1fb-b7a84dc4af00",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.2",
+    "solutionId": "azuresentinel.azure-sentinel-solution-securityevents"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "This detection looks for the steps required to conduct a UAC bypass using Fodhelper.exe. By default this detection looks for the setting of the required registry keys and the invoking of the process within 1 hour - this can be tweaked as required.",
+        "displayName": "Potential Fodhelper UAC Bypass",
+        "enabled": true,
+        "query": "SecurityEvent\n  | where EventID == 4657\n  | parse ObjectName with \"\\\\REGISTRY\\\\\" KeyPrefix \"\\\\\" RegistryKey\n  | project-reorder RegistryKey\n  | where RegistryKey has \"Software\\\\Classes\\\\ms-settings\\\\shell\\\\open\\\\command\"\n  | extend TimeKey = bin(TimeGenerated, 1h)\n  | join (\n  SecurityEvent\n  | where EventID == 4688\n  | where Process =~ \"fodhelper.exe\"\n  | where ParentProcessName endswith \"cmd.exe\" or ParentProcessName endswith \"powershell.exe\" or ParentProcessName endswith \"powershell_ise.exe\"\n  | extend TimeKey = bin(TimeGenerated, 1h)) on TimeKey, Computer\n  | extend HostName = tostring(split(Computer, \".\")[0]), DomainIndex = toint(indexof(Computer, '.'))\n  | extend HostNameDomain = iff(DomainIndex != -1, substring(Computer, DomainIndex + 1), Computer)\n  | extend AccountName = tostring(split(TargetAccount, @'\\')[1]), AccountNTDomain = tostring(split(TargetAccount, @'\\')[0])\n",
+        "queryFrequency": "PT2H",
+        "queryPeriod": "PT2H",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "SecurityEvents",
+            "dataTypes": [
+              "SecurityEvent"
+            ]
+          },
+          {
+            "connectorId": "WindowsSecurityEvents",
+            "dataTypes": [
+              "SecurityEvent"
+            ]
+          }
+        ],
+        "tactics": [
+          "PrivilegeEscalation"
+        ],
+        "subTechniques": [
+          "T1548.002"
+        ],
+        "techniques": [
+          "T1548"
+        ],
+        "entityMappings": [
+          {
+            "entityType": "Host",
+            "fieldMappings": [
+              {
+                "identifier": "FullName",
+                "columnName": "Computer"
+              },
+              {
+                "identifier": "HostName",
+                "columnName": "HostName"
+              },
+              {
+                "identifier": "DnsDomain",
+                "columnName": "HostNameDomain"
+              }
+            ]
+          },
+          {
+            "entityType": "Account",
+            "fieldMappings": [
+              {
+                "identifier": "FullName",
+                "columnName": "TargetAccount"
+              },
+              {
+                "identifier": "Name",
+                "columnName": "AccountName"
+              },
+              {
+                "identifier": "NTDomain",
+                "columnName": "AccountNTDomain"
+              }
+            ]
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Windows Security Events Analytics Rule 15",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Windows Security Events",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "tier": "Microsoft",
+          "link": "https://support.microsoft.com"
+        }
+      }
+    }
+  ]
+}

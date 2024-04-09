@@ -64,7 +64,14 @@
     "nonDomainControllerActiveDirectoryReplicationName": "[concat('nonDomainControllerActiveDirectoryReplication', '-', parameters('location'))]",
     "nrtBase64EnocdedWindowsProcessCommandLinesName": "[concat('nrtBase64EnocdedWindowsProcessCommandLines', '-', parameters('location'))]",
     "nrtProcessExecutedFromBinaryHiddenInBase64EncodedFileName": "[concat('nrtProcessExecutedFromBinaryHiddenInBase64EncodedFile', '-', parameters('location'))]",
-    "nrtSecurityEventLogClearedName": "[concat('nrtSecurityEventLogCleared', '-', parameters('location'))]"
+    "nrtSecurityEventLogClearedName": "[concat('nrtSecurityEventLogCleared', '-', parameters('location'))]",
+    "potentialFodhelperUacBypassName": "[concat('potentialFodhelperUacBypass', '-', parameters('location'))]",
+    "potentialRenamedSdeleteUsageName": "[concat('potentialRenamedSdeleteUsage', '-', parameters('location'))]",
+    "powershellEmpireCmdletsExecutedInCommandLineName": "[concat('powershellEmpireCmdletsExecutedInCommandLine', '-', parameters('location'))]",
+    "processExecutionFrequencyAnomalyName": "[concat('processExecutionFrequencyAnomaly', '-', parameters('location'))]",
+    "scheduledTaskHideName": "[concat('scheduledTaskHide', '-', parameters('location'))]",
+    "sdeleteDeployedViaGpoAndRunRecursivelyName": "[concat('sdeleteDeployedViaGpoAndRunRecursively', '-', parameters('location'))]",
+    "securityeventMultipleAuthenticationFailuresFollowedByASuccessName": "[concat('securityeventMultipleAuthenticationFailuresFollowedByASuccess', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -318,6 +325,125 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/nrt-security-event-log-cleared.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('potentialFodhelperUacBypassName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/potential-fodhelper-uac-bypass.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('potentialRenamedSdeleteUsageName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/potential-renamed-sdelete-usage.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('powershellEmpireCmdletsExecutedInCommandLineName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/powershell-empire-cmdlets-executed-in-command-line.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('processExecutionFrequencyAnomalyName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/process-execution-frequency-anomaly.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('scheduledTaskHideName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/scheduled-task-hide.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('sdeleteDeployedViaGpoAndRunRecursivelyName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/sdelete-deployed-via-gpo-and-run-recursively.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('securityeventMultipleAuthenticationFailuresFollowedByASuccessName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/securityevent-multiple-authentication-failures-followed-by-a-success.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
