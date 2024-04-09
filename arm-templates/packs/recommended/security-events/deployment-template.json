@@ -59,7 +59,12 @@
     "eventAnalyzerWorkbookName": "[concat('eventAnalyzerWorkbook', '-', parameters('location'))]",
     "anomalousRDPName": "[concat('anomalousRDPLoginDetections', '-', parameters('location'))]",
     "credentialDumpingToolsFileArtifactsName": "[concat('credentialDumpingToolsFileArtifacts', '-', parameters('location'))]",
-    "credentialDumpingToolsServiceInstallationName": "[concat('credentialDumpingToolsServiceInstallation', '-', parameters('location'))]"
+    "credentialDumpingToolsServiceInstallationName": "[concat('credentialDumpingToolsServiceInstallation', '-', parameters('location'))]",
+    "newExeDeployedViaDefaultDomainOrDefaultDomainControllerPoliciesName": "[concat('newExeDeployedViaDefaultDomainOrDefaultDomainControllerPolicies', '-', parameters('location'))]",
+    "nonDomainControllerActiveDirectoryReplicationName": "[concat('nonDomainControllerActiveDirectoryReplication', '-', parameters('location'))]",
+    "nrtBase64EnocdedWindowsProcessCommandLinesName": "[concat('nrtBase64EnocdedWindowsProcessCommandLines', '-', parameters('location'))]",
+    "nrtProcessExecutedFromBinaryHiddenInBase64EncodedFileName": "[concat('nrtProcessExecutedFromBinaryHiddenInBase64EncodedFile', '-', parameters('location'))]",
+    "nrtSecurityEventLogClearedName": "[concat('nrtSecurityEventLogCleared', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -228,6 +233,91 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/credential-dumping-tools-service-installation.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('newExeDeployedViaDefaultDomainOrDefaultDomainControllerPoliciesName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/new-exe-deployed-via-default-domain-or-default-domain-controller-policies.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('nonDomainControllerActiveDirectoryReplicationName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/non-domain-controller-active-directory-replication.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('nrtBase64EnocdedWindowsProcessCommandLinesName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/nrt-base64-enocded-windows-process-command-lines.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('nrtProcessExecutedFromBinaryHiddenInBase64EncodedFileName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/nrt-process-executed-from-binary-hidden-in-base64-encoded-file.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('nrtSecurityEventLogClearedName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/nrt-security-event-log-cleared.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

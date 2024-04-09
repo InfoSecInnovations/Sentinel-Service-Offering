@@ -1,0 +1,135 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "7ad4c32b-d0d2-411c-a0e8-b557afa12fce",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.1",
+    "solutionId": "azuresentinel.azure-sentinel-solution-securityevents"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "NRT",
+      "properties": {
+        "description": "Encoding malicious software is a technique used to obfuscate files from detection.\nThe first CommandLine component is looking for Python decoding base64.\nThe second CommandLine component is looking for Bash/sh command line base64 decoding.\nThe third one is looking for Ruby decoding base64.",
+        "displayName": "NRT Process executed from binary hidden in Base64 encoded file",
+        "enabled": true,
+        "query": "SecurityEvent\n| where EventID==4688\n| where isnotempty(CommandLine)\n| project TimeGenerated, Computer, AccountName = SubjectUserName, AccountNTDomain = SubjectDomainName, FileName = Process, CommandLine, ParentProcessName, SubjectAccount\n| extend HostName = tostring(split(Computer, \".\")[0]), DomainIndex = toint(indexof(Computer, '.'))\n| extend HostNameDomain = iff(DomainIndex != -1, substring(Computer, DomainIndex + 1), Computer)\n| where CommandLine contains \".decode('base64')\"\n        or CommandLine contains \"base64 --decode\"\n        or CommandLine contains \".decode64(\"\n",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "SecurityEvents",
+            "dataTypes": [
+              "SecurityEvent"
+            ]
+          },
+          {
+            "connectorId": "WindowsSecurityEvents",
+            "dataTypes": [
+              "SecurityEvent"
+            ]
+          }
+        ],
+        "tactics": [
+          "Execution",
+          "DefenseEvasion"
+        ],
+        "techniques": [
+          "T1059",
+          "T1027",
+          "T1140"
+        ],
+        "entityMappings": [
+          {
+            "entityType": "Account",
+            "fieldMappings": [
+              {
+                "identifier": "FullName",
+                "columnName": "TargetAccount"
+              },
+              {
+                "identifier": "Name",
+                "columnName": "AccountName"
+              },
+              {
+                "identifier": "NTDomain",
+                "columnName": "AccountNTDomain"
+              }
+            ]
+          },
+          {
+            "entityType": "Host",
+            "fieldMappings": [
+              {
+                "identifier": "FullName",
+                "columnName": "Computer"
+              },
+              {
+                "identifier": "HostName",
+                "columnName": "HostName"
+              },
+              {
+                "identifier": "DnsDomain",
+                "columnName": "HostNameDomain"
+              }
+            ]
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Windows Security Events Analytics Rule 12",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Windows Security Events",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "tier": "Microsoft",
+          "link": "https://support.microsoft.com"
+        }
+      }
+    }
+  ]
+}

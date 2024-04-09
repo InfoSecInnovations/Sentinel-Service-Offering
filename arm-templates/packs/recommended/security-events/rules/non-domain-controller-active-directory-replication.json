@@ -1,0 +1,145 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "b9d2eebc-5dcb-4888-8165-900db44443ab",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.4",
+    "solutionId": "azuresentinel.azure-sentinel-solution-securityevents"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "This query detects potential attempts by non-computer accounts (non domain controllers) to retrieve/synchronize an active directory object leveraging directory replication services (DRS).\nA Domain Controller (computer account) would usually be performing these actions in a domain environment. Another detection rule can be created to cover domain controllers accounts doing at rare times.\nA domain user with privileged permissions to use directory replication services is rare.",
+        "displayName": "Non Domain Controller Active Directory Replication",
+        "enabled": true,
+        "query": "// Enter a reference list of hostnames for your DC servers\n//let DCServersList = dynamic ([\"DC01.simulandlabs.com\",\"DC02.simulandlabs.com\"]);\nSecurityEvent\n//| where Computer in (DCServersList)\n| where EventID == 4662 and ObjectServer == 'DS'\n| where AccountType != 'Machine'\n| where Properties has '1131f6aa-9c07-11d1-f79f-00c04fc2dcd2' //DS-Replication-Get-Changes\n    or Properties has '1131f6ad-9c07-11d1-f79f-00c04fc2dcd2' //DS-Replication-Get-Changes-All\n    or Properties has '89e95b76-444d-4c62-991a-0facbeda640c' //DS-Replication-Get-Changes-In-Filtered-Set\n| project TimeGenerated, Account, Activity, Properties, SubjectLogonId, Computer\n| join kind=leftouter\n(\n    SecurityEvent\n    //| where Computer in (DCServersList)\n    | where EventID == 4624 and LogonType == 3\n    | where AccountType != 'Machine'\n    | project TargetLogonId, IpAddress\n)\non $left.SubjectLogonId == $right.TargetLogonId\n| project-reorder TimeGenerated, Computer, Account, IpAddress\n| extend HostName = tostring(split(Computer, \".\")[0]), DomainIndex = toint(indexof(Computer, '.'))\n| extend HostNameDomain = iff(DomainIndex != -1, substring(Computer, DomainIndex + 1), Computer)\n| extend AccountName = tostring(split(Account, \"\\\\\")[0]), AccountNTDomain = tostring(split(Account, \"\\\\\")[1])\n",
+        "queryFrequency": "P1D",
+        "queryPeriod": "P7D",
+        "severity": "High",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "SecurityEvents",
+            "dataTypes": [
+              "SecurityEvent"
+            ]
+          },
+          {
+            "connectorId": "WindowsSecurityEvents",
+            "dataTypes": [
+              "SecurityEvent"
+            ]
+          }
+        ],
+        "tactics": [
+          "CredentialAccess"
+        ],
+        "techniques": [
+          "T1003"
+        ],
+        "entityMappings": [
+          {
+            "entityType": "Account",
+            "fieldMappings": [
+              {
+                "identifier": "FullName",
+                "columnName": "Account"
+              },
+              {
+                "identifier": "Name",
+                "columnName": "AccountName"
+              },
+              {
+                "identifier": "NTDomain",
+                "columnName": "AccountNTDomain"
+              }
+            ]
+          },
+          {
+            "entityType": "Host",
+            "fieldMappings": [
+              {
+                "identifier": "FullName",
+                "columnName": "Computer"
+              },
+              {
+                "identifier": "HostName",
+                "columnName": "HostName"
+              },
+              {
+                "identifier": "NTDomain",
+                "columnName": "HostNameDomain"
+              }
+            ]
+          },
+          {
+            "entityType": "IP",
+            "fieldMappings": [
+              {
+                "identifier": "Address",
+                "columnName": "IpAddress"
+              }
+            ]
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Windows Security Events Analytics Rule 10",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Windows Security Events",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "tier": "Microsoft",
+          "link": "https://support.microsoft.com"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "050b9b3d-53d0-4364-a3da-1b678b8211ec",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.1.0",
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivedirectory"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "Identifies when a privileged role is assigned to a new user. Any account eligible for a role is now being given privileged access. If the assignment is unexpected or into a role that isn't the responsibility of the account holder, investigate.",
+        "displayName": "New User Assigned to Privileged Role",
+        "enabled": true,
+        "query": "// Define the start and end times based on input values\nlet starttime = now()-1h;\nlet endtime = now();\n// Set a lookback period of 14 days\nlet lookback = starttime - 14d;\n// Define a reusable function to query audit logs\nlet awsFunc = (start:datetime, end:datetime) {\n  AuditLogs\n  | where TimeGenerated between (start..end)\n  | where Category =~ \"RoleManagement\"\n  | where AADOperationType in (\"Assign\", \"AssignEligibleRole\")\n  | where ActivityDisplayName has_any (\"Add eligible member to role\", \"Add member to role\")\n  | mv-apply TargetResource = TargetResources on\n    (\n      where TargetResource.type in~ (\"User\", \"ServicePrincipal\")\n      | extend Target = iff(TargetResource.type =~ \"ServicePrincipal\", tostring(TargetResource.displayName), tostring(TargetResource.userPrincipalName)),\n      props = TargetResource.modifiedProperties\n    )\n  | mv-apply Property = props on\n    (\n      where Property.displayName =~ \"Role.DisplayName\"\n      | extend RoleName = trim('\"', tostring(Property.newValue))\n    )\n  | where RoleName contains \"Admin\" and Result == \"success\"\n};\n// Query for audit events in the current day\nlet EventInfo_CurrentDay = awsFunc(starttime, endtime);\n// Query for audit events in the historical period (lookback)\nlet EventInfo_historical = awsFunc(lookback, starttime);\n// Find unseen events by performing a left anti-join\nlet EventInfo_Unseen = (EventInfo_CurrentDay\n  | join kind=leftanti(EventInfo_historical) on Target, RoleName, OperationName\n);\n// Extend and clean up the results\nEventInfo_Unseen\n| extend InitiatingAppName = tostring(InitiatedBy.app.displayName)\n| extend InitiatingAppServicePrincipalId = tostring(InitiatedBy.app.servicePrincipalId)\n| extend InitiatingUserPrincipalName = tostring(InitiatedBy.user.userPrincipalName)\n| extend InitiatingAadUserId = tostring(InitiatedBy.user.id)\n| extend InitiatingIpAddress = tostring(iff(isnotempty(InitiatedBy.user.ipAddress), InitiatedBy.user.ipAddress, InitiatedBy.app.ipAddress))\n| extend Initiator = iif(isnotempty(InitiatingAppName), InitiatingAppName, InitiatingUserPrincipalName)\n// You can uncomment the lines below to filter out PIM activations\n// | where Initiator != \"MS-PIM\"\n// | summarize StartTime=min(TimeGenerated), EndTime=min(TimeGenerated) by OperationName, RoleName, Target, Initiator, Result\n// Project specific columns and split them for further analysis\n| project TimeGenerated, OperationName, RoleName, Target, Initiator, InitiatingUserPrincipalName, InitiatingAadUserId, InitiatingAppName, InitiatingAppServicePrincipalId, InitiatingIpAddress, Result\n| extend TargetName = tostring(split(Target,'@',0)[0]), TargetUPNSuffix = tostring(split(Target,'@',1)[0]), InitiatorName = tostring(split(InitiatingUserPrincipalName,'@',0)[0]), InitiatorUPNSuffix = tostring(split(InitiatingUserPrincipalName,'@',1)[0])\n",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "P14D",
+        "severity": "High",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "AuditLogs"
+            ]
+          }
+        ],
+        "tactics": [
+          "Persistence"
+        ],
+        "subTechniques": [
+          "T1078.004"
+        ],
+        "techniques": [
+          "T1078"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "columnName": "Target",
+                "identifier": "FullName"
+              },
+              {
+                "columnName": "TargetName",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "TargetUPNSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatingUserPrincipalName",
+                "identifier": "FullName"
+              },
+              {
+                "columnName": "InitiatorName",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "InitiatorUPNSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatingAadUserId",
+                "identifier": "AadUserId"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatingAppServicePrincipalId",
+                "identifier": "AadUserId"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatingIpAddress",
+                "identifier": "Address"
+              }
+            ],
+            "entityType": "IP"
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Microsoft Entra ID Analytics Rule 63",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Microsoft Entra ID",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}

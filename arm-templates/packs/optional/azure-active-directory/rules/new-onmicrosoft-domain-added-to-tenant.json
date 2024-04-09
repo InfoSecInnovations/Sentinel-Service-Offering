@@ -1,0 +1,159 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "4f42b94f-b210-42d1-a023-7fa1c51d969f",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.1",
+    "solutionId": "azuresentinel.azure-sentinel-solution-azureactivedirectory"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "This detection looks for new onmicrosoft domains being added to a tenant. \nAn attacker who compromises a tenant may register a new onmicrosoft domain in order to masquerade as a service provider for launching phishing campaigns.\nDomain additions are not a common occurrence and users should validate that the domain was added by a legitimate user, with a legitimate purpose.",
+        "displayName": "New onmicrosoft domain added to tenant",
+        "enabled": true,
+        "query": "AuditLogs\n| where AADOperationType == \"Add\"\n| where Result == \"success\"\n| where OperationName in (\"Add verified domain\", \"Add unverified domain\")\n| extend InitiatedBy = parse_json(InitiatedBy)\n| extend InitiatingUser = tostring(InitiatedBy.user.userPrincipalName)\n| extend InitiatingAadUserId = tostring(InitiatedBy.user.id)\n| extend InitiatingIp = tostring(InitiatedBy.user.ipAddress)\n| extend InitiatingApp = tostring(InitiatedBy.app.displayName)\n| extend InitiatingSPID = tostring(InitiatedBy.app.servicePrincipalId)\n| extend DomainAdded = tostring(TargetResources[0].displayName)\n| where DomainAdded has \"onmicrosoft\"\n| extend ActionInitiatedBy = case(isnotempty(InitiatingUser), InitiatingUser, strcat(InitiatingApp, \" - \", InitiatingSPID))\n| extend UserName = split(InitiatingUser, \"@\")[0]\n| extend UPNSuffix = split(InitiatingUser, \"@\")[1]\n| project-reorder TimeGenerated, OperationName, DomainAdded, ActionInitiatedBy, InitiatingIp\n",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "PT1H",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "AzureActiveDirectory",
+            "dataTypes": [
+              "AuditLogs"
+            ]
+          }
+        ],
+        "tactics": [
+          "ResourceDevelopment"
+        ],
+        "subTechniques": [
+          "T1585.003"
+        ],
+        "techniques": [
+          "T1585"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatingUser",
+                "identifier": "FullName"
+              },
+              {
+                "columnName": "UserName",
+                "identifier": "Name"
+              },
+              {
+                "columnName": "UPNSuffix",
+                "identifier": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatingAadUserId",
+                "identifier": "AadUserId"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatingSPID",
+                "identifier": "AadUserId"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "InitiatingIp",
+                "identifier": "Address"
+              }
+            ],
+            "entityType": "IP"
+          },
+          {
+            "fieldMappings": [
+              {
+                "columnName": "DomainAdded",
+                "identifier": "DomainName"
+              }
+            ],
+            "entityType": "DNS"
+          }
+        ],
+        "eventGroupingSettings": {
+          "aggregationKind": "SingleAlert"
+        },
+        "alertDetailsOverride": {
+          "alertDescriptionFormat": "This detection looks for new onmicrosoft domains being added to a tenant. An attacker who compromises a tenant may register a new onmicrosoft domain in order to masquerade as a service provider for launching phishing accounts. Domain additions are not a common occurrence and users should validate that {{ActionInitiatedBy}} added {{DomainAdded}} with a legitimate purpose.",
+          "alertDisplayNameFormat": "{{DomainAdded}} added to tenant by {{ActionInitiatedBy}}"
+        },
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Microsoft Entra ID Analytics Rule 35",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Microsoft Entra ID",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "tier": "Microsoft",
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "link": "https://support.microsoft.com/"
+        }
+      }
+    }
+  ]
+}

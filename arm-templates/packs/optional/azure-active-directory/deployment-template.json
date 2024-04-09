@@ -58,7 +58,11 @@
     "full_access_as_appGrantedToApplicationName": "[concat('full_access_as_appGrantedToApplication', '-', parameters('location'))]",
     "mailReadPermissionsGrantedToApplicationName": "[concat('mailReadPermissionsGrantedToApplication', '-', parameters('location'))]",
     "mfaRejectedByUserName": "[concat('mfaRejectedByUser', '-', parameters('location'))]",
-    "multiFactorAuthenticationDisabledForAUserName": "[concat('multiFactorAuthenticationDisabledForAUser', '-', parameters('location'))]"
+    "multiFactorAuthenticationDisabledForAUserName": "[concat('multiFactorAuthenticationDisabledForAUser', '-', parameters('location'))]",
+    "newAccessCredentialAddedToApplicationOrServicePrincipalName": "[concat('newAccessCredentialAddedToApplicationOrServicePrincipal', '-', parameters('location'))]",
+    "newExternalUserGrantedAdminRoleName": "[concat('newExternalUserGrantedAdminRole', '-', parameters('location'))]",
+    "newOnmicrosoftDomainAddedToTenantName": "[concat('newOnmicrosoftDomainAddedToTenant', '-', parameters('location'))]",
+    "newUserAssignedToPrivilegedRoleName": "[concat('newUserAssignedToPrivilegedRole', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -527,6 +531,74 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/multi-factor-authentication-disabled-for-a-user.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('newAccessCredentialAddedToApplicationOrServicePrincipalName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/new-access-credential-added-to-application-or-service-principal.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('newExternalUserGrantedAdminRoleName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/new-external-user-granted-admin-role.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('newOnmicrosoftDomainAddedToTenantName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/new-onmicrosoft-domain-added-to-tenant.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('newUserAssignedToPrivilegedRoleName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/new-user-assigned-to-privileged-role.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

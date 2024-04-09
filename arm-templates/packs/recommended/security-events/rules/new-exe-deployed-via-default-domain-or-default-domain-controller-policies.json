@@ -1,0 +1,121 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "05b4bccd-dd12-423d-8de4-5a6fb526bb4f",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.2",
+    "solutionId": "azuresentinel.azure-sentinel-solution-securityevents"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "This detection highlights executables deployed to hosts via either the Default Domain or Default Domain Controller Policies. These policies apply to all hosts or Domain Controllers and best practice is that these policies should not be used for deployment of files.\nA threat actor may use these policies to deploy files or scripts to all hosts in a domain.",
+        "displayName": "New EXE deployed via Default Domain or Default Domain Controller Policies",
+        "enabled": true,
+        "query": "let known_processes = (\n  SecurityEvent\n  // If adjusting Query Period or Frequency update these\n  | where TimeGenerated between(ago(14d)..ago(1d))\n  | where EventID == 4688\n  | where NewProcessName has_any (\"Policies\\\\{6AC1786C-016F-11D2-945F-00C04fB984F9}\", \"Policies\\\\{31B2F340-016D-11D2-945F-00C04FB984F9}\")\n  | summarize by Process);\n  SecurityEvent\n  // If adjusting Query Period or Frequency update these\n  | where TimeGenerated > ago(1d)\n  | where EventID == 4688\n  | where NewProcessName has_any (\"Policies\\\\{6AC1786C-016F-11D2-945F-00C04fB984F9}\", \"Policies\\\\{31B2F340-016D-11D2-945F-00C04FB984F9}\")\n  | where Process !in (known_processes)\n  // This will likely apply to multiple hosts so summarize these data\n  | summarize FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated) by Process, NewProcessName, CommandLine, Computer\n  | extend HostName = tostring(split(Computer, \".\")[0]), DomainIndex = toint(indexof(Computer, '.'))\n  | extend HostNameDomain = iff(DomainIndex != -1, substring(Computer, DomainIndex + 1), Computer)\n",
+        "queryFrequency": "P1D",
+        "queryPeriod": "P14D",
+        "severity": "High",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "connectorId": "SecurityEvents",
+            "dataTypes": [
+              "SecurityEvent"
+            ]
+          },
+          {
+            "connectorId": "WindowsSecurityEvents",
+            "dataTypes": [
+              "SecurityEvent"
+            ]
+          }
+        ],
+        "tactics": [
+          "Execution",
+          "LateralMovement"
+        ],
+        "techniques": [
+          "T1072",
+          "T1570"
+        ],
+        "entityMappings": [
+          {
+            "entityType": "Host",
+            "fieldMappings": [
+              {
+                "identifier": "FullName",
+                "columnName": "Computer"
+              },
+              {
+                "identifier": "HostName",
+                "columnName": "HostName"
+              },
+              {
+                "identifier": "DnsDomain",
+                "columnName": "HostNameDomain"
+              }
+            ]
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Windows Security Events Analytics Rule 9",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Windows Security Events",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "tier": "Microsoft",
+          "link": "https://support.microsoft.com"
+        }
+      }
+    }
+  ]
+}
