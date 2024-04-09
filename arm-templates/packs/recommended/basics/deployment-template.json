@@ -31,9 +31,9 @@
     "microsoftSentinelCostWorkbookName": "[concat('microsoftSentinelCostWorkbook', '-', parameters('location'))]",
     "securityAlertsWorkbookName": "[concat('securityAlertsWorkbook', '-', parameters('location'))]",
     "advancedMultiAttackDetectName": "[concat('advancedMultiAttackDetect', '-', parameters('location'))]",
-    "log4jVulnerabilityExploitAkaLog4shellIpIocName": "[concat('log4jVulnerabilityExploitAkaLog4shellIpIoc', '-', parameters('location'))]",
-    "userAgentSearchForLog4jExploitationAttemptName": "[concat('userAgentSearchForLog4jExploitationAttempt', '-', parameters('location'))]",
-    "vulnerableMachinesRelatedToLog4jCve202144228Name": "[concat('vulnerableMachinesRelatedToLog4jCve202144228', '-', parameters('location'))]"
+    "log4jVulnerabilityExploitAkaLog4shellIpIocName": "[concat('log4jVulnerabilityExploitAkaLog4shellIpI', '-', parameters('location'))]",
+    "userAgentSearchForLog4jExploitationAttemptName": "[concat('userAgentSearchForLog4jExploitationAttem', '-', parameters('location'))]",
+    "vulnerableMachinesRelatedToLog4jCve202144228Name": "[concat('vulnerableMachinesRelatedToLog4jCve20214', '-', parameters('location'))]"
   },
   "resources": [
     {

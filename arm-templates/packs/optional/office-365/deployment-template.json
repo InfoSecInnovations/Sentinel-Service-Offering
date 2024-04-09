@@ -53,7 +53,7 @@
     "office365DataConnectorName": "[concat('office365DataConnector', '-', parameters('location'))]",
     "office365WorkbookName": "[concat('office365Workbook', '-', parameters('location'))]",
     "exchangeWorkbookName": "[concat('exchangeWorkbook', '-', parameters('location'))]",
-    "accessedFilesSharedByTemporaryExternalUserName": "[concat('accessedFilesSharedByTemporaryExternalUser', '-', parameters('location'))]",
+    "accessedFilesSharedByTemporaryExternalUserName": "[concat('accessedFilesSharedByTemporaryExternalUs', '-', parameters('location'))]",
     "forestBlizzardCredHarvestingName": "[concat('forestBlizzardCredHarvesting', '-', parameters('location'))]",
     "maliciousInboxRuleName": "[concat('maliciousInboxRule', '-', parameters('location'))]",
     "officeMailForwardingRuleName": "[concat('officeMailForwardingRule', '-', parameters('location'))]",
@@ -63,8 +63,8 @@
     "sharepointDownloadsByNewIpName": "[concat('sharepointDownloadsByNewIp', '-', parameters('location'))]",
     "sharepointDownloadsByNewUserAgentName": "[concat('sharepointDownloadsByNewUserAgent', '-', parameters('location'))]",
     "exchangeAuditlogDisabledName": "[concat('exchangeAuditlogDisabled', '-', parameters('location'))]",
-    "multipleUsersEmailForwardedToSameDestinationName": "[concat('multipleUsersEmailForwardedToSameDestination', '-', parameters('location'))]",
-    "threatEssentialsMailRedirectViaExoTransportRuleName": "[concat('threatEssentialsMailRedirectViaExoTransportRule', '-', parameters('location'))]"
+    "multipleUsersEmailForwardedToSameDestinationName": "[concat('multipleUsersEmailForwardedToSameDestina', '-', parameters('location'))]",
+    "threatEssentialsMailRedirectViaExoTransportRuleName": "[concat('threatEssentialsMailRedirectViaExoTransp', '-', parameters('location'))]"
   },
   "resources": [
     {

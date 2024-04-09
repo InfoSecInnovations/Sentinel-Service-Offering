@@ -39,9 +39,9 @@
     "azureActivityDataConnectorName": "[concat('azureActivityDataConnector', '-', parameters('location'))]",
     "azureActivityWorkbookName": "[concat('azureActivityWorkbook', '-', parameters('location'))]",
     "creationOfExpensiveComputesInAzureName": "[concat('creationOfExpensiveComputesInAzure', '-', parameters('location'))]",
-    "suspiciousGrantingOfPermissionsToAnAccountName": "[concat('suspiciousGrantingOfPermissionsToAnAccount', '-', parameters('location'))]",
-    "suspiciousNumberOfResourceCreationOrDeploymentActivitiesName": "[concat('suspiciousNumberOfResourceCreationOrDeploymentActivities', '-', parameters('location'))]",
-    "threatEssentialsMassCloudResourceDeletionsTimeSeriesAnomalyName": "[concat('threatEssentialsMassCloudResourceDeletionsTimeSeriesAnomaly', '-', parameters('location'))]"
+    "suspiciousGrantingOfPermissionsToAnAccountName": "[concat('suspiciousGrantingOfPermissionsToAnAccou', '-', parameters('location'))]",
+    "suspiciousNumberOfResourceCreationOrDeploymentActivitiesName": "[concat('suspiciousNumberOfResourceCreationOrDepl', '-', parameters('location'))]",
+    "threatEssentialsMassCloudResourceDeletionsTimeSeriesAnomalyName": "[concat('threatEssentialsMassCloudResourceDeletio', '-', parameters('location'))]"
   },
   "resources": [
     {
