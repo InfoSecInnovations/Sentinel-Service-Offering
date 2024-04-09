@@ -55,7 +55,6 @@
     "exchangeWorkbookName": "[concat('exchangeWorkbook', '-', parameters('location'))]",
     "accessedFilesSharedByTemporaryExternalUserName": "[concat('accessedFilesSharedByTemporaryExternalUser', '-', parameters('location'))]",
     "forestBlizzardCredHarvestingName": "[concat('forestBlizzardCredHarvesting', '-', parameters('location'))]",
-    "mailRedirectViaExoName": "[concat('mailRedirectViaExo', '-', parameters('location'))]",
     "maliciousInboxRuleName": "[concat('maliciousInboxRule', '-', parameters('location'))]",
     "officeMailForwardingRuleName": "[concat('officeMailForwardingRule', '-', parameters('location'))]",
     "officePolicyTamperingName": "[concat('officePolicyTampering', '-', parameters('location'))]",
@@ -63,7 +62,8 @@
     "rareOfficeOperationsName": "[concat('rareOfficeOperations', '-', parameters('location'))]",
     "sharepointDownloadsByNewIpName": "[concat('sharepointDownloadsByNewIp', '-', parameters('location'))]",
     "sharepointDownloadsByNewUserAgentName": "[concat('sharepointDownloadsByNewUserAgent', '-', parameters('location'))]",
-    "exchangeAuditlogDisabledName": "[concat('exchangeAuditlogDisabled', '-', parameters('location'))]"
+    "exchangeAuditlogDisabledName": "[concat('exchangeAuditlogDisabled', '-', parameters('location'))]",
+    "multipleUsersEmailForwardedToSameDestinationName": "[concat('multipleUsersEmailForwardedToSameDestination', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -209,23 +209,6 @@
       }
     },
     {
-      "name": "[variables('mailRedirectViaExoName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/mail-redirect-via-exo-transport-rule.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[parameters('workspaceName')]"
-          }
-        }
-      }
-    },
-    {
       "name": "[variables('maliciousInboxRuleName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -352,6 +335,23 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/exchange-auditlog-disabled.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('multipleUsersEmailForwardedToSameDestinationName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/multiple-users-email-forwarded-to-same-destination.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

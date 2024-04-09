@@ -55,7 +55,10 @@
     "explicitMfaDenyName": "[concat('explicitMfaDeny', '-', parameters('location'))]",
     "externalGuestInvitationFollowedByAzureAdPowershellSigninName": "[concat('externalGuestInvitationFollowedByAzureAdPowershellSignin', '-', parameters('location'))]",
     "firstAccessCredentialAddedToApplicationOrServicePrincipalWhereNoCredentialWasPresentName": "[concat('firstAccessCredentialAddedToApplicationOrServicePrincipalWhereNoCredentialWasPresent', '-', parameters('location'))]",
-    "full_access_as_appGrantedToApplicationName": "[concat('full_access_as_appGrantedToApplication', '-', parameters('location'))]"
+    "full_access_as_appGrantedToApplicationName": "[concat('full_access_as_appGrantedToApplication', '-', parameters('location'))]",
+    "mailReadPermissionsGrantedToApplicationName": "[concat('mailReadPermissionsGrantedToApplication', '-', parameters('location'))]",
+    "mfaRejectedByUserName": "[concat('mfaRejectedByUser', '-', parameters('location'))]",
+    "multiFactorAuthenticationDisabledForAUserName": "[concat('multiFactorAuthenticationDisabledForAUser', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -473,6 +476,57 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/full_access_as_app-granted-to-application.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('mailReadPermissionsGrantedToApplicationName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/mail-read-permissions-granted-to-application.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('mfaRejectedByUserName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/mfa-rejected-by-user.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('multiFactorAuthenticationDisabledForAUserName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/multi-factor-authentication-disabled-for-a-user.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The unique guid for this Analytics Rule"
+      }
+    }
+  },
+  "variables": {
+    "contentId": "65c78944-930b-4cae-bd79-c3664ae30ba7",
+    "ruleResourceId": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/', parameters('ruleId'))]",
+    "ruleVersion": "1.0.5",
+    "solutionId": "azuresentinel.azure-sentinel-solution-cloudthreatdetection"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('ruleId'))]",
+      "apiVersion": "2022-11-01-preview",
+      "kind": "Scheduled",
+      "properties": {
+        "description": "Multi-Factor Authentication (MFA) helps prevent credential compromise. This alert identifies when an attempt has been made to deactivate MFA for a user.",
+        "displayName": "Multi-Factor Authentication Disabled for a User",
+        "enabled": true,
+        "query": "(union isfuzzy=true\n(AuditLogs\n| where OperationName =~ \"Disable Strong Authentication\"\n| extend _parsedIntiatedByUser = parse_json(tostring(InitiatedBy.user))\n| extend _parsedIntiatedByApp = parse_json(tostring(InitiatedBy.app))\n| extend IPAddress = tostring(_parsedIntiatedByUser.ipAddress)\n| extend InitiatedByUser = iff(isnotempty(tostring(_parsedIntiatedByUser.userPrincipalName)),\n tostring(_parsedIntiatedByUser.userPrincipalName), tostring(_parsedIntiatedByApp.displayName))\n| extend Targetprop = todynamic(TargetResources)\n| extend TargetUser = tostring(Targetprop[0].userPrincipalName)\n| summarize StartTimeUtc = min(TimeGenerated), EndTimeUtc = max(TimeGenerated) by User = TargetUser, InitiatedByUser , Operation = OperationName , CorrelationId, IPAddress, Category, Source = SourceSystem , AADTenantId, Type\n),\n(AWSCloudTrail\n| where EventName in~ (\"DeactivateMFADevice\", \"DeleteVirtualMFADevice\")\n| extend _parsedRequestParameters = parse_json(RequestParameters)\n| extend InstanceProfileName = tostring(_parsedRequestParameters.InstanceProfileName)\n| extend TargetUser = tostring(_parsedRequestParameters.userName)\n| summarize StartTimeUtc = min(TimeGenerated), EndTimeUtc = max(TimeGenerated) by User = TargetUser, Source = EventSource , Operation = EventName , TenantorInstance_Detail = InstanceProfileName, IPAddress = SourceIpAddress\n)\n)\n| extend timestamp = StartTimeUtc, UserName = tostring(split(User, '@', 0)[0]), UPNSuffix = tostring(split(User, '@', 1)[0])\n",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "PT1H",
+        "severity": "Medium",
+        "suppressionDuration": "PT1H",
+        "suppressionEnabled": false,
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "status": "Available",
+        "requiredDataConnectors": [
+          {
+            "dataTypes": [
+              "AuditLogs"
+            ],
+            "connectorId": "AzureActiveDirectory"
+          },
+          {
+            "dataTypes": [
+              "AWSCloudTrail"
+            ],
+            "connectorId": "AWS"
+          }
+        ],
+        "tactics": [
+          "CredentialAccess",
+          "Persistence"
+        ],
+        "techniques": [
+          "T1098",
+          "T1556"
+        ],
+        "entityMappings": [
+          {
+            "fieldMappings": [
+              {
+                "identifier": "Name",
+                "columnName": "UserName"
+              },
+              {
+                "identifier": "UPNSuffix",
+                "columnName": "UPNSuffix"
+              }
+            ],
+            "entityType": "Account"
+          },
+          {
+            "fieldMappings": [
+              {
+                "identifier": "Address",
+                "columnName": "IPAddress"
+              }
+            ],
+            "entityType": "IP"
+          }
+        ],
+        "alertRuleTemplateName": "[variables('contentId')]",
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/',concat('AnalyticsRule-', last(split(variables('ruleResourceId'),'/'))))]",
+      "properties": {
+        "description": "Cloud Identity Threat Protection Essentials Analytics Rule 1",
+        "parentId": "[variables('ruleResourceId')]",
+        "contentId": "[variables('contentId')]",
+        "kind": "AnalyticsRule",
+        "version": "[variables('ruleVersion')]",
+        "source": {
+          "kind": "Solution",
+          "name": "Cloud Identity Threat Protection Essentials",
+          "sourceId": "[variables('solutionId')]"
+        },
+        "support": {
+          "name": "Microsoft Corporation",
+          "email": "support@microsoft.com",
+          "tier": "Microsoft",
+          "link": "https://support.microsoft.com"
+        }
+      }
+    }
+  ]
+}

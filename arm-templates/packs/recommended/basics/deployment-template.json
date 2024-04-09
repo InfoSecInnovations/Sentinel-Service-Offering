@@ -30,7 +30,8 @@
     "incidentOverviewWorkbookName": "[concat('incidentOverviewWorkbook', '-', parameters('location'))]",
     "microsoftSentinelCostWorkbookName": "[concat('microsoftSentinelCostWorkbook', '-', parameters('location'))]",
     "securityAlertsWorkbookName": "[concat('securityAlertsWorkbook', '-', parameters('location'))]",
-    "advancedMultiAttackDetectName": "[concat('advancedMultiAttackDetect', '-', parameters('location'))]"
+    "advancedMultiAttackDetectName": "[concat('advancedMultiAttackDetect', '-', parameters('location'))]",
+    "log4jVulnerabilityExploitAkaLog4shellIpIocName": "[concat('log4jVulnerabilityExploitAkaLog4shellIpIoc', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -248,6 +249,23 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/rules/advanced-multistage-attack-detection.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('log4jVulnerabilityExploitAkaLog4shellIpIocName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/rules/log4j-vulnerability-exploit-aka-log4shell-ip-ioc.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
