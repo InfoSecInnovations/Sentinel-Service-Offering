@@ -68,9 +68,9 @@ If you are unable to get the permissions required to do the full install yoursel
 
 Install a Sentinel enabled LAW and add the Data Connectors, see [Permissions](#permissions) above to figure out the requirements for each connector.
 
-TODO: template 1 button
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Fconfigure-workspace.json)
 
-If you're not using Microsoft Entra ID, skip to the next part
+If you're not using Microsoft Entra ID, skip to the [Second template](#second-template)
 
 #### Manually enabling Microsoft Entra ID Data Connector
 
@@ -88,9 +88,9 @@ If you need the Entra ID Data Connector without having Tenant root scope Owner p
 
 #### Second template
 
-Now the LAW and Data Connectors are good to go, you can install the Workbooks and Log Analytics Rules:
+Now the LAW and Data Connectors are good to go, you can install the Workbooks and Log Analytics Rules.
 
-TODO: template 2 button
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Fworkspace-content.json)
 
 ## Have InfoSec Innovations take care of setting up your Sentinel instance
 
