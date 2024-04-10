@@ -11,98 +11,16 @@
       "metadata": {
         "description": "Location for all resources."
       }
-    },
-    "guidSeed": {
-      "type": "string",
-      "defaultValue": "[newGuid()]",
-      "metadata": {
-        "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
-      }
     }
   },
   "variables": {
     "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
-    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
-    "azureActivityContentPackageName": "[concat('azureActivityContentPackage', '-', parameters('location'))]",
-    "azureActivityDataConnectorName": "[concat('azureActivityDataConnector', '-', parameters('location'))]",
-    "azureActivityWorkbookName": "[concat('azureActivityWorkbook', '-', parameters('location'))]",
     "creationOfExpensiveComputesInAzureName": "[concat('creationOfExpensiveComputesInAzure', '-', parameters('location'))]",
     "suspiciousGrantingOfPermissionsToAnAccountName": "[concat('suspiciousGrantingOfPermissionsToAnAccou', '-', parameters('location'))]",
     "suspiciousNumberOfResourceCreationOrDeploymentActivitiesName": "[concat('suspiciousNumberOfResourceCreationOrDepl', '-', parameters('location'))]",
     "threatEssentialsMassCloudResourceDeletionsTimeSeriesAnomalyName": "[concat('threatEssentialsMassCloudResourceDeletio', '-', parameters('location'))]"
   },
   "resources": [
-    {
-      "name": "[variables('azureActivityContentPackageName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('azureSentinel'), 'Solutions/Azure%20Activity/Package/mainTemplate.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "workspace-location": {
-            "value": "[parameters('location')]"
-          },
-          "workspace": {
-            "value": "[parameters('workspaceName')]"
-          }
-        }
-      }
-    },
-    {
-      "name": "[variables('azureActivityDataConnectorName')]",
-      "type": "Microsoft.Resources/deployments",
-      "location": "[parameters('location')]",
-      "apiVersion": "2022-09-01",
-      "subscriptionId": "[subscription().subscriptionId]",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/azure-activity/data-connectors/enable-azure-activity-logs.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[parameters('workspaceName')]"
-          },
-          "resourceGroupName": {
-            "value": "[resourceGroup().name]"
-          }
-        }
-      }
-    },
-    {
-      "name": "[variables('azureActivityWorkbookName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/azure-activity/workbooks/azure-activity.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[parameters('workspaceName')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "workbookId": {
-            "value": "[guid(parameters('guidSeed'), 'azure activity workbook')]"
-          },
-          "displayName": {
-            "value": "Azure Activity"
-          }
-        }
-      }
-    },
     {
       "name": "[variables('creationOfExpensiveComputesInAzureName')]",
       "type": "Microsoft.Resources/deployments",

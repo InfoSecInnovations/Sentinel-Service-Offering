@@ -259,7 +259,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/azure-activity/deployment-template.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/azure-activity/everything.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

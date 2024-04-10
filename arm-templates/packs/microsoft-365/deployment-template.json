@@ -141,9 +141,6 @@
           },
           "workbookId": {
             "value": "[guid(parameters('guidSeed'), 'office 365 workbook')]"
-          },
-          "displayName": {
-            "value": "Office 365"
           }
         }
       }
@@ -168,9 +165,6 @@
           },
           "workbookId": {
             "value": "[guid(parameters('guidSeed'), 'exchange online workbook')]"
-          },
-          "displayName": {
-            "value": "Exchange Online"
           }
         }
       }
