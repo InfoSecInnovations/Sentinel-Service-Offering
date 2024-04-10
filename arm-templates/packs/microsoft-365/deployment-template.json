@@ -129,7 +129,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/workbooks/office-365.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/workbooks/office-365.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -156,7 +156,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/workbooks/exchange-online.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/workbooks/exchange-online.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -182,7 +182,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/accessed-files-shared-by-temporary-external-user.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/accessed-files-shared-by-temporary-external-user.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -199,7 +199,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/forest-blizzard-cred-harvesting.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/forest-blizzard-cred-harvesting.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -216,7 +216,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/malicious-inbox-rule.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/malicious-inbox-rule.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -233,7 +233,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/office-mail-forwarding.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/office-mail-forwarding.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -250,7 +250,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/office-policy-tampering.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/office-policy-tampering.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -267,7 +267,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/office-uploaded-executables.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/office-uploaded-executables.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -284,7 +284,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/rare-office-operations.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/rare-office-operations.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -301,7 +301,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/sharepoint-downloads-by-new-ip.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/sharepoint-downloads-by-new-ip.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -318,7 +318,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/sharepoint-downloads-by-new-user-agent.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/sharepoint-downloads-by-new-user-agent.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -335,7 +335,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/exchange-auditlog-disabled.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/exchange-auditlog-disabled.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -352,7 +352,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/multiple-users-email-forwarded-to-same-destination.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/multiple-users-email-forwarded-to-same-destination.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -369,7 +369,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/rules/threat-essentials-mail-redirect-via-exo-transport-rule.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/rules/threat-essentials-mail-redirect-via-exo-transport-rule.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

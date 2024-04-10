@@ -15,18 +15,6 @@
     },
     "workspaceName": {
       "type": "string"
-    },
-    "permissionLevel": {
-      "type": "string",
-      "allowedValues": [
-        "ResourceGroup",
-        "Subscription",
-        "Tenant"
-      ],
-      "defaultValue": "Subscription",
-      "metadata": {
-        "description": "Please select the highest level item you have Contributor access to."
-      }
     }
   },
   "variables": {
@@ -128,7 +116,6 @@
     },
     {
       "name": "[variables('enableAADDataConnectorName')]",
-      "condition": "[equals(parameters('permissionLevel'), 'Tenant')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "scope": "/",
@@ -136,7 +123,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/data-connectors/azure-active-directory.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/data-connectors/microsoft-entra-id.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -159,7 +146,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/onboarding/enable-ueba.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/onboarding/enable-ueba.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -176,7 +163,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/workbooks/azure-ad-audit-activity-and-sign-in-logs.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/workbooks/azure-ad-audit-activity-and-sign-in-logs.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -199,7 +186,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/workbooks/user-and-entity-behavior-analytics.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/workbooks/user-and-entity-behavior-analytics.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -222,7 +209,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/account-created-and-deleted-in-short-timeframe.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/account-created-and-deleted-in-short-timeframe.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -239,7 +226,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/admin-promotion-after-role-management-application-permission-grant.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/admin-promotion-after-role-management-application-permission-grant.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -256,7 +243,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/anomalous-signin-location-by-user-account-and-authenticating-application.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/anomalous-signin-location-by-user-account-and-authenticating-application.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -273,7 +260,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/attempts-to-sign-in-to-disabled-accounts.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/attempts-to-sign-in-to-disabled-accounts.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -290,7 +277,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/authentication-methods-change-for-privileged-account.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/authentication-methods-change-for-privileged-account.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -307,7 +294,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/azure-ad-role-management-permission-grant.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/azure-ad-role-management-permission-grant.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -324,7 +311,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/azure-portal-sign-in-from-another-tenant.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/azure-portal-sign-in-from-another-tenant.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -341,7 +328,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/brute-force-attack-against-a-cloud-pc.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/brute-force-attack-against-a-cloud-pc.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -358,7 +345,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/brute-force-attack-against-azure-portal.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/brute-force-attack-against-azure-portal.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -375,7 +362,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/bulk-changes-to-privileged-account-permissions.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/bulk-changes-to-privileged-account-permissions.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -392,7 +379,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/credential-added-after-admin-consented-to-application.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/credential-added-after-admin-consented-to-application.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -409,7 +396,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/cross-tenant-access-settings-organization-added.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/cross-tenant-access-settings-organization-added.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -426,7 +413,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/distributed-password-cracking-attempts-in-azure-ad.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/distributed-password-cracking-attempts-in-azure-ad.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -443,7 +430,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/explicit-mfa-deny.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/explicit-mfa-deny.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -460,7 +447,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/external-guest-invitation-followed-by-azure-ad-powershell-signin.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/external-guest-invitation-followed-by-azure-ad-powershell-signin.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -477,7 +464,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/first-access-credential-added-to-application-or-service-principal-where-no-credential-was-present.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/first-access-credential-added-to-application-or-service-principal-where-no-credential-was-present.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -494,7 +481,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/full_access_as_app-granted-to-application.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/full_access_as_app-granted-to-application.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -511,7 +498,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/mail-read-permissions-granted-to-application.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/mail-read-permissions-granted-to-application.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -528,7 +515,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/mfa-rejected-by-user.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/mfa-rejected-by-user.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -545,7 +532,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/multi-factor-authentication-disabled-for-a-user.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/multi-factor-authentication-disabled-for-a-user.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -562,7 +549,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/new-access-credential-added-to-application-or-service-principal.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/new-access-credential-added-to-application-or-service-principal.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -579,7 +566,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/new-external-user-granted-admin-role.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/new-external-user-granted-admin-role.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -596,7 +583,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/new-onmicrosoft-domain-added-to-tenant.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/new-onmicrosoft-domain-added-to-tenant.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -613,7 +600,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/new-user-assigned-to-privileged-role.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/new-user-assigned-to-privileged-role.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -630,7 +617,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/possible-aitm-phishing-attempt-against-microsoft-entra-id.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/possible-aitm-phishing-attempt-against-microsoft-entra-id.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -647,7 +634,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/privileged-accounts-sign-in-failure-spikes.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/privileged-accounts-sign-in-failure-spikes.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -664,7 +651,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/rare-application-consent.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/rare-application-consent.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -681,7 +668,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/sign-ins-from-ips-that-attempt-sign-ins-to-disabled-accounts.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/sign-ins-from-ips-that-attempt-sign-ins-to-disabled-accounts.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -698,7 +685,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/successful-logon-from-ip-and-failure-from-a-different-ip.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/successful-logon-from-ip-and-failure-from-a-different-ip.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -715,7 +702,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-entra-id-joined-device-update.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/suspicious-entra-id-joined-device-update.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -732,7 +719,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-application-consent-for-offline-access.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/suspicious-application-consent-for-offline-access.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -749,7 +736,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-application-consent-similar-to-o365-attack-toolkit.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/suspicious-application-consent-similar-to-o365-attack-toolkit.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -766,7 +753,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-application-consent-similar-to-pwnauth.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/suspicious-application-consent-similar-to-pwnauth.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -783,7 +770,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-service-principal-creation-activity.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/suspicious-service-principal-creation-activity.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -800,7 +787,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/suspicious-sign-in-followed-by-mfa-modification.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/suspicious-sign-in-followed-by-mfa-modification.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -817,7 +804,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/threat-essentials-multiple-admin-membership-removals-from-newly-created-admin.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/threat-essentials-multiple-admin-membership-removals-from-newly-created-admin.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -834,7 +821,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/threat-essentials-nrt-user-added-to-microsoft-entra-id-privileged-groups.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/threat-essentials-nrt-user-added-to-microsoft-entra-id-privileged-groups.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -851,7 +838,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/threat-essentials-user-assigned-privileged-role.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/threat-essentials-user-assigned-privileged-role.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -868,7 +855,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/rules/user-added-to-microsoft-entra-id-privileged-groups.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/rules/user-added-to-microsoft-entra-id-privileged-groups.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

@@ -12,18 +12,6 @@
     "workspaceId": {
       "type": "string"
     },
-    "permissionLevel": {
-      "type": "string",
-      "allowedValues": [
-        "ResourceGroup",
-        "Subscription",
-        "Tenant"
-      ],
-      "defaultValue": "Subscription",
-      "metadata": {
-        "description": "Please select the highest level item you have Contributor access to."
-      }
-    },
     "securityCollectionTier": {
       "type": "string",
       "metadata": {
@@ -127,7 +115,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/data-connectors/enable-ama-logs.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/data-connectors/enable-ama-logs.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -148,7 +136,6 @@
     },
     {
       "name": "[variables('associateArcServersName')]",
-      "condition": "[and(greater(length(parameters('arcServers')), 0), or(equals(parameters('permissionLevel'), 'Subscription'), equals(parameters('permissionLevel'), 'Tenant')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "dependsOn": [
@@ -159,7 +146,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/onboarding/arc-server-associations.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/onboarding/arc-server-associations.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -182,7 +169,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/workbooks/event-analyzer.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/workbooks/event-analyzer.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -205,7 +192,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/anomalous-rdp-login-detections.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/anomalous-rdp-login-detections.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -222,7 +209,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/credential-dumping-tools-file-artifacts.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/credential-dumping-tools-file-artifacts.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -239,7 +226,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/credential-dumping-tools-service-installation.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/credential-dumping-tools-service-installation.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -256,7 +243,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/new-exe-deployed-via-default-domain-or-default-domain-controller-policies.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/new-exe-deployed-via-default-domain-or-default-domain-controller-policies.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -273,7 +260,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/non-domain-controller-active-directory-replication.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/non-domain-controller-active-directory-replication.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -290,7 +277,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/nrt-base64-enocded-windows-process-command-lines.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/nrt-base64-enocded-windows-process-command-lines.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -307,7 +294,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/nrt-process-executed-from-binary-hidden-in-base64-encoded-file.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/nrt-process-executed-from-binary-hidden-in-base64-encoded-file.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -324,7 +311,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/nrt-security-event-log-cleared.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/nrt-security-event-log-cleared.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -341,7 +328,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/potential-fodhelper-uac-bypass.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/potential-fodhelper-uac-bypass.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -358,7 +345,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/potential-renamed-sdelete-usage.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/potential-renamed-sdelete-usage.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -375,7 +362,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/powershell-empire-cmdlets-executed-in-command-line.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/powershell-empire-cmdlets-executed-in-command-line.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -392,7 +379,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/process-execution-frequency-anomaly.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/process-execution-frequency-anomaly.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -409,7 +396,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/scheduled-task-hide.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/scheduled-task-hide.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -426,7 +413,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/sdelete-deployed-via-gpo-and-run-recursively.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/sdelete-deployed-via-gpo-and-run-recursively.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -443,7 +430,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/rules/securityevent-multiple-authentication-failures-followed-by-a-success.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules/securityevent-multiple-authentication-failures-followed-by-a-success.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

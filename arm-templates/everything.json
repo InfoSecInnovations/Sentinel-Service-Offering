@@ -2,18 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "permissionLevel": {
-      "type": "string",
-      "allowedValues": [
-        "ResourceGroup",
-        "Subscription",
-        "Tenant"
-      ],
-      "defaultValue": "Subscription",
-      "metadata": {
-        "description": "Please select the highest level item you have Contributor access to."
-      }
-    },
     "workspaceName": {
       "type": "string",
       "defaultValue": "LAW-ISI-SentinelServiceOffering",
@@ -71,11 +59,11 @@
         "description": "JSON formatted array of the names of any existing Arc servers you wish to add to Security Events log gathering. We also have tools to automate this process after setting up the Sentinel instance."
       }
     },
-    "enableOffice365": {
+    "enableMicrosoft365": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "You should enable this if you use Office 365 to get the appropriate logs and workspaces."
+        "description": "You should enable this if you use Microsoft 365 to get the appropriate logs and workspaces."
       }
     },
     "exchangeState": {
@@ -86,7 +74,7 @@
         "enabled"
       ],
       "metadata": {
-        "description": "Track logs from Exchange, only relevant if Office 365 is enabled above."
+        "description": "Track logs from Exchange, only relevant if Microsoft 365 is enabled above."
       }
     },
     "sharepointState": {
@@ -97,7 +85,7 @@
         "enabled"
       ],
       "metadata": {
-        "description": "Track logs from SharePoint, only relevant if Office 365 is enabled above."
+        "description": "Track logs from SharePoint, only relevant if Microsoft 365 is enabled above."
       }
     },
     "teamsState": {
@@ -108,7 +96,7 @@
         "enabled"
       ],
       "metadata": {
-        "description": "Track logs from Teams, only relevant if Office 365 is enabled above."
+        "description": "Track logs from Teams, only relevant if Microsoft 365 is enabled above."
       }
     },
     "enableAzureActiveDirectory": {
@@ -132,7 +120,7 @@
     "location": "[resourceGroup().location]",
     "deployAzureSentinelName": "[concat('deployAzureSentinel', '-', variables('location'))]",
     "enableBasicsPackName": "[concat('enableBasicsPack', '-', variables('location'))]",
-    "enableOffice365PackName": "[concat('enableOffice365Pack', '-', variables('location'))]",
+    "enableMicrosoft365PackName": "[concat('enableMicrosoft365Pack', '-', variables('location'))]",
     "enableSecurityEventPackName": "[concat('enableSecurityEventPack', '-', variables('location'))]",
     "enableAzureActivityPackName": "[concat('enableAzureActivityPack', '-', variables('location'))]",
     "enableAADPackName": "[concat('enableAADPack', '-', variables('location'))]"
@@ -177,7 +165,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/deployment-template.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/deployment-template.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -194,8 +182,8 @@
       }
     },
     {
-      "condition": "[parameters('enableOffice365')]",
-      "name": "[variables('enableOffice365PackName')]",
+      "condition": "[parameters('enableMicrosoft365')]",
+      "name": "[variables('enableMicrosoft365PackName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "dependsOn": [
@@ -204,7 +192,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/office-365/deployment-template.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/deployment-template.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -239,7 +227,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/security-events/deployment-template.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/deployment-template.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -248,9 +236,6 @@
           },
           "workspaceId": {
             "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceIdOutput.value]"
-          },
-          "permissionLevel": {
-            "value": "[parameters('permissionLevel')]"
           },
           "location": {
             "value": "[variables('location')]"
@@ -274,15 +259,12 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/azure-activity/deployment-template.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/azure-activity/deployment-template.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
           "workspaceName": {
             "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
-          },
-          "permissionLevel": {
-            "value": "[parameters('permissionLevel')]"
           },
           "location": {
             "value": "[variables('location')]"
@@ -304,7 +286,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/optional/azure-active-directory/deployment-template.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/deployment-template.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -316,9 +298,6 @@
           },
           "guidSeed": {
             "value": "[parameters('guidSeed')]"
-          },
-          "permissionLevel": {
-            "value": "[parameters('permissionLevel')]"
           }
         }
       }

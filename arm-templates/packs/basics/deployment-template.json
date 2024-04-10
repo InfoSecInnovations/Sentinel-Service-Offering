@@ -112,7 +112,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/workbooks/analytics-efficiency.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/workbooks/analytics-efficiency.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -135,7 +135,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/workbooks/anomalies-visualization.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/workbooks/anomalies-visualization.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -158,7 +158,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/workbooks/archiving-basic-logs-and-retention.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/workbooks/archiving-basic-logs-and-retention.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -181,7 +181,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/workbooks/incident-overview.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/workbooks/incident-overview.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -204,7 +204,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/workbooks/microsoft-sentinel-cost.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/workbooks/microsoft-sentinel-cost.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -227,7 +227,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/workbooks/security-alerts.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/workbooks/security-alerts.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -250,7 +250,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/rules/advanced-multistage-attack-detection.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/rules/advanced-multistage-attack-detection.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -267,7 +267,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/rules/log4j-vulnerability-exploit-aka-log4shell-ip-ioc.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/rules/log4j-vulnerability-exploit-aka-log4shell-ip-ioc.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -284,7 +284,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/rules/user-agent-search-for-log4j-exploitation-attempt.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/rules/user-agent-search-for-log4j-exploitation-attempt.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -301,7 +301,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/recommended/basics/rules/vulnerable-machines-related-to-log4j-cve-2021-44228.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/rules/vulnerable-machines-related-to-log4j-cve-2021-44228.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

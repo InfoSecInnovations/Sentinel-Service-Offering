@@ -596,7 +596,7 @@
                                 "componentIdSource": "parameter",
                                 "componentId": "ResourceGroup",
                                 "templateUriSource": "static",
-                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/recommended/security-events/onboarding/arc-server-associations.json",
+                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/security-events/onboarding/arc-server-associations.json",
                                 "templateParameters": [
                                   {
                                     "name": "dataCollectionRuleId",
@@ -694,7 +694,7 @@
                                 "componentIdSource": "parameter",
                                 "componentId": "ResourceGroup",
                                 "templateUriSource": "static",
-                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/recommended/security-events/data-connectors/enable-ama-logs.json",
+                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/security-events/data-connectors/enable-ama-logs.json",
                                 "templateParameters": [
                                   {
                                     "name": "workspaceName",
@@ -820,7 +820,7 @@
                                 "componentIdSource": "parameter",
                                 "componentId": "ResourceGroup",
                                 "templateUriSource": "static",
-                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/recommended/azure-activity/data-connectors/enable-azure-activity-logs.json",
+                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/azure-activity/data-connectors/enable-azure-activity-logs.json",
                                 "templateParameters": [
                                   {
                                     "name": "resourceGroupName",
@@ -1121,7 +1121,7 @@
                                 "componentIdSource": "parameter",
                                 "componentId": "ResourceGroup",
                                 "templateUriSource": "static",
-                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/optional/azure-active-directory/data-connectors/azure-active-directory.json",
+                                "templateUri": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/microsoft-entra-id/data-connectors/microsoft-entra-id.json",
                                 "templateParameters": [
                                   {
                                     "name": "workspaceName",
@@ -1158,7 +1158,7 @@
                                     "value": "2021-04-01"
                                   }
                                 ],
-                                "body": "{\r\n  \"location\": \"{Location}\",\r\n  \"properties\": {\r\n    \"templateLink\": {\r\n      \"uri\": \"https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/optional/azure-active-directory/data-connectors/azure-active-directory.json\"\r\n    },\r\n    \"parameters\": {\r\n      \"workspaceName\": {\"value\": \"{WorkspaceName}\"},\r\n      \"resourceGroupName\": {\"value\": \"{ResourceGroupName}\"},\r\n      \"subscriptionId\": {\"value\": \"{SubscriptionId}\"}\r\n    },\r\n    \"mode\": \"Incremental\"\r\n  }\r\n}",
+                                "body": "{\r\n  \"location\": \"{Location}\",\r\n  \"properties\": {\r\n    \"templateLink\": {\r\n      \"uri\": \"https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/arm-templates/packs/microsoft-entra-id/data-connectors/microsoft-entra-id.json\"\r\n    },\r\n    \"parameters\": {\r\n      \"workspaceName\": {\"value\": \"{WorkspaceName}\"},\r\n      \"resourceGroupName\": {\"value\": \"{ResourceGroupName}\"},\r\n      \"subscriptionId\": {\"value\": \"{SubscriptionId}\"}\r\n    },\r\n    \"mode\": \"Incremental\"\r\n  }\r\n}",
                                 "httpMethod": "PUT",
                                 "title": "Enable Entra ID Logs",
                                 "description": "This ARM template will configure Entra ID Logs to be sent to the selected Log Analytics Workspace.",

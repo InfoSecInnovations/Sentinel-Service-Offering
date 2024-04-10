@@ -10,17 +10,32 @@ InfoSec Innovations does not bear responsibility for the consequences of using t
 
 - LAW - Log Analytics Workspace
 
-## Requirements
 
-_TODO: requirements to be able to deploy resource group and subscription level templates?_
+## Permissions
 
-Due to current limitations with the Azure API, it's not officially possible to enable the Azure Active Directory Data Connector through an ARM template. There is a workaround requiring ownership of the Tenant root scope, however in many cases you will not be granted this level of permission, so you should just enable it from the Azure Portal web UI until it becomes available via ARM templates.
+### Windows Security Events
+
+Unlike the other Data Connectors, you only need Resource Group Contributor permissions to enable Security Events via AMA. However to onboard machines you will require a higher level (TODO: which?)
+
+### Azure Activity
+
+The Azure Activity Data Connector requires Subscription Owner permissions to enable
+
+### Microsoft 365
+
+The Microsoft 365 Data Connector requires Global Administrator or Security Administrator on the tenant to enable
+
+### Microsoft Entra ID
+
+Due to current limitations with the Azure API, it's not officially possible to enable the Microsoft Entra ID Data Connector through an ARM template. There is a workaround requiring ownership of the Tenant root scope, however in many cases you will not be granted this level of permission, so you should just enable it from the Azure Portal web UI (see below) until it becomes available via ARM templates.
 
 However, if you really want to deploy the Data Connector programmatically, you will need to do the following:
 
+#### Enabling Tenant root scope ownership
+
 - Have `Global Administrator` permissions.
 
-- In the portal go to Azure Active Directory/Properties and enable _Access management for Azure resources_ and save the change.
+- In the portal go to Microsoft Entra ID/Properties and enable _Access management for Azure resources_ and save the change.
 
 - Do the following in PowerShell using the `Az` module to assign ownership of the tenant scope:
 
@@ -35,26 +50,47 @@ However, if you really want to deploy the Data Connector programmatically, you w
 
 ## Install
 
-Just click the button!
+### Single-click install
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Fisi-main.json)
+If you have permissions to install all the items you need (see [Permissions](#permissions) and [Installed Items](#installed-items)), just click the button!
 
-The LAW name must be unique, if you wish to install multiple instances of this template you should make sure to set different names each time.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Feverything.json)
+
+The LAW name must be unique within the Resource Group.
 
 We do not recommend attempting to instantiate it multiple times within the same Resource Group.
 
-### Manually enabling Azure Active Directory Data Connector
+If you are unable to get the permissions required to do the full install yourself, you can complete the process below with the help of someone who can do so.
 
-See [Requirements](#requirements) above for information about this issue.
+### Multi-step install
 
-If you need the AAD Data Connector without having Tenant root scope Owner permissions, after installing the template using the button above: 
+#### First template
+
+Install a Sentinel enabled LAW and add the Data Connectors, see [Permissions](#permissions) above to figure out the requirements for each connector.
+
+TODO: template 1 button
+
+If you're not using Microsoft Entra ID, skip to the next part
+
+#### Manually enabling Microsoft Entra ID Data Connector
+
+See [Microsoft Entra ID](#microsoft-entra-id) above for information about this issue.
+
+If you need the Entra ID Data Connector without having Tenant root scope Owner permissions, after installing the template using the button above:
+- You will need read and write permissions to Microsoft Entra ID diagnostic settings and Global Administrator or Security Administrator on the tenant.
 - Go to Microsoft Sentinel in the Azure Portal.
 - Select the Log Analytics Workspace created by the template. If you didn't set a custom name during deployment it will be called `LAW-ISI-SentinelServiceOffering`.
 - Go to the Data Connectors area.
-- If you enabled Azure Active Directory in the deployment template, you should have a Data Connector available there called `Azure Active Directory`.
+- If you enabled Microsoft Entra ID in the deployment template, you should have a Data Connector available there called `Microsoft Entra ID`.
 - Select it and click _Open connector page_.
 - Make sure you meet the permissions requirements listed there.
 - Enable the logs you wish to collect. TODO: ISI recommended list.
+
+#### Second template
+
+Now the LAW and Data Connectors are good to go, you can install the Workbooks and Log Analytics Rules:
+
+TODO: template 2 button
 
 ## Have InfoSec Innovations take care of setting up your Sentinel instance
 
@@ -99,7 +135,9 @@ Some items that work out of the box regardless of the configured Data Connectors
   - Workbooks
     - Event Analyzer Workbook
 
-### Office365 (optional)
+### Microsoft 365
+
+If you use Microsoft 365 you should install this pack.
 
 - Microsoft 365 Content Hub Package
   - Data Connectors
@@ -120,11 +158,13 @@ Some items that work out of the box regardless of the configured Data Connectors
     - Mail redirect via ExO transport rule
     - SharePointFileOperation via previously unseen IPs
 
-### Azure Active Directory (optional)
+### Microsoft Entra ID
 
-- Azure Active Directory Content Hub Package
+If you use Microsoft Entra ID you should install this pack.
+
+- Microsoft Entra ID Content Hub Package
   - Data Connectors
-    - (optional, see [Requirements](#requirements) section above) Enable Azure Active Directory Data Connector by setting up a diagnostic setting that sends Azure Active Directory logs to the LAW
+    - (optional, see [Microsoft Entra ID](#microsoft-entra-id) section above) Enable Microsoft Entra ID Data Connector by setting up a diagnostic setting that sends Microsoft Entra ID logs to the LAW
 - Standalone
   - Logging
     - Enable User and Entity Behaviour Analytics (UEBA) logs in the LAW
