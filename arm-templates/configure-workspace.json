@@ -80,7 +80,7 @@
         "description": "JSON formatted array of the names of any existing Arc servers you wish to add to Security Events log gathering. We also have tools to automate this process after setting up the Sentinel instance."
       }
     },
-    "enableMicrosoft365": {
+    "enableMicrosoft365Pack": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
@@ -120,7 +120,7 @@
         "description": "Track logs from Teams, only relevant if Microsoft 365 is enabled above."
       }
     },
-    "enableMicrosoftEntraID": {
+    "enableMicrosoftEntraIDPack": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
