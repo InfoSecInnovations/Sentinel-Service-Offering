@@ -196,6 +196,9 @@
     },
     {
       "name": "[variables('azureActivityRequirementsName')]",
+      "dependsOn": [
+        "[variables('deployAzureSentinelName')]"
+      ],
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -222,6 +225,9 @@
     },
     {
       "name": "[variables('azureActivityDataConnectorsName')]",
+      "dependsOn": [
+        "[variables('deployAzureSentinelName')]"
+      ],
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
