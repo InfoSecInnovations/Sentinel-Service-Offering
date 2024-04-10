@@ -30,7 +30,7 @@
     }
   },
   "variables": {
-    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'))]",
+    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
     "dataCollectionRuleName": "[last(split(parameters('dataCollectionRuleId'),'/'))]"
   },
   "resources": [

@@ -20,12 +20,13 @@ fs.readdir('../arm-templates', {recursive: true})
         "description": "Git branch containing the ARM templates."
       }
     }
-    json.variables.isiSentinel = "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'))]"
+    json.variables.isiSentinel = "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]"
     json.resources.forEach(resource => {
       if (resource.type == "Microsoft.Resources/deployments" && 
       resource.properties.templateLink && 
       resource.properties.templateLink.uri && 
-      resource.properties.templateLink.uri.startsWith("[uri(variables('isiSentinel')") && 
+      resource.properties.templateLink.uri.startsWith("[uri(variables('isiSentinel')") &&
+      !resource.properties.templateLink.uri.endsWith("deploy-sentinel.json')]") && // deploy-sentinel doesn't have children
       resource.properties.templateLink.uri.split('/').length < 5 // bit of a magic numbery way to avoid passing the values down to the bottom level templates which won't have these parameters
     ) {
         resource.properties.parameters.repoName = {

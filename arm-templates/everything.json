@@ -129,7 +129,7 @@
     }
   },
   "variables": {
-    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'))]",
+    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "location": "[resourceGroup().location]",
     "deployAzureSentinelName": "[concat('deployAzureSentinel', '-', variables('location'))]",
@@ -165,12 +165,6 @@
           },
           "location": {
             "value": "[variables('location')]"
-          },
-          "repoName": {
-            "value": "[parameters('repoName')]"
-          },
-          "repoBranch": {
-            "value": "[parameters('repoBranch')]"
           }
         }
       }

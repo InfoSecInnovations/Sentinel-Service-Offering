@@ -28,7 +28,7 @@
     }
   },
   "variables": {
-    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'))]",
+    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
     "creationOfExpensiveComputesInAzureName": "[concat('creationOfExpensiveComputesInAzure', '-', parameters('location'))]",
     "suspiciousGrantingOfPermissionsToAnAccountName": "[concat('suspiciousGrantingOfPermissionsToAnAccou', '-', parameters('location'))]",
     "suspiciousNumberOfResourceCreationOrDeploymentActivitiesName": "[concat('suspiciousNumberOfResourceCreationOrDepl', '-', parameters('location'))]",

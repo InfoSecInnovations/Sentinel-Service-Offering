@@ -35,7 +35,7 @@
     }
   },
   "variables": {
-    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'))]",
+    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
     "azureActivityWorkbookName": "[concat('azureActivityWorkbook', '-', parameters('location'))]"
   },
   "resources": [

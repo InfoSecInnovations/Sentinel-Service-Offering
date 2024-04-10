@@ -28,7 +28,7 @@
     }
   },
   "variables": {
-    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'))]",
+    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
     "azureActivityDataConnectorName": "[concat('azureActivityDataConnector', '-', parameters('location'))]"
   },
   "resources": [

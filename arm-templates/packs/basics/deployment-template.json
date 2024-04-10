@@ -33,7 +33,7 @@
   },
   "variables": {
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
-    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'))]",
+    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
     "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
     "socHandbookContentPackageName": "[concat('socHandbookContentPackage', '-', parameters('location'))]",
     "apacheLog4jVulnDetectionPackageName": "[concat('apacheLog4jVulnDetectionPackage', '-', parameters('location'))]",
