@@ -13,10 +13,24 @@
       "metadata": {
         "description": "The resource ID of the data collection rule that will be associated with the VMs deployed."
       }
+    },
+    "repoName": {
+      "type": "string",
+      "defaultValue": "InfoSecInnovations/Sentinel-Service-Offering",
+      "metadata": {
+        "description": "GitHub repository containing the ARM templates Organization/Repo-Name."
+      }
+    },
+    "repoBranch": {
+      "type": "string",
+      "defaultValue": "main",
+      "metadata": {
+        "description": "Git branch containing the ARM templates."
+      }
     }
   },
   "variables": {
-    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'))]",
     "dataCollectionRuleName": "[last(split(parameters('dataCollectionRuleId'),'/'))]"
   },
   "resources": [

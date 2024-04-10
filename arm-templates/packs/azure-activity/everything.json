@@ -18,10 +18,24 @@
       "metadata": {
         "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
       }
+    },
+    "repoName": {
+      "type": "string",
+      "defaultValue": "InfoSecInnovations/Sentinel-Service-Offering",
+      "metadata": {
+        "description": "GitHub repository containing the ARM templates Organization/Repo-Name."
+      }
+    },
+    "repoBranch": {
+      "type": "string",
+      "defaultValue": "main",
+      "metadata": {
+        "description": "Git branch containing the ARM templates."
+      }
     }
   },
   "variables": {
-    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'))]",
     "requirementsName": "[concat('azureActivityRequirements', '-', parameters('location'))]",
     "dataConnectorsName": "[concat('azureActivityDataConnectors', '-', parameters('location'))]",
     "workbooksName": "[concat('azureActivityWorkbooks', '-', parameters('location'))]",
@@ -44,6 +58,12 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
           }
         }
       }
@@ -64,6 +84,12 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
           }
         }
       }
@@ -87,6 +113,12 @@
           },
           "guidSeed": {
             "value": "[parameters('guidSeed')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
           }
         }
       }
@@ -107,9 +139,15 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
           }
         }
       }
-    },
+    }
   ]
 }

@@ -42,11 +42,25 @@
       "metadata": {
         "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
       }
+    },
+    "repoName": {
+      "type": "string",
+      "defaultValue": "InfoSecInnovations/Sentinel-Service-Offering",
+      "metadata": {
+        "description": "GitHub repository containing the ARM templates Organization/Repo-Name."
+      }
+    },
+    "repoBranch": {
+      "type": "string",
+      "defaultValue": "main",
+      "metadata": {
+        "description": "Git branch containing the ARM templates."
+      }
     }
   },
   "variables": {
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
-    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'))]",
     "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
     "tenantId": "[subscription().tenantId]",
     "microsoft365ContentPackageName": "[concat('microsoft365ContentPackage', '-', parameters('location'))]",

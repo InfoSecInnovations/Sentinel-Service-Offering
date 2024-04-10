@@ -15,11 +15,25 @@
     },
     "workspaceName": {
       "type": "string"
+    },
+    "repoName": {
+      "type": "string",
+      "defaultValue": "InfoSecInnovations/Sentinel-Service-Offering",
+      "metadata": {
+        "description": "GitHub repository containing the ARM templates Organization/Repo-Name."
+      }
+    },
+    "repoBranch": {
+      "type": "string",
+      "defaultValue": "main",
+      "metadata": {
+        "description": "Git branch containing the ARM templates."
+      }
     }
   },
   "variables": {
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
-    "isiSentinel": "https://raw.githubusercontent.com/InfoSecInnovations/Sentinel-Service-Offering/main/",
+    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'))]",
     "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
     "AADContentPackageName": "[concat('AADContentPackage', '-', parameters('location'))]",
     "cloudIdThreatProtectionEssentialsPackageName": "[concat('cloudIdThreatProtectionEssentialsPackage', '-', parameters('location'))]",
