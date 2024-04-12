@@ -72,7 +72,7 @@
     "location": "[resourceGroup().location]",
     "azureActivityWorkbooksName": "[concat('azureActivityWorkbooks', '-', variables('location'))]",
     "azureActivityRulesName": "[concat('azureActivityRules', '-', variables('location'))]",
-    "uebaWorkbooksName": "[concat('uebaWorkbooks', '-', variables('location'))]",
+    "uebaWorkbooksName": "[concat('uebaWorkbooks', '-', variables('location'))]"
   },
   "resources": [
     {
@@ -127,7 +127,7 @@
         }
       }
     },
-        {
+    {
       "name": "[variables('uebaWorkbooksName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
