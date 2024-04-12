@@ -54,6 +54,13 @@
         "description": "Install items relating to Azure Activity logs. Keep this enabled unless you're enabling the content through some other means."
       }
     },
+    "enableUEBAPack": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable UEBA Logs and related content. Keep this enabled unless you're enabling the content through some other means."
+      }
+    },
     "enableSecurityEventsPack": {
       "type": "bool",
       "defaultValue": true,
@@ -163,7 +170,8 @@
     "deployAzureSentinelName": "[concat('deployAzureSentinel', '-', variables('location'))]",
     "azureActivityRequirementsName": "[concat('azureActivityRequirements', '-', variables('location'))]",
     "azureActivityDataConnectorsName": "[concat('azureActivityDataConnectors', '-', variables('location'))]",
-    "uebaDataConnectorsName": "[concat('uebaDataConnectors', '-', variables('location'))]"
+    "uebaDataConnectorsName": "[concat('uebaDataConnectors', '-', variables('location'))]",
+    "basicsRequirementsName": "[concat('basicsRequirements', '-', variables('location'))]"
   },
   "resources": [
     {
@@ -197,6 +205,7 @@
     },
     {
       "name": "[variables('azureActivityRequirementsName')]",
+      "condition": "[parameters('enableAzureActivityPack')]",
       "dependsOn": [
         "[variables('deployAzureSentinelName')]"
       ],
@@ -226,6 +235,7 @@
     },
     {
       "name": "[variables('azureActivityDataConnectorsName')]",
+      "condition": "[parameters('enableAzureActivityPack')]",
       "dependsOn": [
         "[variables('deployAzureSentinelName')]"
       ],
@@ -255,6 +265,7 @@
     },
     {
       "name": "[variables('uebaDataConnectorsName')]",
+      "condition": "[parameters('enableUEBAPack')]",
       "dependsOn": [
         "[variables('deployAzureSentinelName')]"
       ],
@@ -264,6 +275,36 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/ueba/data-connectors.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('basicsRequirementsName')]",
+      "condition": "[parameters('enableBasicsPack')]",
+      "dependsOn": [
+        "[variables('deployAzureSentinelName')]"
+      ],
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/basics/requirements.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

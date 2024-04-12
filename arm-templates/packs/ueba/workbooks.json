@@ -25,6 +25,13 @@
       "metadata": {
         "description": "Git branch containing the ARM templates."
       }
+    },
+        "guidSeed": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
+      }
     }
   },
   "variables": {
@@ -49,6 +56,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "workbookId": {
+            "value": "[guid(parameters('guidSeed'), 'ueba workbook')]"
           }
         }
       }

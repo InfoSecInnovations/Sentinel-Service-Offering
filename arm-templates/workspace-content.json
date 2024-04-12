@@ -23,6 +23,13 @@
         "description": "Install items relating to Azure Activity logs. Keep this enabled unless you're enabling the content through some other means."
       }
     },
+    "enableUEBAPack": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable UEBA Logs and related content. Keep this enabled unless you're enabling the content through some other means."
+      }
+    },
     "enableSecurityEventsPack": {
       "type": "bool",
       "defaultValue": true,
@@ -44,13 +51,6 @@
         "description": "You should enable this if you use Microsoft Entra ID."
       }
     },
-    "guidSeed": {
-      "type": "string",
-      "defaultValue": "[newGuid()]",
-      "metadata": {
-        "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
-      }
-    },
     "repoName": {
       "type": "string",
       "defaultValue": "InfoSecInnovations/Sentinel-Service-Offering",
@@ -64,6 +64,13 @@
       "metadata": {
         "description": "Git branch containing the ARM templates."
       }
+    },
+    "guidSeed": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
+      }
     }
   },
   "variables": {
@@ -72,11 +79,14 @@
     "location": "[resourceGroup().location]",
     "azureActivityWorkbooksName": "[concat('azureActivityWorkbooks', '-', variables('location'))]",
     "azureActivityRulesName": "[concat('azureActivityRules', '-', variables('location'))]",
-    "uebaWorkbooksName": "[concat('uebaWorkbooks', '-', variables('location'))]"
+    "uebaWorkbooksName": "[concat('uebaWorkbooks', '-', variables('location'))]",
+    "basicsWorkbooksName": "[concat('basicsWorkbooks', '-', variables('location'))]",
+    "basicsRulesName": "[concat('basicsRules', '-', variables('location'))]"
   },
   "resources": [
     {
       "name": "[variables('azureActivityWorkbooksName')]",
+      "condition": "[parameters('enableAzureActivityPack')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -97,12 +107,16 @@
           },
           "repoBranch": {
             "value": "[parameters('repoBranch')]"
+          },
+          "guidSeed": {
+            "value": "[parameters('guidSeed')]"
           }
         }
       }
     },
     {
       "name": "[variables('azureActivityRulesName')]",
+      "condition": "[parameters('enableAzureActivityPack')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -129,12 +143,73 @@
     },
     {
       "name": "[variables('uebaWorkbooksName')]",
+      "condition": "[parameters('enableUEBAPack')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/ueba/workbooks.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          },
+          "guidSeed": {
+            "value": "[parameters('guidSeed')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('basicsWorkbooksName')]",
+      "condition": "[parameters('enableBasicsPack')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/basics/workbooks.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          },
+          "guidSeed": {
+            "value": "[parameters('guidSeed')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('basicsRulesName')]",
+      "condition": "[parameters('enableBasicsPack')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/basics/rules.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
