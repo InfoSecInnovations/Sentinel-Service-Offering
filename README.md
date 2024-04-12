@@ -27,11 +27,14 @@ The Microsoft 365 Data Connector requires Global Administrator or Security Admin
 
 ### Microsoft Entra ID
 
-Due to current limitations with the Azure API, it's not officially possible to enable the Microsoft Entra ID Data Connector through an ARM template. There is a workaround requiring ownership of the Tenant root scope, however in many cases you will not be granted this level of permission, so you should just enable it from the Azure Portal web UI (see below) until it becomes available via ARM templates.
+Due to current limitations with the Azure API, it's not officially possible to enable the Microsoft Entra ID Data Connector through an ARM template. There is a workaround requiring ownership of the Tenant root scope, however we don't recommend you do this, so you should just enable it from the Azure Portal web UI (see below) until it becomes available via ARM templates.
 
 However, if you really want to deploy the Data Connector programmatically, you will need to do the following:
 
 #### Enabling Tenant root scope ownership
+
+> [!CAUTION]
+> We really don't recommend doing this, proceed at your own risks and perils!
 
 - Have `Global Administrator` permissions.
 

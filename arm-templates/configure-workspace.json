@@ -162,7 +162,8 @@
     "location": "[resourceGroup().location]",
     "deployAzureSentinelName": "[concat('deployAzureSentinel', '-', variables('location'))]",
     "azureActivityRequirementsName": "[concat('azureActivityRequirements', '-', variables('location'))]",
-    "azureActivityDataConnectorsName": "[concat('azureActivityDataConnectors', '-', variables('location'))]"
+    "azureActivityDataConnectorsName": "[concat('azureActivityDataConnectors', '-', variables('location'))]",
+    "uebaDataConnectorsName": "[concat('uebaDataConnectors', '-', variables('location'))]"
   },
   "resources": [
     {
@@ -234,6 +235,35 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/azure-activity/data-connectors.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('uebaDataConnectorsName')]",
+      "dependsOn": [
+        "[variables('deployAzureSentinelName')]"
+      ],
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/ueba/data-connectors.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

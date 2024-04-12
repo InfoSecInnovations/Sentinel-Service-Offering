@@ -38,9 +38,7 @@
     "AADContentPackageName": "[concat('AADContentPackage', '-', parameters('location'))]",
     "cloudIdThreatProtectionEssentialsPackageName": "[concat('cloudIdThreatProtectionEssentialsPackage', '-', parameters('location'))]",
     "enableAADDataConnectorName": "[concat('enableAADDataConnector', '-', parameters('location'))]",
-    "enableUEBAName": "[concat('enableUEBA', '-', parameters('location'))]",
     "AADAuditActivitySignInWorkbookName": "[concat('AADAuditActivitySignInWorkbook', '-', parameters('location'))]",
-    "UEBAWorkbookName": "[concat('UEBAWorkbook', '-', parameters('location'))]",
     "accountCreatedDelShortTimeframeName": "[concat('accountCreatedDelShortTimeframe', '-', parameters('location'))]",
     "adminPromoAppPermGrantName": "[concat('adminPromoAppPermGrant', '-', parameters('location'))]",
     "anomalousSigninLocationAccountAppName": "[concat('anomalousSigninLocationAccountApp', '-', parameters('location'))]",
@@ -154,23 +152,6 @@
       }
     },
     {
-      "name": "[variables('enableUEBAName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/onboarding/enable-ueba.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[parameters('workspaceName')]"
-          }
-        }
-      }
-    },
-    {
       "name": "[variables('AADAuditActivitySignInWorkbookName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -189,29 +170,6 @@
           },
           "workbookId": {
             "value": "[guid(parameters('guidSeed'), 'azure AD audit, activity and sign-in logs workbook')]"
-          }
-        }
-      }
-    },
-    {
-      "name": "[variables('UEBAWorkbookName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/workbooks/user-and-entity-behavior-analytics.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[parameters('workspaceName')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "workbookId": {
-            "value": "[guid(parameters('guidSeed'), 'user and entity behaviour analytics workbook')]"
           }
         }
       }
