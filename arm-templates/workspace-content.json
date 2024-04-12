@@ -134,7 +134,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/azure-ueba/workbooks.json')]",
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/ueba/workbooks.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
