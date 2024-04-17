@@ -32,14 +32,33 @@
       "metadata": {
         "description": "Git branch containing the ARM templates."
       }
+    },
+    "securityCollectionTier": {
+      "type": "string",
+      "allowedValues": [
+        "Minimum",
+        "Common",
+        "All"
+      ]
+    },
+    "workspaceId": {
+      "type": "string"
+    },
+    "dcrName": {
+      "type": "string",
+      "defaultValue": "DCR-ISI-AMASecurityEventLogs"
+    },
+    "arcServers": {
+      "type": "array",
+      "defaultValue": []
     }
   },
   "variables": {
     "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
-    "requirementsName": "[concat('azureActivityRequirements', '-', parameters('location'))]",
-    "dataConnectorsName": "[concat('azureActivityDataConnectors', '-', parameters('location'))]",
-    "workbooksName": "[concat('azureActivityWorkbooks', '-', parameters('location'))]",
-    "rulesName": "[concat('azureActivityRules', '-', parameters('location'))]"
+    "requirementsName": "[concat('securityEventsRequirements', '-', parameters('location'))]",
+    "dataConnectorsName": "[concat('securityEventsDataConnectors', '-', parameters('location'))]",
+    "workbooksName": "[concat('securityEventsWorkbooks', '-', parameters('location'))]",
+    "rulesName": "[concat('securityEventsRules', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -49,7 +68,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/azure-activity/requirements.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/requirements.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -75,7 +94,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/azure-activity/data-connectors.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/data-connectors.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -84,6 +103,18 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "securityCollectionTier": {
+            "value": "[parameters('securityCollectionTier')]"
+          },
+          "workspaceId": {
+            "value": "[parameters('workspaceId')]"
+          },
+          "dcrName": {
+            "value": "[parameters('dcrName')]"
+          },
+          "arcServers": {
+            "value": "[parameters('arcServers')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -101,7 +132,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/azure-activity/workbooks.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/workbooks.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -133,7 +164,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/azure-activity/rules.json')]",
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/rules.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

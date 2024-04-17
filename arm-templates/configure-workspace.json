@@ -171,7 +171,9 @@
     "azureActivityRequirementsName": "[concat('azureActivityRequirements', '-', variables('location'))]",
     "azureActivityDataConnectorsName": "[concat('azureActivityDataConnectors', '-', variables('location'))]",
     "uebaDataConnectorsName": "[concat('uebaDataConnectors', '-', variables('location'))]",
-    "basicsRequirementsName": "[concat('basicsRequirements', '-', variables('location'))]"
+    "basicsRequirementsName": "[concat('basicsRequirements', '-', variables('location'))]",
+    "securityEventsRequirementsName": "[concat('securityEventsRequirements', '-', variables('location'))]",
+    "securityEventsDataConnectorsName": "[concat('securityEventsDataConnectors', '-', variables('location'))]"
   },
   "resources": [
     {
@@ -313,6 +315,75 @@
           },
           "location": {
             "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('securityEventsRequirementsName')]",
+      "condition": "[parameters('enableSecurityEventsPack')]",
+      "dependsOn": [
+        "[variables('deployAzureSentinelName')]"
+      ],
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/security-events/requirements.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('securityEventsDataConnectorsName')]",
+      "condition": "[parameters('enableSecurityEventsPack')]",
+      "dependsOn": [
+        "[variables('deployAzureSentinelName')]"
+      ],
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/security-events/data-connectors.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
+          },
+          "workspaceId": {
+            "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceIdOutput.value]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "securityCollectionTier": {
+            "value": "[parameters('securityCollectionTier')]"
+          },
+          "arcServers": {
+            "value": "[parameters('arcServers')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"

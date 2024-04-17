@@ -81,7 +81,9 @@
     "azureActivityRulesName": "[concat('azureActivityRules', '-', variables('location'))]",
     "uebaWorkbooksName": "[concat('uebaWorkbooks', '-', variables('location'))]",
     "basicsWorkbooksName": "[concat('basicsWorkbooks', '-', variables('location'))]",
-    "basicsRulesName": "[concat('basicsRules', '-', variables('location'))]"
+    "basicsRulesName": "[concat('basicsRules', '-', variables('location'))]",
+    "securityEventsWorkbooksName": "[concat('securityEventsWorkbooks', '-', variables('location'))]",
+    "securityEventsRulesName": "[concat('securityEventsRules', '-', variables('location'))]"
   },
   "resources": [
     {
@@ -210,6 +212,63 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/basics/rules.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('securityEventsWorkbooksName')]",
+      "condition": "[parameters('enableSecurityEventsPack')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/security-events/workbooks.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          },
+          "guidSeed": {
+            "value": "[parameters('guidSeed')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('securityEventsRulesName')]",
+      "condition": "[parameters('enableSecurityEventsPack')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/security-events/rules.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
