@@ -98,9 +98,6 @@
           },
           "dataCollectionRuleId": {
             "value": "[reference(variables('enableAMALogsName'), '2022-09-01').outputs.dataCollectionRuleId.value]"
-          },
-          "dataCollectionRuleName": {
-            "value": "[reference(variables('enableAMALogsName'), '2022-09-01').outputs.dataCollectionRuleName.value]"
           }
         }
       }
