@@ -46,7 +46,7 @@
     },
     "exchangeState": {
       "type": "string",
-      "defaultValue": "disabled",
+      "defaultValue": "enabled",
       "allowedValues": [
         "disabled",
         "enabled"
