@@ -10,7 +10,6 @@ InfoSec Innovations does not bear responsibility for the consequences of using t
 
 - LAW - Log Analytics Workspace
 
-
 ## Permissions
 
 ### Windows Security Events
@@ -183,4 +182,11 @@ I just want a clean Sentinel instance:
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Fdeploy-sentinel.json)
 
+## Help Us To Help You!
 
+We have a couple of issues open on the Azure Feedback forums which would make this project run a lot more smoothly.
+
+If you want to help us improve our Sentinel Offering, please vote on these:
+
+- https://feedback.azure.com/d365community/idea/a6d9b5a3-d0f8-ee11-a73c-0022485313bb
+- https://feedback.azure.com/d365community/idea/e2ee1016-70fd-ee11-a73c-6045bd77de95 
