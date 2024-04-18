@@ -179,7 +179,7 @@ If you use Microsoft Entra ID you should install this pack.
 
 ## Other Deployment Options
 
-I just want a clean Sentinel Instance:
+I just want a clean Sentinel instance:
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Fdeploy-sentinel.json)
 
