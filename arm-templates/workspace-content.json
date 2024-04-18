@@ -44,6 +44,17 @@
         "description": "You should enable this if you use Microsoft 365."
       }
     },
+    "exchangeState": {
+      "type": "string",
+      "defaultValue": "disabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ],
+      "metadata": {
+        "description": "Track logs from Exchange, only relevant if Microsoft 365 is enabled above."
+      }
+    },
     "enableMicrosoftEntraIDPack": {
       "type": "bool",
       "defaultValue": false,
@@ -83,7 +94,9 @@
     "basicsWorkbooksName": "[concat('basicsWorkbooks', '-', variables('location'))]",
     "basicsRulesName": "[concat('basicsRules', '-', variables('location'))]",
     "securityEventsWorkbooksName": "[concat('securityEventsWorkbooks', '-', variables('location'))]",
-    "securityEventsRulesName": "[concat('securityEventsRules', '-', variables('location'))]"
+    "securityEventsRulesName": "[concat('securityEventsRules', '-', variables('location'))]",
+    "microsoft365WorkbooksName": "[concat('microsoft365Workbooks', '-', variables('location'))]",
+    "microsoft365RulesName": "[concat('microsoft365Rules', '-', variables('location'))]"
   },
   "resources": [
     {
@@ -269,6 +282,66 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/security-events/rules.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('microsoft365WorkbooksName')]",
+      "condition": "[parameters('enableMicrosoft365Pack')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/microsoft-365/workbooks.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "exchangeState": {
+            "value": "[parameters('exchangeState')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          },
+          "guidSeed": {
+            "value": "[parameters('guidSeed')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('microsoft365RulesName')]",
+      "condition": "[parameters('enableMicrosoft365Pack')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/microsoft-365/rules.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

@@ -2,30 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "exchangeState": {
-      "type": "string",
-      "defaultValue": "enabled",
-      "allowedValues": [
-        "disabled",
-        "enabled"
-      ]
-    },
-    "sharepointState": {
-      "type": "string",
-      "defaultValue": "enabled",
-      "allowedValues": [
-        "disabled",
-        "enabled"
-      ]
-    },
-    "teamsState": {
-      "type": "string",
-      "defaultValue": "enabled",
-      "allowedValues": [
-        "disabled",
-        "enabled"
-      ]
-    },
     "workspaceName": {
       "type": "string"
     },
@@ -34,13 +10,6 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Location for all resources."
-      }
-    },
-    "guidSeed": {
-      "type": "string",
-      "defaultValue": "[newGuid()]",
-      "metadata": {
-        "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
       }
     },
     "repoName": {
@@ -62,11 +31,6 @@
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
     "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
     "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
-    "tenantId": "[subscription().tenantId]",
-    "microsoft365ContentPackageName": "[concat('microsoft365ContentPackage', '-', parameters('location'))]",
-    "office365DataConnectorName": "[concat('office365DataConnector', '-', parameters('location'))]",
-    "office365WorkbookName": "[concat('office365Workbook', '-', parameters('location'))]",
-    "exchangeWorkbookName": "[concat('exchangeWorkbook', '-', parameters('location'))]",
     "accessedFilesSharedByTemporaryExternalUserName": "[concat('accessedFilesSharedByTemporaryExternalUs', '-', parameters('location'))]",
     "forestBlizzardCredHarvestingName": "[concat('forestBlizzardCredHarvesting', '-', parameters('location'))]",
     "maliciousInboxRuleName": "[concat('maliciousInboxRule', '-', parameters('location'))]",
@@ -81,108 +45,6 @@
     "threatEssentialsMailRedirectViaExoTransportRuleName": "[concat('threatEssentialsMailRedirectViaExoTransp', '-', parameters('location'))]"
   },
   "resources": [
-    {
-      "name": "[variables('microsoft365ContentPackageName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('azureSentinel'), 'Solutions/Microsoft%20365/Package/mainTemplate.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "workspace-location": {
-            "value": "[parameters('location')]"
-          },
-          "workspace": {
-            "value": "[parameters('workspaceName')]"
-          }
-        }
-      }
-    },
-    {
-      "name": "[variables('office365DataConnectorName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('artifactsAzureSentinel2Go'), 'microsoft-sentinel/linkedtemplates/data-connectors/office365.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[parameters('workspaceName')]"
-          },
-          "exchangeState": {
-            "value": "[parameters('exchangeState')]"
-          },
-          "sharePointState": {
-            "value": "[parameters('sharePointState')]"
-          },
-          "teamsState": {
-            "value": "[parameters('teamsState')]"
-          },
-          "tenantId": {
-            "value": "[variables('tenantId')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          }
-        }
-      }
-    },
-    {
-      "name": "[variables('office365WorkbookName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/workbooks/office-365.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[parameters('workspaceName')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "workbookId": {
-            "value": "[guid(parameters('guidSeed'), 'office 365 workbook')]"
-          }
-        }
-      }
-    },
-    {
-      "condition": "[equals(parameters('exchangeState'), 'enabled')]",
-      "name": "[variables('exchangeWorkbookName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/workbooks/exchange-online.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[parameters('workspaceName')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "workbookId": {
-            "value": "[guid(parameters('guidSeed'), 'exchange online workbook')]"
-          }
-        }
-      }
-    },
     {
       "name": "[variables('accessedFilesSharedByTemporaryExternalUserName')]",
       "type": "Microsoft.Resources/deployments",
