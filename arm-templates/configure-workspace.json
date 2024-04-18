@@ -444,9 +444,6 @@
           "workspaceName": {
             "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
           },
-          "workspaceId": {
-            "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceIdOutput.value]"
-          },
           "location": {
             "value": "[variables('location')]"
           },
@@ -458,9 +455,6 @@
           },
           "teamsState": {
             "value": "[parameters('teamsState')]"
-          },
-          "arcServers": {
-            "value": "[parameters('arcServers')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
