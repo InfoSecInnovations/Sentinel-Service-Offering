@@ -94,6 +94,11 @@ Now the LAW and Data Connectors are good to go, you can install the Workbooks an
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Fworkspace-content.json)
 
+## Known issues
+
+- If you tear down a Sentinel instance and redeploy using the same Resource Group and LAW names you can get errors due to the deleted instance not having been completely removed yet.
+- Sometimes the dependencies for the Analytics Rules won't exist yet and they will fail to validate. Take note of the ones that didn't deploy and try to enable them later. It is generally agreed upon by Sentinel users that enabling Analytics Rules can be a fiddly experience.
+
 ## Have InfoSec Innovations take care of setting up your Sentinel instance
 
 Is setting up or tuning Azure Sentinel by yourself a bit too overwhelming? Would you like to be able to rely on professional support if things don't go smoothly? Please get in touch with us to discuss becoming a client: https://www.infosecinnovations.com/.

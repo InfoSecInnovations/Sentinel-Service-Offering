@@ -96,7 +96,9 @@
     "securityEventsWorkbooksName": "[concat('securityEventsWorkbooks', '-', variables('location'))]",
     "securityEventsRulesName": "[concat('securityEventsRules', '-', variables('location'))]",
     "microsoft365WorkbooksName": "[concat('microsoft365Workbooks', '-', variables('location'))]",
-    "microsoft365RulesName": "[concat('microsoft365Rules', '-', variables('location'))]"
+    "microsoft365RulesName": "[concat('microsoft365Rules', '-', variables('location'))]",
+    "microsoftEntraIdWorkbooksName": "[concat('microsoftEntraIdWorkbooks', '-', variables('location'))]",
+    "microsoftEntraIdRulesName": "[concat('microsoftEntraIdRules', '-', variables('location'))]"
   },
   "resources": [
     {
@@ -342,6 +344,63 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/microsoft-365/rules.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('microsoftEntraIdWorkbooksName')]",
+      "condition": "[parameters('enableMicrosoftEntraIDPack')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/microsoft-entra-id/workbooks.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          },
+          "guidSeed": {
+            "value": "[parameters('guidSeed')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('microsoftEntraIdRulesName')]",
+      "condition": "[parameters('enableMicrosoftEntraIDPack')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/microsoft-entra-id/rules.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

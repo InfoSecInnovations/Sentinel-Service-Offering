@@ -175,7 +175,9 @@
     "securityEventsRequirementsName": "[concat('securityEventsRequirements', '-', variables('location'))]",
     "securityEventsDataConnectorsName": "[concat('securityEventsDataConnectors', '-', variables('location'))]",
     "microsoft365RequirementsName": "[concat('microsoft365Requirements', '-', variables('location'))]",
-    "microsoft365DataConnectorsName": "[concat('microsoft365DataConnectors', '-', variables('location'))]"
+    "microsoft365DataConnectorsName": "[concat('microsoft365DataConnectors', '-', variables('location'))]",
+    "microsoftEntraIdRequirementsName": "[concat('microsoftEntraIdRequirements', '-', variables('location'))]",
+    "microsoftEntraIdDataConnectorsName": "[concat('microsoftEntraIdDataConnectors', '-', variables('location'))]"
   },
   "resources": [
     {
@@ -373,7 +375,7 @@
         },
         "parameters": {
           "workspaceName": {
-            "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
+            "value": "[parameters('workspaceName')]"
           },
           "workspaceId": {
             "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceIdOutput.value]"
@@ -442,7 +444,7 @@
         },
         "parameters": {
           "workspaceName": {
-            "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
+            "value": "[parameters('workspaceName')]"
           },
           "location": {
             "value": "[variables('location')]"
@@ -455,6 +457,66 @@
           },
           "teamsState": {
             "value": "[parameters('teamsState')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('microsoftEntraIdRequirementsName')]",
+      "condition": "[parameters('enableMicrosoftEntraIDPack')]",
+      "dependsOn": [
+        "[variables('deployAzureSentinelName')]"
+      ],
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/microsoft-entra-id/requirements.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "repoName": {
+            "value": "[parameters('repoName')]"
+          },
+          "repoBranch": {
+            "value": "[parameters('repoBranch')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('microsoftEntraIdDataConnectorsName')]",
+      "condition": "[and(parameters('enableMicrosoftEntraIDPack'), parameters('enableMicrosoftEntraIDConnector'))]",
+      "dependsOn": [
+        "[variables('deployAzureSentinelName')]"
+      ],
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/packs/microsoft-entra-id/data-connectors.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"

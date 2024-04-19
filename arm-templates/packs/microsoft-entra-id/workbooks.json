@@ -1,0 +1,65 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "guidSeed": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "workspaceName": {
+      "type": "string"
+    },
+    "repoName": {
+      "type": "string",
+      "defaultValue": "InfoSecInnovations/Sentinel-Service-Offering",
+      "metadata": {
+        "description": "GitHub repository containing the ARM templates Organization/Repo-Name."
+      }
+    },
+    "repoBranch": {
+      "type": "string",
+      "defaultValue": "main",
+      "metadata": {
+        "description": "Git branch containing the ARM templates."
+      }
+    }
+  },
+  "variables": {
+    "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
+    "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
+    "azureSentinel": "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/",
+    "AADAuditActivitySignInWorkbookName": "[concat('AADAuditActivitySignInWorkbook', '-', parameters('location'))]"
+  },
+  "resources": [
+    {
+      "name": "[variables('AADAuditActivitySignInWorkbookName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/workbooks/azure-ad-audit-activity-and-sign-in-logs.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "workbookId": {
+            "value": "[guid(parameters('guidSeed'), 'azure AD audit, activity and sign-in logs workbook')]"
+          }
+        }
+      }
+    }
+  ]
+}
