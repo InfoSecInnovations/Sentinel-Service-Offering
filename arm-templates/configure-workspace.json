@@ -141,13 +141,6 @@
         "description": "See the project README for more information about the Microsoft Entra ID Data Connector. You will likely need to keep this toggled off and enable it through the web portal."
       }
     },
-    "guidSeed": {
-      "type": "string",
-      "defaultValue": "[newGuid()]",
-      "metadata": {
-        "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
-      }
-    },
     "repoName": {
       "type": "string",
       "defaultValue": "InfoSecInnovations/Sentinel-Service-Offering",
