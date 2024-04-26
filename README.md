@@ -52,15 +52,15 @@ However, if you really want to deploy the Data Connector programmatically, you w
 
 ## Install
 
+The LAW name must be unique within the Resource Group.
+
+We do not recommend attempting to instantiate our template multiple times within the same Resource Group.
+
 ### Single-click install
 
 If you have permissions to install all the items you need (see [Permissions](#permissions) and [Installed Items](#installed-items)), just click the button!
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FInfoSecInnovations%2FSentinel-Service-Offering%2Fmain%2Farm-templates%2Feverything.json)
-
-The LAW name must be unique within the Resource Group.
-
-We do not recommend attempting to instantiate it multiple times within the same Resource Group.
 
 If you are unable to get the permissions required to do the full install yourself, you can complete the process below with the help of someone who can do so.
 
@@ -121,9 +121,24 @@ Some items that work out of the box regardless of the configured Data Connectors
     - AnomaliesVisulization Workbook (sic)
     - Incident overview Workbook
     - Microsoft Sentinel Cost Workbook
+- Apache Log4j Vulnerability Detection Content Hub Package
+  - Analytics Rules
+    - Log4j vulnerability exploit aka Log4Shell IP IOC
+    - User agent search for log4j exploitation attempt
+    - Vulnerable Machines related to log4j CVE-2021-44228
+- SecurityThreatEssentialSolution Content Hub Package
 - Standalone
   - Workbooks
     - Archiving, Basic Logs and Retention Workbook
+  - Analytics Rules
+    - Advanced Multistage Attack Detection
+
+### UEBA
+- Standalone
+  - Logging
+    - Enable User and Entity Behaviour Analytics (UEBA) logs in the LAW
+  - Workbooks
+    - User And Entity Behavior Analytics Workbook
 
 ### Azure Activity
 
@@ -132,6 +147,13 @@ Some items that work out of the box regardless of the configured Data Connectors
     - Enable Azure Activity Data Connector by setting up a diagnostic setting that sends activity logs to the LAW
   - Workbooks
     - Azure Activity Workbook
+  - Analytics Rules
+    - Creation of expensive computes in Azure
+    - Suspicious number of resource creation or deployment activities
+    - Suspicious granting of permissions to an account
+- SecurityThreatEssentialSolution Content Hub Package
+  - Analytics Rules
+    - Threat Essentials - Mass Cloud resource deletions Time Series Anomaly
 
 ### Security Events
 
@@ -141,6 +163,27 @@ Some items that work out of the box regardless of the configured Data Connectors
     - (optional) add existing Arc Servers to the DCR after deploying it
   - Workbooks
     - Event Analyzer Workbook
+  - Analytics Rules
+    - New EXE deployed via Default Domain or Default Domain Controller Policies
+    - Non Domain Controller Active Directory Replication
+    - NRT Base64 Encoded Windows Process Command-lines
+    - NRT Process executed from binary hidden in Base64 encoded file
+    - NRT Security Event log cleared
+    - Potential Fodhelper UAC Bypass
+    - Potential re-named sdelete usage
+    - Process Execution Frequency Anomaly
+    - Scheduled Task Hide
+    - Sdelete deployed via GPO and run recursively
+    - SecurityEvent - Multiple authentication failures followed by a success
+- Attacker Tools Threat Protection Essentials Content Hub Package
+  - Analytics Rules
+    - Credential Dumping Tools - File Artifacts
+    - Credential Dumping Tools - Service Installation
+    - Powershell Empire Cmdlets Executed in Command Line
+- Standalone
+  - Analytics Rules
+    - (Preview) Anomalous RDP Login Detections
+
 
 ### Microsoft 365
 
@@ -154,16 +197,19 @@ If you use Microsoft 365 you should install this pack.
     - Office 365 Workbook
   - Analytics Rules
     - Accessed files shared by temporary external user
-    - Malicious Inbox Rule
-    - Rare and potentially high-risk Office operations
-    - Possible Forest Blizzard attempted credential harvesting - Sept 2020
     - Exchange AuditLog disabled
+    - Malicious Inbox Rule
     - Multiple users email forwarded to same destination
     - New executable via Office FileUploaded Operation
     - Office policy tampering
+    - Possible Forest Blizzard attempted credential harvesting - Sept 2020
+    - Rare and potentially high-risk Office operations
     - SharePointFileOperation via devices with previously unseen user agents
-    - Mail redirect via ExO transport rule
     - SharePointFileOperation via previously unseen IPs
+- SecurityThreatEssentialSolution Content Hub Package
+  - Analytics Rules   
+    - Mail redirect via ExO transport rule
+
 
 ### Microsoft Entra ID
 
@@ -172,12 +218,52 @@ If you use Microsoft Entra ID you should install this pack.
 - Microsoft Entra ID Content Hub Package
   - Data Connectors
     - (optional, see [Microsoft Entra ID](#microsoft-entra-id) section above) Enable Microsoft Entra ID Data Connector by setting up a diagnostic setting that sends Microsoft Entra ID logs to the LAW
+  - Analytics Rules
+    - Account Created and Deleted in Short Timeframe
+    - Admin promotion after Role Management Application Permission Grant
+    - Anomalous sign-in location by user account and authenticating application
+    - Attempts to sign in to disabled accounts
+    - Authentication Methods Changed for Privileged Account
+    - Azure Portal sign in from another Azure Tenant
+    - Brute force attack against a Cloud PC
+    - Brute force attack against Azure Portal
+    - Bulk Changes to Privileged Account Permissions
+    - Credential added after admin consented to Application
+    - Cross-tenant Access Settings Organization Added
+    - Distributed Password cracking attempts in Microsoft Entra ID
+    - Explicit MFA Deny
+    - External guest invitation followed by Microsoft Entra ID PowerShell signin
+    - First access credential added to Application or Service Principal where no credential was present
+    - full_access_as_app Granted To Application
+    - Mail.Read Permissions Granted to Application
+    - MFA Rejected by User
+    - Microsoft Entra ID Role Management Permission Grant
+    - New access credential added to Application or Service Principal
+    - New onmicrosoft domain added to tenant
+    - New User Assigned to Privileged Role
+    - Privileged Accounts - Sign in Failure Spikes
+    - Rare application consent
+    - Sign-ins from IPs that attempt sign-ins to disabled accounts
+    - Successful logon from IP and failure from a different IP
+    - Suspicious application consent for offline access
+    - Suspicious application consent similar to O365 Attack Toolkit
+    - Suspicious application consent similar to PwnAuth
+    - Suspicious Entra ID Joined Device Update
+    - Suspicious Service Principal creation activity
+    - Suspicious Sign In Followed by MFA Modification
+    - User added to Microsoft Entra ID Privileged Groups
+- Cloud Identity Threat Protection Essentials
+  - Analytics Rules
+    - Multi-Factor Authentication Disabled for a User
+    - New External User Granted Admin Role
+- SecurityThreatEssentialSolution Content Hub Package
+  - Analytics Rules 
+    - Possible AiTM Phishing Attempt Against Microsoft Entra ID
+    - Threat Essentials - NRT User added to Microsoft Entra ID Privileged Groups
+    - Threat Essentials - User Assigned Privileged Role
 - Standalone
-  - Logging
-    - Enable User and Entity Behaviour Analytics (UEBA) logs in the LAW
   - Workbooks
     - Azure AD Audit, Activity and Sign-in logs Workbook
-    - User And Entity Behavior Analytics Workbook
 
 ## Other Deployment Options
 
