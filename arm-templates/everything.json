@@ -247,6 +247,9 @@
     },
     {
       "name": "[variables('workspaceContentName')]",
+      "dependsOn": [
+        "[variables('configureWorkspaceName')]"
+      ],
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
@@ -288,6 +291,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "guidSeed": {
+            "value": "[parameters('guidSeed')]"
           }
         }
       }
