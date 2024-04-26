@@ -76,6 +76,10 @@
         "description": "Git branch containing the ARM templates."
       }
     },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
     "guidSeed": {
       "type": "string",
       "defaultValue": "[newGuid()]",
@@ -87,18 +91,17 @@
   "variables": {
     "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
-    "location": "[resourceGroup().location]",
-    "azureActivityWorkbooksName": "[concat('azureActivityWorkbooks', '-', variables('location'))]",
-    "azureActivityRulesName": "[concat('azureActivityRules', '-', variables('location'))]",
-    "uebaWorkbooksName": "[concat('uebaWorkbooks', '-', variables('location'))]",
-    "basicsWorkbooksName": "[concat('basicsWorkbooks', '-', variables('location'))]",
-    "basicsRulesName": "[concat('basicsRules', '-', variables('location'))]",
-    "securityEventsWorkbooksName": "[concat('securityEventsWorkbooks', '-', variables('location'))]",
-    "securityEventsRulesName": "[concat('securityEventsRules', '-', variables('location'))]",
-    "microsoft365WorkbooksName": "[concat('microsoft365Workbooks', '-', variables('location'))]",
-    "microsoft365RulesName": "[concat('microsoft365Rules', '-', variables('location'))]",
-    "microsoftEntraIdWorkbooksName": "[concat('microsoftEntraIdWorkbooks', '-', variables('location'))]",
-    "microsoftEntraIdRulesName": "[concat('microsoftEntraIdRules', '-', variables('location'))]"
+    "azureActivityWorkbooksName": "[concat('azureActivityWorkbooks', '-', parameters('location'))]",
+    "azureActivityRulesName": "[concat('azureActivityRules', '-', parameters('location'))]",
+    "uebaWorkbooksName": "[concat('uebaWorkbooks', '-', parameters('location'))]",
+    "basicsWorkbooksName": "[concat('basicsWorkbooks', '-', parameters('location'))]",
+    "basicsRulesName": "[concat('basicsRules', '-', parameters('location'))]",
+    "securityEventsWorkbooksName": "[concat('securityEventsWorkbooks', '-', parameters('location'))]",
+    "securityEventsRulesName": "[concat('securityEventsRules', '-', parameters('location'))]",
+    "microsoft365WorkbooksName": "[concat('microsoft365Workbooks', '-', parameters('location'))]",
+    "microsoft365RulesName": "[concat('microsoft365Rules', '-', parameters('location'))]",
+    "microsoftEntraIdWorkbooksName": "[concat('microsoftEntraIdWorkbooks', '-', parameters('location'))]",
+    "microsoftEntraIdRulesName": "[concat('microsoftEntraIdRules', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -117,7 +120,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -147,7 +150,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -174,7 +177,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -204,7 +207,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -234,7 +237,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -261,7 +264,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -291,7 +294,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -318,7 +321,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "exchangeState": {
             "value": "[parameters('exchangeState')]"
@@ -351,7 +354,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -378,7 +381,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -408,7 +411,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"

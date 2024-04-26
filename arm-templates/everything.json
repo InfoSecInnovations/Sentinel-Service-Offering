@@ -40,6 +40,34 @@
         "description": "If set to true when changing retention to 30 days, older data will be immediately deleted. Use this with extreme caution. This only applies when retention is being set to 30 days."
       }
     },
+    "enableBasicsPack": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Install some general items we recommend. Keep this enabled unless you're enabling the content through some other means."
+      }
+    },
+    "enableAzureActivityPack": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Install items relating to Azure Activity logs. Keep this enabled unless you're enabling the content through some other means."
+      }
+    },
+    "enableUEBAPack": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable UEBA Logs and related content. Keep this enabled unless you're enabling the content through some other means."
+      }
+    },
+    "enableSecurityEventsPack": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Install items relating to Security Event logs. Keep this enabled unless you're enabling the content through some other means."
+      }
+    },
     "securityCollectionTier": {
       "type": "string",
       "metadata": {
@@ -59,16 +87,16 @@
         "description": "JSON formatted array of the names of any existing Arc servers you wish to add to Security Events log gathering. We also have tools to automate this process after setting up the Sentinel instance."
       }
     },
-    "enableMicrosoft365": {
+    "enableMicrosoft365Pack": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "You should enable this if you use Microsoft 365 to get the appropriate logs and workspaces."
+        "description": "You should enable this if you use Microsoft 365."
       }
     },
     "exchangeState": {
       "type": "string",
-      "defaultValue": "disabled",
+      "defaultValue": "enabled",
       "allowedValues": [
         "disabled",
         "enabled"
@@ -79,7 +107,7 @@
     },
     "sharepointState": {
       "type": "string",
-      "defaultValue": "disabled",
+      "defaultValue": "enabled",
       "allowedValues": [
         "disabled",
         "enabled"
@@ -90,7 +118,7 @@
     },
     "teamsState": {
       "type": "string",
-      "defaultValue": "disabled",
+      "defaultValue": "enabled",
       "allowedValues": [
         "disabled",
         "enabled"
@@ -99,18 +127,18 @@
         "description": "Track logs from Teams, only relevant if Microsoft 365 is enabled above."
       }
     },
-    "enableAzureActiveDirectory": {
+    "enableMicrosoftEntraIDPack": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "You should enable this if you use Azure Active Directory to get the appropriate logs and workspaces."
+        "description": "You should enable this if you use Microsoft Entra ID."
       }
     },
-    "guidSeed": {
-      "type": "string",
-      "defaultValue": "[newGuid()]",
+    "enableMicrosoftEntraIDConnector": {
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
+        "description": "See the project README for more information about the Microsoft Entra ID Data Connector. You will likely need to keep this toggled off and enable it through the web portal."
       }
     },
     "repoName": {
@@ -126,28 +154,34 @@
       "metadata": {
         "description": "Git branch containing the ARM templates."
       }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "guidSeed": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "This value is used to generate unique identifiers for the resources that need them, don't modify this!"
+      }
     }
   },
   "variables": {
     "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
-    "location": "[resourceGroup().location]",
-    "deployAzureSentinelName": "[concat('deployAzureSentinel', '-', variables('location'))]",
-    "enableBasicsPackName": "[concat('enableBasicsPack', '-', variables('location'))]",
-    "enableMicrosoft365PackName": "[concat('enableMicrosoft365Pack', '-', variables('location'))]",
-    "enableSecurityEventPackName": "[concat('enableSecurityEventPack', '-', variables('location'))]",
-    "enableAzureActivityPackName": "[concat('enableAzureActivityPack', '-', variables('location'))]",
-    "enableAADPackName": "[concat('enableAADPack', '-', variables('location'))]"
+    "configureWorkspaceName": "[concat('configureWorkspace', '-', parameters('location'))]",
+    "workspaceContentName": "[concat('workspaceContent', '-', parameters('location'))]"
   },
   "resources": [
     {
-      "name": "[variables('deployAzureSentinelName')]",
+      "name": "[variables('configureWorkspaceName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'),'arm-templates/deploy-sentinel.json')]",
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/configure-workspace.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -163,108 +197,17 @@
           "immediatePurgeDataOn30Days": {
             "value": "[parameters('immediatePurgeDataOn30Days')]"
           },
-          "location": {
-            "value": "[variables('location')]"
-          }
-        }
-      }
-    },
-    {
-      "name": "[variables('enableBasicsPackName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "dependsOn": [
-        "[variables('deployAzureSentinelName')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/basics/deployment-template.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
+          "enableBasicsPack": {
+            "value": "[parameters('enableBasicsPack')]"
           },
-          "location": {
-            "value": "[variables('location')]"
+          "enableAzureActivityPack": {
+            "value": "[parameters('enableAzureActivityPack')]"
           },
-          "guidSeed": {
-            "value": "[parameters('guidSeed')]"
+          "enableUEBAPack": {
+            "value": "[parameters('enableUEBAPack')]"
           },
-          "repoName": {
-            "value": "[parameters('repoName')]"
-          },
-          "repoBranch": {
-            "value": "[parameters('repoBranch')]"
-          }
-        }
-      }
-    },
-    {
-      "condition": "[parameters('enableMicrosoft365')]",
-      "name": "[variables('enableMicrosoft365PackName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "dependsOn": [
-        "[variables('deployAzureSentinelName')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-365/deployment-template.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
-          },
-          "exchangeState": {
-            "value": "[parameters('exchangeState')]"
-          },
-          "sharePointState": {
-            "value": "[parameters('sharePointState')]"
-          },
-          "teamsState": {
-            "value": "[parameters('teamsState')]"
-          },
-          "location": {
-            "value": "[variables('location')]"
-          },
-          "guidSeed": {
-            "value": "[parameters('guidSeed')]"
-          },
-          "repoName": {
-            "value": "[parameters('repoName')]"
-          },
-          "repoBranch": {
-            "value": "[parameters('repoBranch')]"
-          }
-        }
-      }
-    },
-    {
-      "name": "[variables('enableSecurityEventPackName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "dependsOn": [
-        "[variables('deployAzureSentinelName')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/security-events/deployment-template.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
-          },
-          "workspaceId": {
-            "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceIdOutput.value]"
-          },
-          "location": {
-            "value": "[variables('location')]"
+          "enableSecurityEventsPack": {
+            "value": "[parameters('enableSecurityEventsPack')]"
           },
           "securityCollectionTier": {
             "value": "[parameters('securityCollectionTier')]"
@@ -272,76 +215,79 @@
           "arcServers": {
             "value": "[parameters('arcServers')]"
           },
+          "enableMicrosoft365Pack": {
+            "value": "[parameters('enableMicrosoft365Pack')]"
+          },
+          "exchangeState": {
+            "value": "[parameters('exchangeState')]"
+          },
+          "sharepointState": {
+            "value": "[parameters('sharepointState')]"
+          },
+          "teamsState": {
+            "value": "[parameters('teamsState')]"
+          },
+          "enableMicrosoftEntraIDPack": {
+            "value": "[parameters('enableMicrosoftEntraIDPack')]"
+          },
+          "enableMicrosoftEntraIDConnector": {
+            "value": "[parameters('enableMicrosoftEntraIDConnector')]"
+          },
           "repoName": {
             "value": "[parameters('repoName')]"
           },
           "repoBranch": {
             "value": "[parameters('repoBranch')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }
     },
     {
-      "name": "[variables('enableAzureActivityPackName')]",
+      "name": "[variables('workspaceContentName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "dependsOn": [
-        "[variables('deployAzureSentinelName')]"
-      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/azure-activity/everything.json')]",
+          "uri": "[uri(variables('isiSentinel'),'arm-templates/workspace-content.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
           "workspaceName": {
-            "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
+            "value": "[parameters('workspaceName')]"
           },
-          "location": {
-            "value": "[variables('location')]"
+          "enableBasicsPack": {
+            "value": "[parameters('enableBasicsPack')]"
           },
-          "guidSeed": {
-            "value": "[parameters('guidSeed')]"
+          "enableAzureActivityPack": {
+            "value": "[parameters('enableAzureActivityPack')]"
+          },
+          "enableUEBAPack": {
+            "value": "[parameters('enableUEBAPack')]"
+          },
+          "enableSecurityEventsPack": {
+            "value": "[parameters('enableSecurityEventsPack')]"
+          },
+          "enableMicrosoft365Pack": {
+            "value": "[parameters('enableMicrosoft365Pack')]"
+          },
+          "exchangeState": {
+            "value": "[parameters('exchangeState')]"
+          },
+          "enableMicrosoftEntraIDPack": {
+            "value": "[parameters('enableMicrosoftEntraIDPack')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
           },
           "repoBranch": {
             "value": "[parameters('repoBranch')]"
-          }
-        }
-      }
-    },
-    {
-      "condition": "[parameters('enableAzureActiveDirectory')]",
-      "name": "[variables('enableAADPackName')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "dependsOn": [
-        "[variables('deployAzureSentinelName')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[uri(variables('isiSentinel'), 'arm-templates/packs/microsoft-entra-id/deployment-template.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "workspaceName": {
-            "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceNameOutput.value]"
           },
           "location": {
-            "value": "[variables('location')]"
-          },
-          "guidSeed": {
-            "value": "[parameters('guidSeed')]"
-          },
-          "repoName": {
-            "value": "[parameters('repoName')]"
-          },
-          "repoBranch": {
-            "value": "[parameters('repoBranch')]"
+            "value": "[parameters('location')]"
           }
         }
       }

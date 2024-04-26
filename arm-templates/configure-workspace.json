@@ -154,23 +154,26 @@
       "metadata": {
         "description": "Git branch containing the ARM templates."
       }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
     }
   },
   "variables": {
     "isiSentinel": "[concat('https://raw.githubusercontent.com/', parameters('repoName'), '/', parameters('repoBranch'), '/')]",
     "artifactsAzureSentinel2Go": "https://raw.githubusercontent.com/InfoSecInnovations/Microsoft-Sentinel2Go/master/",
-    "location": "[resourceGroup().location]",
-    "deployAzureSentinelName": "[concat('deployAzureSentinel', '-', variables('location'))]",
-    "azureActivityRequirementsName": "[concat('azureActivityRequirements', '-', variables('location'))]",
-    "azureActivityDataConnectorsName": "[concat('azureActivityDataConnectors', '-', variables('location'))]",
-    "uebaDataConnectorsName": "[concat('uebaDataConnectors', '-', variables('location'))]",
-    "basicsRequirementsName": "[concat('basicsRequirements', '-', variables('location'))]",
-    "securityEventsRequirementsName": "[concat('securityEventsRequirements', '-', variables('location'))]",
-    "securityEventsDataConnectorsName": "[concat('securityEventsDataConnectors', '-', variables('location'))]",
-    "microsoft365RequirementsName": "[concat('microsoft365Requirements', '-', variables('location'))]",
-    "microsoft365DataConnectorsName": "[concat('microsoft365DataConnectors', '-', variables('location'))]",
-    "microsoftEntraIdRequirementsName": "[concat('microsoftEntraIdRequirements', '-', variables('location'))]",
-    "microsoftEntraIdDataConnectorsName": "[concat('microsoftEntraIdDataConnectors', '-', variables('location'))]"
+    "deployAzureSentinelName": "[concat('deployAzureSentinel', '-', parameters('location'))]",
+    "azureActivityRequirementsName": "[concat('azureActivityRequirements', '-', parameters('location'))]",
+    "azureActivityDataConnectorsName": "[concat('azureActivityDataConnectors', '-', parameters('location'))]",
+    "uebaDataConnectorsName": "[concat('uebaDataConnectors', '-', parameters('location'))]",
+    "basicsRequirementsName": "[concat('basicsRequirements', '-', parameters('location'))]",
+    "securityEventsRequirementsName": "[concat('securityEventsRequirements', '-', parameters('location'))]",
+    "securityEventsDataConnectorsName": "[concat('securityEventsDataConnectors', '-', parameters('location'))]",
+    "microsoft365RequirementsName": "[concat('microsoft365Requirements', '-', parameters('location'))]",
+    "microsoft365DataConnectorsName": "[concat('microsoft365DataConnectors', '-', parameters('location'))]",
+    "microsoftEntraIdRequirementsName": "[concat('microsoftEntraIdRequirements', '-', parameters('location'))]",
+    "microsoftEntraIdDataConnectorsName": "[concat('microsoftEntraIdDataConnectors', '-', parameters('location'))]"
   },
   "resources": [
     {
@@ -197,7 +200,7 @@
             "value": "[parameters('immediatePurgeDataOn30Days')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           }
         }
       }
@@ -221,7 +224,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -251,7 +254,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -281,7 +284,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -311,7 +314,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -341,7 +344,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -374,7 +377,7 @@
             "value": "[reference(variables('deployAzureSentinelName'), '2022-09-01').outputs.workspaceIdOutput.value]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "securityCollectionTier": {
             "value": "[parameters('securityCollectionTier')]"
@@ -410,7 +413,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -440,7 +443,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "exchangeState": {
             "value": "[parameters('exchangeState')]"
@@ -479,7 +482,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
@@ -509,7 +512,7 @@
             "value": "[parameters('workspaceName')]"
           },
           "location": {
-            "value": "[variables('location')]"
+            "value": "[parameters('location')]"
           },
           "repoName": {
             "value": "[parameters('repoName')]"
